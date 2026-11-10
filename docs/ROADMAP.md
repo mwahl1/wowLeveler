@@ -9,7 +9,7 @@ Status labels: **planned** → **implemented** (code written) → **tested** (ru
 - **Milestones:** M1 implemented, untested in game. M2 done. M3 done offline: full pipeline run on Mac, Lua 5.1 validator 0 errors / 1 warning; untested in game.
 - **Tested in game:** nothing yet
 - **Blockers:** game access (P0); GitHub push needs a new token (local commits unpushed)
-- **Next task:** P2 guide engine design (step format, state machine, recovery) while P0/M3 await the in-game test
+- **Next task:** review of `docs/P2_GUIDE_ENGINE_SPEC.md` (draft); implementation starts after approval
 
 ## Confirmed decisions
 - **D1: Client target.** Forever runs on the Mainline (Retail 12.x) client family; Midnight addon restrictions apply. TOC `## Interface: 16001` (from `Questie_Forever.toc`, 2026-11-10).
