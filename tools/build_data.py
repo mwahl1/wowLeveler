@@ -138,6 +138,54 @@ def load_zone_names(questiedb_dir):
     return names
 
 
+def load_zone_bounds(questiedb_dir):
+    """uiMapID -> zone rectangle in world yards (Forever build), from QuestieDB's
+    data/Forever/conversion.json geometry.transforms[].target_bounds (plain JSON, read only).
+
+    Returns (bounds, info): bounds = {uiMap: {left, right, top, bottom, width, height, name, changed}},
+    info = {build, path, names}: names also covers maps without bounds (added/unsupported).
+    """
+    path = os.path.join(questiedb_dir, "data", "Forever", "conversion.json")
+    info = {"build": None, "path": path, "names": {}, "error": None}
+    if not os.path.exists(path):
+        info["error"] = "conversion.json not found"
+        return {}, info
+    geo = load_json(path).get("geometry") or {}
+    info["build"] = geo.get("target_build")
+    for section in ("unsupported", "added_maps", "transforms"):
+        for t in geo.get(section) or []:
+            if t.get("ui_map_id"):
+                info["names"][int(t["ui_map_id"])] = t.get("target_name") or t.get("source_name")
+    bounds = {}
+    for t in geo.get("transforms") or []:
+        ui, b = t.get("ui_map_id"), t.get("target_bounds") or {}
+        try:
+            l, r, top, bot = (float(b[k]) for k in ("left", "right", "top", "bottom"))
+        except (KeyError, TypeError, ValueError):
+            continue
+        if not ui or not all(math.isfinite(v) for v in (l, r, top, bot)):
+            continue
+        width, height = abs(l - r), abs(top - bot)
+        if width <= 0 or height <= 0:
+            continue
+        bounds[int(ui)] = {"left": round(l, 1), "right": round(r, 1), "top": round(top, 1),
+                           "bottom": round(bot, 1), "width": round(width, 1), "height": round(height, 1),
+                           "name": t.get("target_name"), "changed": bool(t.get("changed"))}
+    return bounds, info
+
+
+def write_zone_bounds_json(path, bounds, info):
+    out = {
+        "source": f"QuestieDB conversion.json target_bounds, build {info['build']}",
+        "label": "O",
+        "units": "world yards; width = |left-right|, height = |top-bottom|",
+        "maps": {str(ui): b for ui, b in sorted(bounds.items())},
+    }
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(out, f, indent=1, sort_keys=True)
+        f.write("\n")
+
+
 class Export:
     def __init__(self, export_dir):
         self.dir = export_dir
@@ -759,7 +807,7 @@ def write_schema(path, commit):
         f.write("\n".join(lines) + "\n")
 
 
-def write_meta(path, export, starts, counts):
+def write_meta(path, export, starts, counts, zone_bounds, bounds_info):
     m = export.manifest
     meta = {
         "questiedbCommit": m.get("questiedbCommit"),
@@ -767,6 +815,10 @@ def write_meta(path, export, starts, counts):
         "interface": m.get("interface"),
         "counts": counts,
         "startingQuests": starts,
+        # uiMapID -> {left, right, top, bottom} in world yards (label O: Forever map geometry)
+        "zoneBounds": {ui: {k: b[k] for k in ("left", "right", "top", "bottom")}
+                       for ui, b in zone_bounds.items()},
+        "zoneBoundsSource": f"QuestieDB conversion.json target_bounds, build {bounds_info['build']}",
     }
     with open(path, "w", encoding="utf-8") as f:
         f.write(HEADER.format(commit=m.get("questiedbCommit", "?")[:10]))
@@ -791,7 +843,7 @@ def write_side(path, side, tables, commit):
 # --------------------------------------------------------------------------------------------
 
 def write_reports(report_md, gaps_csv, export, sides, per_faction, starts, issues, stats,
-                  dynamic_counts, class_dynamic_quests, zone_names, sizes):
+                  dynamic_counts, class_dynamic_quests, zone_names, sizes, zone_bounds, bounds_info):
     qi = {n: i for i, n in enumerate(QUEST_FIELDS)}
 
     def field(rec, name):
@@ -920,6 +972,40 @@ def write_reports(report_md, gaps_csv, export, sides, per_faction, starts, issue
         zone = zone_names.get(st.get("area"), f"area {st.get('area')}") if st.get("area") else "**not found**"
         w(f"| {race_name} | {fac} | {zone} | {st.get('map') or '-'} | {names or '**none found**'}{more} |")
     w("")
+    w("## Zone sizes (world yards)\n")
+    w(f"Source: QuestieDB `data/Forever/conversion.json` `geometry.transforms[].target_bounds`, "
+      f"build {bounds_info['build']} (read as plain JSON). Label **O**: Forever map geometry. "
+      f"Stored in `Data/Meta.lua` (`zoneBounds`) and `tools/.cache/forever/zone_bounds.json` (with width/height).\n")
+    if bounds_info.get("error"):
+        w(f"**Not available:** {bounds_info['error']}.\n")
+    w(f"Maps with bounds: **{len(zone_bounds)}**.\n")
+    # uiMaps the data actually uses: quest MAP / TRIGGER, NPC and object spawns
+    used = Counter()
+    for fac in FACTIONS:
+        b = per_faction[fac]
+        for rec in b["quests"].values():
+            if field(rec, "MAP"):
+                used[field(rec, "MAP")] += 1
+            trig = field(rec, "TRIGGER")
+            if trig:
+                used[trig[1]] += 1
+        for kind, fields in (("npcs", NPC_FIELDS), ("objects", OBJECT_FIELDS)):
+            si = fields.index("SPAWNS")
+            for rec in b[kind].values():
+                sp = rec[si] if si < len(rec) else None
+                for ui in set((sp or [])[0::3]):
+                    used[ui] += 1
+    missing = sorted((ui for ui in used if ui not in zone_bounds), key=lambda u: -used[u])
+    ui_names = dict(bounds_info["names"])
+    for area, ui in sorted(export.area_to_ui.items()):
+        if area in zone_names:
+            ui_names.setdefault(ui, zone_names[area])
+    w(f"uiMaps used by quests (zone/trigger) or NPC/object spawns with **no bounds**: {len(missing)}\n")
+    if missing:
+        w("| uiMap | Name | References |\n|---|---|---|")
+        for ui in missing:
+            w(f"| {ui} | {ui_names.get(ui) or '?'} | {used[ui]} |")
+        w("")
     w("## Faction and class corrections\n")
     w(f"Applied with QuestieDB's own registry for every faction x class combination "
       f"(errors during export: {m.get('dynamicErrors', '?')}).\n")
@@ -995,6 +1081,9 @@ def main():
     export = Export(args.export)
     zone_names = load_zone_names(args.questiedb)
     commit = (export.manifest.get("questiedbCommit") or "unknown")[:10]
+    zone_bounds, bounds_info = load_zone_bounds(args.questiedb)
+    if bounds_info.get("error"):
+        print("WARNING: zone bounds:", bounds_info["error"], bounds_info["path"])
 
     for warning in export.warnings:
         print("WARNING:", warning)
@@ -1011,14 +1100,16 @@ def main():
     }
     counts = {side: {k: len(v) for k, v in t.items() if k != "classQuests"} for side, t in sides.items()}
     write_schema(paths["Schema"], commit)
-    write_meta(paths["Meta"], export, starts, counts)
+    write_meta(paths["Meta"], export, starts, counts, zone_bounds, bounds_info)
+    write_zone_bounds_json(os.path.join(args.export, "zone_bounds.json"), zone_bounds, bounds_info)
     for side in ("Neutral", "Horde", "Alliance"):
         write_side(paths[side], side, sides[side], commit)
 
     sizes = [(os.path.relpath(p), os.path.getsize(p)) for p in paths.values()]
     new_gaps, old_gaps, label_counts, n_avail, n_new = write_reports(
         os.path.join(args.docs, "DATA_COVERAGE.md"), os.path.join(args.docs, "data-gaps.csv"),
-        export, sides, per_faction, starts, issues, stats, dynamic_counts, class_dyn, zone_names, sizes)
+        export, sides, per_faction, starts, issues, stats, dynamic_counts, class_dyn, zone_names, sizes,
+        zone_bounds, bounds_info)
 
     if args.parse_check:
         errors, skipped = validate_lua(paths.values())
@@ -1033,6 +1124,7 @@ def main():
         print(f"  {name:22s} {size / 1024:7.0f} KB")
     print(f"New Forever quests missing: XP {new_gaps['no XP']}, start loc {new_gaps['no start location']}, "
           f"finish loc {new_gaps['no finish location']} (of {new_gaps['total']})")
+    print(f"Zone bounds: {len(zone_bounds)} maps (build {bounds_info['build']})")
     print(f"Integrity issues: {len(issues)}  |  dynamic: Horde {dynamic_counts['Horde']}, "
           f"Alliance {dynamic_counts['Alliance']}, class-specific {len(class_dyn)}")
     if skipped:

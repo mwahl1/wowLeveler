@@ -334,6 +334,36 @@ local status, reason = ns.Availability.Check(questID, state)
 
 Reads data through `ns.Data.GetQuest` and `ns.DataSchema`; reads `state` per section 3.1 (`completed`, `log`, `raceID`, `classFile`, `level`, optional `skills`, `reputations`, `knownSpells`). Order of checks mirrors Questie's `IsDoable`; level is checked last and only distinguishes `LEVEL_TOO_LOW` (`level < REQ_LEVEL`) from `AVAILABLE`.
 
+**Route registry + compiler** (`Guide/Compiler.lua`, pure Lua):
+```lua
+ns.Guides.Register(def)            -- called by route files (Guides/**) and tests; stores by def.id
+ns.Guides.Reset()                  -- tests only: clear the registry
+local route, problems = ns.Guides.Compile(character)   -- character = { faction, raceID, classFile }
+-- route = {
+--   steps    = { step, ... },                 -- flat, ordered; each step gets .segment = segId, .index = i
+--   segments = { [segId] = { def = def, first = i, last = j } },
+--   order    = { segId, ... },                -- start segment for the race first, then faction segments by levels[1]
+--   byId     = { [stepId] = i },
+-- }
+-- problems = { { severity = "error"|"warning", code = "...", msg = "..." }, ... }
+```
+Compile rules: only defs whose `faction` matches (nil = both); the `start` def whose `races` contains `raceID` (none → warning `no_start`); `segment` defs; `overlay` defs whose `classes` contains `classFile`, applied by `after = stepId` (insert after that step; anchor missing → warning `overlay_anchor`) or `atLevel = n` (insert at the start of the first segment whose `levels` contains n, adding `when.minLevel = n`). Validation: missing `id`/`type` or unknown `type` → error; duplicate step id within the compiled route → error; quest steps whose quest is not in `ns.Data` → warning `unknown_quest` (step kept; engine marks it UNKNOWN). Step ids are namespaced by segment if not unique (`segId/stepId`) only when the author used a bare id — no silent renaming otherwise.
+
+**Compiler/Conditions decisions (2026-11-10, from implementation):**
+- Duplicate step id within one def → error `duplicate_step`, step dropped. Across segments a bare id becomes `segId/stepId` with warning `step_namespaced`; colliding ids that already contain "/" (or whose namespaced form is taken) → error, step dropped. Overlay `after` matches the author's id or the compiled id.
+- Invalid steps (missing id/type, unknown type) → error, dropped. Unknown def `kind` → error. Several matching starts → lowest `levels[1]`, then id, warning `multiple_start`. Segment order: start, then `levels[1]`, then id; overlays applied in id order; overlay `classes = nil` → all classes. Re-registering an id → warning `duplicate_def`, last wins.
+- Conditions: a table is an AND of its keys (false wins, else unknown → nil, else true). `completed`/`inLog` require all listed quests; `level` = level ≥ value; `map` = id or list; `setting` reads `state.settings[flag]` (add `settings = { deathSkips = false, autoSwitch = false }` to CharacterState 3.1); when a `knownSpells`/`itemCounts` table is present a missing entry is false/0, only an absent table is unknown; missing level/race/class/map/xp → unknown.
+- Selector: unknown entry → not holding; no `levels` → unrestricted; score counts each quest once per segment; auto-switch from `memory.autoSwitch`; current segment unusable (not in route or entry no longer holds) → best; usable but out-levelled → kept + suggestion `{kind="segment", to=best, reason="level_above_range"}`; start-wins rule only when the start has an `exit`, checked before keep. **No segment in level range** (e.g. a level-25 join when routes end at 20): fall back to the segment whose `entry` holds with the **smallest distance between `state.level` and its `levels` range** (raw quest XP ignores low-level XP falloff, so it must not rank first), ties → higher score, then `order`. If the remembered segment is usable but out-levelled and the fallback picks a different segment, keep the current one and return the `no_segment_in_range` suggestion pointing at the fallback; same segment → no suggestion; return it with suggestion `{kind="segment", to=<that id>, reason="no_segment_in_range"}` so the UI can say the route doesn't cover this level yet. Nothing with a holding entry → nil.
+
+**Conditions API** (`Guide/Conditions.lua`): `ns.GuideConditions.Eval(cond, state)` → true / false / nil (unknown); `ns.GuideConditions.UnknownKeys(cond)` → sorted list of unsupported keys.
+
+**Selector** (`Guide/Selector.lua`, pure Lua):
+```lua
+local segId, suggestion = ns.GuideSelector.Choose(route, state, memory)
+-- memory.segment = current segment id (may be nil); suggestion = nil | { kind = "segment", to = segId, reason = "..." }
+```
+Rules: if `memory.segment` is set, its `entry` still holds and `state.level <= levels[2] + 2` → keep it (no suggestion). Otherwise candidates = segments whose `entry` holds and `levels[1] - 1 <= state.level <= levels[2] + 2`; score = sum of quest XP (data XP, any label) of quest steps whose quest is AVAILABLE or ACTIVE per `ns.Availability`, ties → lower `levels[1]`, then `order`. First choice with no `memory.segment` → return the best directly. When keeping is not possible but a better segment exists and auto-switch is off, return the current segment plus a suggestion (if the current one is unusable: return the best). The start segment wins while its exit condition doesn't hold and level ≤ its `levels[2] + 2`.
+
 **Test harness** (`tools/run_tests.lua`, owned by QA): discovers `tests/*_test.lua`; provides `T.addon(faction, class)` → namespace with `Core/Data.lua`, `Data/*.lua` and `Guide/*.lua` loaded (cached per faction/class), `T.state{...}` → CharacterState with defaults, `T.inject(ns, questID, fields)` → adds a synthetic quest record using schema field names, and assertions `T.eq`, `T.ok`, `T.contains`. Exit code 0 only if all tests pass.
 
 ## 9. Route efficiency: measurement before content

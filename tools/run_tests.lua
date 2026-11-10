@@ -100,6 +100,33 @@ function T.fresh(faction, class)
   return loadAddon(faction or "Horde", class or "WARRIOR")
 end
 
+-- Mutable namespaces shared across test files, kept apart from the T.addon cache so
+-- injected quests and registered routes never leak into the data smoke counts.
+local sandboxes = {}
+function T.sandbox(faction, class)
+  local key = (faction or "Horde") .. "." .. (class or "WARRIOR")
+  sandboxes[key] = sandboxes[key] or loadAddon(faction or "Horde", class or "WARRIOR")
+  return sandboxes[key]
+end
+
+-- Skip the current test unless ns[name] exists (module not implemented yet)
+function T.needModule(ns, ...)
+  for _, name in ipairs({ ... }) do
+    if ns[name] == nil then T.skip("ns." .. name .. " not present (module not loaded)") end
+  end
+end
+
+-- tests/fixtures/<name>.lua, loaded once; returns whatever the fixture file returns
+local fixtures = {}
+function T.fixture(name)
+  if fixtures[name] == nil then
+    local fn, err = loadfile("tests/fixtures/" .. name .. ".lua")
+    if not fn then error("fixture " .. name .. ": " .. tostring(err), 2) end
+    fixtures[name] = fn()
+  end
+  return fixtures[name]
+end
+
 -- CharacterState (spec 3.1) ---------------------------------------------------------
 -- Pass T.NIL to clear a default, e.g. T.state{ raceID = T.NIL }.
 T.NIL = setmetatable({}, { __tostring = function() return "T.NIL" end })

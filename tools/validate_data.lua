@@ -140,6 +140,23 @@ local function checkFaction(ns, faction, class)
   end
   for id, o in pairs(D.objects) do checkSpawns("object", id, o[O.SPAWNS]) end
 
+  -- Zone bounds (world yards): 4 finite numbers with nonzero extents
+  local nBounds = 0
+  if type(M.zoneBounds) ~= "table" then fail("Meta has no zoneBounds table") end
+  for ui, b in pairs(M.zoneBounds or {}) do
+    nBounds = nBounds + 1
+    local ok = type(ui) == "number" and type(b) == "table"
+    if ok then
+      for _, k in ipairs({ "left", "right", "top", "bottom" }) do
+        local v = b[k]
+        if type(v) ~= "number" or v ~= v or v == math.huge or v == -math.huge then ok = false end
+      end
+    end
+    if ok and (b.left == b.right or b.top == b.bottom) then ok = false end
+    if not ok then fail("zoneBounds " .. tostring(ui) .. " invalid") end
+  end
+  if nBounds == 0 then warn("Meta.zoneBounds is empty") end
+
   -- Starting quests must be loadable for every race of this faction
   local raceFaction = { [1] = "Alliance", [3] = "Alliance", [4] = "Alliance", [7] = "Alliance", [95] = "Alliance",
                         [2] = "Horde", [5] = "Horde", [6] = "Horde", [8] = "Horde", [96] = "Horde" }

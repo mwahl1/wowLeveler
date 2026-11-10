@@ -14,6 +14,7 @@ local DEFAULTS = {
     minimized = false,
     shown = true,
     probeShown = false,
+    cardExpanded = false,
   },
   autoAccept = false, -- not implemented yet; reserved, off by default
   autoTurnIn = false,
@@ -138,10 +139,14 @@ SlashCmdList.LEVELINGNAVIGATOR = function(input)
   elseif cmd == "alpha" and tonumber(arg) then
     ns.db.ui.alpha = math.max(0.3, math.min(1, tonumber(arg)))
     ns.Send("APPLY_LAYOUT")
+  elseif cmd == "mockguide" then
+    local variant = (arg == "start" or arg == "train" or arg == "off" or arg == "main") and arg or "main"
+    ns.Send("SHOW_MOCK_GUIDE", variant)
   elseif cmd == "log" then
     ns.Probe.PrintLog(tonumber(arg) or 10)
   else
     ns.Print("/ln - show/hide  |  /ln probe - API diagnostics  |  /ln log [n] - recent events")
     ns.Print("/ln scale 0.6-1.6  |  /ln alpha 0.3-1  |  /ln reset - reset window")
+    ns.Print("/ln mockguide [main|start|train|off] - preview the guide card with mock data")
   end
 end

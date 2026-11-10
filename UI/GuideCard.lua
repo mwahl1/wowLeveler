@@ -1,4 +1,7 @@
 -- Guide "current step" card: renders a GuideView (docs/P2_GUIDE_ENGINE_SPEC.md 7.2).
+-- Compact by default (title, progress, target, 2 upcoming); MORE/LESS toggles
+-- expanded mode (detail, why, badges, concurrent rows, 3 upcoming), persisted in
+-- ns.db.ui.cardExpanded.
 -- Render only: no quest or route logic. User actions go to ns.Guide.Confirm/Skip.
 -- MainPanel attaches the card above "Current quests"; with no view it is hidden and
 -- the overlay looks exactly as before.
@@ -9,13 +12,19 @@ local Card = {}
 ns.GuideCard = Card
 
 local GAP = T.space.gap
-local MAX_UPCOMING = 3
+local MAX_UPCOMING = 3         -- expanded mode
+local MAX_UPCOMING_COMPACT = 2 -- compact mode (default while a guide is active)
 local ROW_H = 16
 
 local card, onLayout
 local lastView      -- most recent GuideView (may arrive before the card exists)
 local dirty = true  -- view changed since the last layout
 local lastWidth = 0
+
+-- Compact unless the user expanded the card (ns.db.ui.cardExpanded; nil = false)
+local function Expanded()
+  return ns.db and ns.db.ui and ns.db.ui.cardExpanded == true or false
+end
 
 -- Step types -----------------------------------------------------------------
 
@@ -141,7 +150,7 @@ local function FormatCallout(view)
     else
       text = "Suggestion: " .. tostring(s.text or s.reason or s.kind or "")
     end
-    return text, T.color.accent
+    return text, T.color.accent, 1
   end
   local w = view.warnings and view.warnings[1]
   if w then
@@ -193,6 +202,14 @@ local function Create(parent)
   card.segCount = W.Text(card, { font = T.font.heading, size = T.size.heading, color = T.color.faint, justify = "RIGHT", wrap = false })
   card.segBar = W.Bar(card, 3, T.color.accent)
 
+  -- Compact / expanded toggle on the card header (persisted in ns.db.ui.cardExpanded)
+  card.toggleBtn = ActionButton(card, "MORE", false, T.color.faint, function()
+    if not (ns.db and ns.db.ui) then return end
+    ns.db.ui.cardExpanded = not Expanded()
+    dirty = true
+    Card.Relayout()
+  end)
+
   card.chip = CreateChip(card)
   card.doneBtn = ActionButton(card, "DONE", true, T.color.good, function()
     local step = CurrentStep()
@@ -216,6 +233,17 @@ local function Create(parent)
   card.calloutStripe = card:CreateTexture(nil, "ARTWORK")
   card.calloutStripe:SetWidth(2)
   card.callout = W.Text(card, { size = T.size.small })
+  -- Click target over the callout; only shown when it presents a suggestion
+  card.calloutBtn = CreateFrame("Button", nil, card)
+  card.calloutBtn:SetPoint("TOPLEFT", card.calloutStripe, "TOPLEFT", 0, 0)
+  card.calloutBtn:SetPoint("BOTTOMRIGHT", card.callout, "BOTTOMRIGHT", 0, 0)
+  card.calloutBtn:SetScript("OnEnter", function() SetColor(card.callout, T.color.text) end)
+  card.calloutBtn:SetScript("OnLeave", function() SetColor(card.callout, T.color.muted) end)
+  card.calloutBtn:SetScript("OnClick", function()
+    local i = card.calloutIndex
+    if i and ns.Guide and ns.Guide.ChooseSuggestion then ns.Guide.ChooseSuggestion(i) end
+  end)
+  card.calloutBtn:Hide()
 
   card.divider = W.Divider(card)
 
@@ -231,6 +259,7 @@ end
 
 local function Layout(width)
   local view = lastView
+  local expanded = Expanded()
   ReleaseRows()
   local y = 0
 
@@ -238,10 +267,14 @@ local function Layout(width)
   local route = view.route or {}
   local seg = route.segment or {}
   card.segTitle:SetText(((seg.title or route.title or "Guide")):upper())
-  Place(card.segTitle, y, 0, width - 70)
+  Place(card.segTitle, y, 0, width - 120)
+  card.toggleBtn.text:SetText(expanded and "LESS" or "MORE")
+  card.toggleBtn:ClearAllPoints()
+  card.toggleBtn:SetPoint("TOPRIGHT", card, "TOPRIGHT", 6, -y + 3)
+  card.toggleBtn:Show()
   local prog = route.progress
   card.segCount:ClearAllPoints()
-  card.segCount:SetPoint("TOPRIGHT", card, "TOPRIGHT", 0, -y)
+  card.segCount:SetPoint("TOPRIGHT", card.toggleBtn, "TOPLEFT", -2, -3)
   if prog and prog.total and prog.total > 0 then
     card.segCount:SetText(string.format("%d / %d", prog.done or 0, prog.total))
     y = y + 14
@@ -279,7 +312,7 @@ local function Layout(width)
     Place(card.title, y, 0, width)
     y = y + card.title:GetStringHeight() + 3
 
-    if step.detail and step.detail ~= "" then
+    if expanded and step.detail and step.detail ~= "" then
       card.detail:SetText(step.detail)
       Place(card.detail, y, 0, width)
       card.detail:Show()
@@ -288,7 +321,7 @@ local function Layout(width)
       card.detail:Hide()
     end
 
-    if step.why and step.why ~= "" then
+    if expanded and step.why and step.why ~= "" then
       card.why:SetText(step.why)
       Place(card.why, y, 0, width)
       card.why:Show()
@@ -323,7 +356,7 @@ local function Layout(width)
       card.target:Hide()
     end
 
-    local bText = FormatBadges(step.badges, step.target)
+    local bText = expanded and FormatBadges(step.badges, step.target)
     if bText then
       card.badges:SetText(bText)
       Place(card.badges, y + 1, 0, width)
@@ -334,7 +367,7 @@ local function Layout(width)
     end
 
     -- Concurrent steps: same hub, do alongside the primary step
-    local nCurrent = view.current and #view.current or 0
+    local nCurrent = expanded and view.current and #view.current or 0
     if nCurrent > 1 then y = y + 4 end
     for i = 2, nCurrent do
       local s = view.current[i]
@@ -365,7 +398,7 @@ local function Layout(width)
   end
 
   -- Upcoming
-  local nUp = view.upcoming and math.min(#view.upcoming, MAX_UPCOMING) or 0
+  local nUp = view.upcoming and math.min(#view.upcoming, expanded and MAX_UPCOMING or MAX_UPCOMING_COMPACT) or 0
   if nUp > 0 then
     Place(card.nextLabel, y)
     card.nextLabel:Show()
@@ -388,9 +421,10 @@ local function Layout(width)
   end
 
   -- Suggestion / warning callout
-  local cText, cColor = FormatCallout(view)
+  local cText, cColor, cIndex = FormatCallout(view)
+  card.calloutIndex = cIndex
   if cText then
-    card.callout:SetText(cText)
+    card.callout:SetText(cIndex and (cText .. "  >") or cText)
     SetColor(card.callout, T.color.muted)
     Place(card.callout, y, 8, width - 8)
     local h = card.callout:GetStringHeight()
@@ -399,9 +433,10 @@ local function Layout(width)
     card.calloutStripe:SetHeight(h + 2)
     card.calloutStripe:SetColorTexture(cColor[1], cColor[2], cColor[3], 0.8)
     card.callout:Show(); card.calloutStripe:Show()
+    card.calloutBtn:SetShown(cIndex ~= nil)
     y = y + h + GAP
   else
-    card.callout:Hide(); card.calloutStripe:Hide()
+    card.callout:Hide(); card.calloutStripe:Hide(); card.calloutBtn:Hide()
   end
 
   -- Closing divider, matching the one above the card

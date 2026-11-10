@@ -13,6 +13,7 @@ local frame
 -- Quest rows are reused across refreshes to avoid creating frames every update.
 
 local rows, rowCount = {}, 0
+local questsCache = {}
 
 local function AcquireRow(parent)
   rowCount = rowCount + 1
@@ -120,6 +121,22 @@ local function Create()
   frame.questCount:SetPoint("RIGHT", body, "RIGHT", -PAD, 0)
   frame.questCount:SetPoint("TOP", frame.questLabel, "TOP")
 
+  -- While a guide is active the quest header is a click target that collapses
+  -- the list (ns.db.ui.questsExpanded). Hidden without a guide: P0 behaviour.
+  local qh = CreateFrame("Button", nil, body)
+  qh:SetPoint("TOPLEFT", frame.questLabel, "TOPLEFT", -4, 4)
+  qh:SetPoint("RIGHT", body, "RIGHT", -PAD + 4, 0)
+  qh:SetHeight(18)
+  qh:SetScript("OnClick", function()
+    ns.db.ui.questsExpanded = not Main.QuestsExpanded()
+    Main.UpdateQuestHeader()
+    if Main.QuestsExpanded() then Main.LayoutQuests() end
+  end)
+  qh:SetScript("OnEnter", function() local c = T.color.text; frame.questLabel:SetTextColor(c[1], c[2], c[3]) end)
+  qh:SetScript("OnLeave", function() local c = T.color.muted; frame.questLabel:SetTextColor(c[1], c[2], c[3]) end)
+  qh:Hide()
+  frame.questHeader = qh
+
   -- Footer: diagnostics summary, click to open the probe window
   local footer = CreateFrame("Button", nil, body)
   footer:SetPoint("BOTTOMLEFT"); footer:SetPoint("BOTTOMRIGHT")
@@ -182,6 +199,35 @@ function Main.AnchorQuests()
   local below = (ns.GuideCard and ns.GuideCard.IsShown()) and frame.guideCard or frame.div
   frame.questLabel:ClearAllPoints()
   frame.questLabel:SetPoint("TOPLEFT", below, "BOTTOMLEFT", 0, -GAP)
+  Main.UpdateQuestHeader()
+end
+
+local function GuideActive() return ns.GuideCard ~= nil and ns.GuideCard.IsShown() end
+
+-- Without a guide the list is always expanded. With one it is collapsed unless
+-- the user expanded it (nil counts as collapsed).
+function Main.QuestsExpanded()
+  if not GuideActive() then return true end
+  return ns.db.ui.questsExpanded == true
+end
+
+-- Quest header text, count, click target and list visibility
+function Main.UpdateQuestHeader()
+  if not frame or not frame.scroll then return end -- not fully created yet
+  local ready = 0
+  for _, q in ipairs(questsCache) do if q.complete then ready = ready + 1 end end
+  if GuideActive() then
+    local expanded = Main.QuestsExpanded()
+    frame.questLabel:SetText(string.format("CURRENT QUESTS (%d)", #questsCache))
+    frame.questCount:SetText((ready > 0 and string.format("%d READY  ·  ", ready) or "") .. (expanded and "HIDE" or "SHOW"))
+    frame.questHeader:Show()
+    frame.scroll:SetShown(expanded)
+  else
+    frame.questLabel:SetText("CURRENT QUESTS")
+    frame.questCount:SetText(ready > 0 and string.format("%d  ·  %d READY", #questsCache, ready) or tostring(#questsCache))
+    frame.questHeader:Hide()
+    frame.scroll:Show()
+  end
 end
 
 function Main.ApplyLayout()
@@ -245,7 +291,6 @@ function Main.UpdateCharacter()
 end
 
 -- Lays out quest rows in the scroll area; called on refresh and on resize
-local questsCache = {}
 function Main.LayoutQuests()
   local content = frame.scroll.content
   local width = frame.scroll:GetWidth()
@@ -338,9 +383,7 @@ function Main.Refresh()
   Main.UpdateLocation()
   if ns.GuideCard then ns.GuideCard.Relayout() end
   questsCache = C.GetQuests()
-  local ready = 0
-  for _, q in ipairs(questsCache) do if q.complete then ready = ready + 1 end end
-  frame.questCount:SetText(ready > 0 and string.format("%d  ·  %d READY", #questsCache, ready) or tostring(#questsCache))
+  Main.UpdateQuestHeader()
   Main.LayoutQuests()
   Main.UpdateFooter()
 end

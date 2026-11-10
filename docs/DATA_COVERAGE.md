@@ -95,6 +95,50 @@ Derived from the data (race-specific level-1 quests → zone → that zone's lev
 | Troll | Horde | area 363 | 1411 | 787 The New Horde, 788 Cutting Teeth, 790 Sarkoth, 2161 A Peon's Burden, 4641 Your Place In The World (+2 more) |
 | Skyborne | Horde | **not found** | - | **none found** |
 
+## Zone sizes (world yards)
+
+Source: QuestieDB `data/Forever/conversion.json` `geometry.transforms[].target_bounds`, build 1.60.1.69893 (read as plain JSON). Label **O**: Forever map geometry. Stored in `Data/Meta.lua` (`zoneBounds`) and `tools/.cache/forever/zone_bounds.json` (with width/height).
+
+Maps with bounds: **49**.
+
+uiMaps used by quests (zone/trigger) or NPC/object spawns with **no bounds**: 33
+
+| uiMap | Name | References |
+|---|---|---|
+| 2521 | Zephras Isle | 470 |
+| 2548 | Riverglades | 284 |
+| 166 | Naxxramas | 182 |
+| 233 | Zul Gurub | 162 |
+| 320 | Ahn Qiraj | 142 |
+| 234 | Dire Maul | 67 |
+| 2482 | Mount Hyjal | 58 |
+| 253 | Blackrock Spire | 55 |
+| 242 | Blackrock Depths | 54 |
+| 2652 | Shen'dralas | 45 |
+| 317 | Stratholme | 31 |
+| 306 | Scholomance | 24 |
+| 2524 | Darkspear Islands | 20 |
+| 280 | Maraudon | 17 |
+| 221 | Blackfathom Deeps | 15 |
+| 279 | Wailing Caverns | 14 |
+| 232 | Molten Core | 14 |
+| 300 | Razorfen Downs | 12 |
+| 302 | Scarlet Monastery | 8 |
+| 213 | Ragefire Chasm | 6 |
+| 1415 | Eastern Kingdoms | 6 |
+| 291 | The Deadmines | 6 |
+| 225 | The Stockade | 6 |
+| 287 | Blackwing Lair | 4 |
+| 1414 | Kalimdor | 4 |
+| 310 | Shadowfang Keep | 3 |
+| 226 | Gnomeregan | 3 |
+| 301 | Razorfen Kraul | 2 |
+| 248 | Onyxias Lair | 2 |
+| 247 | Ruins Of Ahn Qiraj | 2 |
+| 219 | Zul Farrak | 2 |
+| 947 | Azeroth | 2 |
+| 230 | Uldaman | 1 |
+
 ## Faction and class corrections
 
 Applied with QuestieDB's own registry for every faction x class combination (errors during export: 0).
@@ -144,7 +188,7 @@ Spawn coordinates dropped because their area has no in-game map ID: 42 points ac
 | File | Size |
 |---|---|
 | `Data/Schema.lua` | 2 KB |
-| `Data/Meta.lua` | 1 KB |
+| `Data/Meta.lua` | 4 KB |
 | `Data/Neutral.lua` | 901 KB |
 | `Data/Horde.lua` | 398 KB |
 | `Data/Alliance.lua` | 480 KB |
