@@ -701,13 +701,15 @@ local function stepView(route, i, state, memory, extraWhy)
     for k = 1, #step.tags do badges[#badges + 1] = step.tags[k] end
   end
   if target and target.label == "E" then badges[#badges + 1] = "approx-location" end
+  if q and ns.Availability.HasFlag(q, "HIDDEN_ON_MAP") then badges[#badges + 1] = "hidden-on-map" end
 
   local why = step.note or extraWhy
   if not why then
     if manual then
       why = WHY_MANUAL
     elseif q and (status == "WAITING" or status == "BLOCKED" or status == "UNAVAILABLE" or status == "UNKNOWN")
-        and (reason == nil or reason:find(":") or reason == "race" or reason == "class" or reason == "level") then
+        and (reason == nil or reason:find(":") or reason == "race" or reason == "class" or reason == "level"
+             or reason == "blacklisted") then
       local s = ns.Availability.Check(q, state)
       if s ~= "AVAILABLE" and s ~= "ACTIVE" and s ~= "COMPLETED" then why = ns.Availability.Explain(q, state) end
     end
@@ -1071,6 +1073,19 @@ function E.Evaluate(route, state, memory)
   if unknownN > 0 then
     w[#w + 1] = unknownN .. (unknownN == 1 and " step can't be evaluated (missing data)"
                                             or " steps can't be evaluated (missing data)")
+  end
+  -- Blacklisted quests (Questie: not in WoW Forever) stay out of current/upcoming; one
+  -- warning counts the distinct quests in the window
+  local blq, blN
+  for i = first, last do
+    local q = steps[i].quest
+    if q and ST[i] == "UNAVAILABLE" and RS[i] == "blacklisted" then
+      blq = blq or {}
+      if not blq[q] then blq[q] = true; blN = (blN or 0) + 1 end
+    end
+  end
+  if blN then
+    w[#w + 1] = blN .. (blN == 1 and " quest" or " quests") .. " skipped: not in WoW Forever (Questie blacklist)"
   end
 
   view.route = {

@@ -82,18 +82,51 @@ Quests (available to at least one faction) using each M3.1 availability field (s
 
 Derived from the data (race-specific level-1 quests → zone → that zone's level-1 quests); nothing hand-entered.
 
-| Race | Faction | Zone | uiMap | Starting quests |
-|---|---|---|---|---|
-| Human | Alliance | area 24 | 1429 | 16 Give Gerard a Drink, 33 Wolves Across the Border, 783 A Threat Within, 2158 Rest and Relaxation |
-| Dwarf | Alliance | area 132 | 1426 | 179 Dwarven Outfitters, 182 The Troll Cave, 183 The Boar Hunter, 308 Distracting Jarven, 2160 Supplies to Tannok |
-| Night Elf | Alliance | Teldrassil | 1438 | 456 The Balance of Nature, 458 The Woodland Protector, 2159 Dolanaar Delivery, 2438 The Emerald Dreamcatcher |
-| Gnome | Alliance | area 132 | 1426 | 179 Dwarven Outfitters, 182 The Troll Cave, 183 The Boar Hunter, 308 Distracting Jarven, 2160 Supplies to Tannok |
-| Skyborne | Alliance | Zephras Isle | 2521 | 92460 Coming of Age |
-| Orc | Horde | area 363 | 1411 | 787 The New Horde, 788 Cutting Teeth, 790 Sarkoth, 2161 A Peon's Burden, 4641 Your Place In The World (+2 more) |
-| Undead | Horde | area 154 | 1420 | 8 A Rogue's Deal, 363 Rude Awakening, 364 The Mindless Ones |
-| Tauren | Horde | area 221 | 1412 | 745 Sharing the Land, 747 The Hunt Begins, 752 A Humble Task, 753 A Humble Task, 1656 A Task Unfinished (+1 more) |
-| Troll | Horde | area 363 | 1411 | 787 The New Horde, 788 Cutting Teeth, 790 Sarkoth, 2161 A Peon's Burden, 4641 Your Place In The World (+2 more) |
-| Skyborne | Horde | **not found** | - | **none found** |
+Zone evidence: `quest:<id>` = a non-blacklisted race-specific level-1 quest; `blacklisted-hint:<id>` = a blacklisted one used only to locate the zone (label E); the quest list never contains BLACKLISTED quests.
+
+| Race | Faction | Zone | uiMap | Zone evidence | Label | Starting quests |
+|---|---|---|---|---|---|---|
+| Human | Alliance | area 24 | 1429 | blacklisted-hint:5805 | E | 16 Give Gerard a Drink, 33 Wolves Across the Border, 783 A Threat Within, 2158 Rest and Relaxation |
+| Dwarf | Alliance | area 132 | 1426 | blacklisted-hint:5841 | E | 179 Dwarven Outfitters, 182 The Troll Cave, 183 The Boar Hunter, 308 Distracting Jarven, 2160 Supplies to Tannok |
+| Night Elf | Alliance | Teldrassil | 1438 | quest:97977 | O | 456 The Balance of Nature, 458 The Woodland Protector, 2159 Dolanaar Delivery, 2438 The Emerald Dreamcatcher |
+| Gnome | Alliance | area 132 | 1426 | blacklisted-hint:5841 | E | 179 Dwarven Outfitters, 182 The Troll Cave, 183 The Boar Hunter, 308 Distracting Jarven, 2160 Supplies to Tannok |
+| Skyborne | Alliance | Zephras Isle | 2521 | quest:92460 | O | 92460 Coming of Age |
+| Orc | Horde | area 363 | 1411 | blacklisted-hint:5843 | E | 788 Cutting Teeth, 790 Sarkoth, 2161 A Peon's Burden, 4641 Your Place In The World, 96821 Legging It (+1 more) |
+| Undead | Horde | area 154 | 1420 | quest:363 | E | 8 A Rogue's Deal, 363 Rude Awakening, 364 The Mindless Ones |
+| Tauren | Horde | Mulgore | 1412 | quest:95805 | O | 745 Sharing the Land, 747 The Hunt Begins, 752 A Humble Task, 753 A Humble Task, 1656 A Task Unfinished (+1 more) |
+| Troll | Horde | area 363 | 1411 | blacklisted-hint:5843 | E | 788 Cutting Teeth, 790 Sarkoth, 2161 A Peon's Burden, 4641 Your Place In The World, 96821 Legging It (+1 more) |
+| Skyborne | Horde | **not found** | - | - | - | **none found** |
+
+## Questie blacklist
+
+Source: Questie `Database/Corrections/QuestieQuestBlacklist.lua` at commit `74dc317241`, `QuestieQuestBlacklist:Load()` table only, **parsed as text (never executed)** with an allow-listed condition grammar in the Forever context (`Expansions.Current = Era`, `Questie.IsSoD/IsTitanReforged/IsChinaRegion = false`). Any unrecognized expression fails the build. Audit list: `tools/.cache/forever/questie_blacklist.json`. Records are kept and flagged, never deleted.
+
+| | Questie entries | In our data (available quests) |
+|---|---|---|
+| evaluated entries | 6785 | |
+| `BLACKLISTED` (256) | 2428 | 370 |
+| `HIDDEN_ON_MAP` (512) | 94 | 89 |
+| unresolved expressions | 0 | |
+| Forever overrides applied | 0 | |
+
+Starting-zone quests removed by the blacklist (starting-zone detection ignores BLACKLISTED quests):
+
+| Race | Faction | Zone before | Zone after | Blacklisted starting quests | Other starting quests lost |
+|---|---|---|---|---|---|
+| Human | Alliance | area 24 | area 24 | none | none |
+| Dwarf | Alliance | area 132 | area 132 | none | none |
+| Night Elf | Alliance | Teldrassil | Teldrassil | none | none |
+| Gnome | Alliance | area 132 | area 132 | none | none |
+| Skyborne | Alliance | Zephras Isle | Zephras Isle | none | none |
+| Orc | Horde | area 363 | area 363 | 787 The New Horde | none |
+| Undead | Horde | area 154 | area 154 | none | none |
+| Tauren | Horde | Mulgore | Mulgore | none | none |
+| Troll | Horde | area 363 | area 363 | 787 The New Horde | none |
+| Skyborne | Horde | - | **not found** | none | none |
+
+Forever overrides (`tools/data/forever_overrides.json`, evidence required):
+
+None.
 
 ## Zone sizes (world yards)
 
@@ -189,7 +222,7 @@ Spawn coordinates dropped because their area has no in-game map ID: 42 points ac
 |---|---|
 | `Data/Schema.lua` | 2 KB |
 | `Data/Meta.lua` | 4 KB |
-| `Data/Neutral.lua` | 901 KB |
+| `Data/Neutral.lua` | 902 KB |
 | `Data/Horde.lua` | 398 KB |
 | `Data/Alliance.lua` | 480 KB |
 

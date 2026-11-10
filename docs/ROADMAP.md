@@ -10,6 +10,7 @@ Status labels: **planned** → **implemented** (code written) → **tested** (ru
 - **Tested in game:** nothing yet
 - **Blockers:** game access (P0); GitHub push needs a new token (local commits unpushed)
 - **P2:** availability, conditions, compiler, selector, engine, adapter, guide card: offline-tested (133 tests). Remaining: QA fixes, real route content, in-game test.
+- **In-game test BLOCKED** until the Questie blacklist layer lands (baseline routes currently include quests not in the game, e.g. 787).
 - **Next task:** QA fixes + RestedXP reference review, then first real route (Valley of Trials) and P0+P2 in-game test
 
 ## Confirmed decisions

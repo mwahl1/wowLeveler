@@ -35,6 +35,30 @@ EXPORT_DIR = os.path.join(REPO, "tools", ".cache", "forever")
 META_LUA = os.path.join(REPO, "Data", "Meta.lua")
 CACHE_DIR = os.path.join(REPO, "tools", ".cache", "optimizer")
 ZONE_BOUNDS = os.path.join(EXPORT_DIR, "zone_bounds.json")
+QUESTIE_BLACKLIST = os.path.join(EXPORT_DIR, "questie_blacklist.json")
+
+
+class BlacklistMissing(RuntimeError):
+    pass
+
+
+def load_blacklist(path=QUESTIE_BLACKLIST):
+    """Questie blacklist audit file (spec 8a). Returns {'blacklisted': set (minus Forever overrides),
+    'hiddenOnMap': set, 'overridden': set, 'commit': str}. Missing file -> BlacklistMissing: routes
+    must never silently include blacklisted quests."""
+    if not os.path.exists(path):
+        raise BlacklistMissing(
+            f"{os.path.relpath(path, REPO)} not found: the Questie blacklist layer is required to build "
+            f"routes (spec 8a). Regenerate the export/data (tools/update_data.sh --no-pull) first.")
+    with open(path, encoding="utf-8") as f:
+        d = json.load(f)
+    for key in ("blacklisted", "hiddenOnMap", "overridden"):
+        if not isinstance(d.get(key), list):
+            raise BlacklistMissing(f"{os.path.relpath(path, REPO)}: '{key}' list missing or malformed")
+    over = {int(q) for q in d["overridden"]}
+    return {"blacklisted": {int(q) for q in d["blacklisted"]} - over,
+            "hiddenOnMap": {int(q) for q in d["hiddenOnMap"]},
+            "overridden": over, "commit": d.get("commit")}
 
 # Reuse the data pipeline's own loaders and correction logic (read-only import; that file is
 # owned by quest-data-engineer). This keeps optimizer records identical to Data/*.lua.
@@ -284,7 +308,10 @@ ALL_CLASSES_MASK = sum(CLASSES.values())
 
 
 class World:
-    def __init__(self, export_dir=EXPORT_DIR, meta_path=META_LUA):
+    def __init__(self, export_dir=EXPORT_DIR, meta_path=META_LUA, blacklist_path=None):
+        bl = load_blacklist(blacklist_path or os.path.join(export_dir, "questie_blacklist.json"))
+        self.blacklist = bl["blacklisted"]          # effective: blacklisted and not overridden
+        self.blacklist_info = bl
         self.export = BD.Export(export_dir)
         self.meta = load_meta(meta_path)
         self._quests = {}   # (fac, cls) -> {qid: (raw, rec)}

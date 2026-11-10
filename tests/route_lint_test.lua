@@ -5,6 +5,10 @@
 
 local RACES = { Horde = { 2, 5, 6, 8, 96 }, Alliance = { 1, 3, 4, 7, 95 } }
 
+-- Never in a route (spec 8a blacklist layer; explicit regression list besides the flag check)
+local BANNED = { [787] = "The New Horde (Questie blacklist)", [5805] = "Welcome!", [5841] = "Welcome!",
+  [5842] = "Welcome!", [5843] = "Welcome!", [5844] = "Welcome!", [5847] = "Welcome!" }
+
 local function routeFiles()
   local files = {}
   local p = io.popen("find Guides -name '*.lua' 2>/dev/null | sort")
@@ -71,6 +75,33 @@ return function(T)
         print(string.format("INFO  lint %s %s: %d combos, max %d steps, %d errors, warnings {%s}",
           path, faction, combos, nSteps, #errors, table.concat(parts, ", ")))
         T.eq(#errors, 0, "compile errors: " .. table.concat(errors, " | ", 1, math.min(#errors, 5)))
+      end)
+
+      T.test("route lint: " .. path .. " references no BLACKLISTED quest, 787, or Welcome! quests (" .. faction .. ")", function()
+        local ns = nsFor(faction)
+        T.needModule(ns, "Guides")
+        loadRoutes(ns, path)
+        local F = ns.DataSchema.QUEST_FLAGS
+        local B = F and F.BLACKLISTED
+        local bad, seen = {}, 0
+        local function checkStep(defId, step)
+          local q = step.quest
+          if not q then return end
+          seen = seen + 1
+          if BANNED[q] then bad[#bad + 1] = string.format("%s %s: quest %d (%s)", defId, tostring(step.id), q, BANNED[q]) end
+          local rec = ns.Data.GetQuest(q)
+          local flags = rec and rec[ns.DataSchema.Q.FLAGS]
+          if B and type(flags) == "number" and math.floor(flags / B) % 2 == 1 then
+            bad[#bad + 1] = string.format("%s %s: quest %d is BLACKLISTED", defId, tostring(step.id), q)
+          end
+        end
+        for _, raceID in ipairs(RACES[faction]) do
+          local route = ns.Guides.Compile({ faction = faction, raceID = raceID, classFile = "WARRIOR" })
+          for _, step in ipairs(route and route.steps or {}) do checkStep(tostring(step.segment), step) end
+        end
+        print(string.format("INFO  lint %s %s: %d quest steps checked for blacklist%s", path, faction, seen,
+          B and "" or " (BLACKLISTED flag not in schema yet: only the explicit list checked)"))
+        T.eq(#bad, 0, "blacklisted references: " .. table.concat(bad, " | ", 1, math.min(#bad, 5)))
       end)
 
       T.test("route lint: " .. path .. " start routes open with a level-1 ACCEPT (" .. faction .. ")", function()

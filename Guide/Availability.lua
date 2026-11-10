@@ -111,6 +111,18 @@ local function checkPreAll(pre, completed, GetQuest, Q)
   return nil
 end
 
+-- Quest flag test by name (S.QUEST_FLAGS); a flag missing from the schema is never set
+function A.HasFlag(questID, name)
+  local S = ns.DataSchema
+  local bit = S and S.QUEST_FLAGS and S.QUEST_FLAGS[name]
+  if not bit then return false end
+  local D = ns.Data
+  local rec = D and D.GetQuest(questID)
+  local fi = rec and S.Q and S.Q.FLAGS
+  local flags = fi and rec[fi]
+  return type(flags) == "number" and floor(flags / bit) % 2 == 1
+end
+
 local function hasSkill(skills, skillID, rank)
   local have = skills[skillID]
   return have ~= nil and have >= (rank or 0)
@@ -124,6 +136,7 @@ function A.Check(questID, state)
 
   if completed and completed[questID] then return "COMPLETED" end
   if log[questID] then return "ACTIVE" end
+  if A.HasFlag(questID, "BLACKLISTED") then return "UNAVAILABLE", "blacklisted" end
   -- Completion history unreadable (API missing, or this quest's lookup failed): only a
   -- definite race/class mismatch can still be reported; everything else is unknown
   local completionUnknown = completed == nil or unknownDone(questID)
@@ -317,6 +330,7 @@ local SIMPLE = {
   ["needs_state:spell"] = "Depends on your known spells (not yet known)",
   ["needs_state:level"] = "Depends on your level (not yet known)",
   ["needs_state:completed"] = "Depends on your completed quests (not readable here)",
+  blacklisted = "Not available in WoW Forever (Questie blacklist)",
 }
 
 function A.Explain(questID, state)

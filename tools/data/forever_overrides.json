@@ -1,0 +1,4 @@
+{
+  "README": "Hand-maintained Forever overrides for Questie's quest blacklist (docs/P2_GUIDE_ENGINE_SPEC.md 8a). Add an entry ONLY when a blacklisted quest has been confirmed obtainable in WoW Forever in game. Every field is required and the build fails otherwise: {questID, action: \"unblacklist\", evidence: {date, character, observation, source}, addedBy}. Never add entries automatically.",
+  "overrides": []
+}

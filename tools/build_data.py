@@ -24,7 +24,9 @@ import json
 import math
 import os
 import re
+import subprocess
 import sys
+from datetime import datetime, timezone
 from collections import Counter, defaultdict
 
 # --------------------------------------------------------------------------------------------
@@ -82,6 +84,8 @@ QUEST_FLAGS = {
     "PROFESSION": 32,       # requires a profession skill
     "NO_START_LOC": 64,
     "NO_FINISH_LOC": 128,
+    "BLACKLISTED": 256,     # Questie's blacklist: not obtainable on Forever (spec 8a)
+    "HIDDEN_ON_MAP": 512,   # Questie HIDE_ON_MAP: obtainable, not shown on the map
 }
 OBJ_KIND = {"npc": 1, "object": 2, "item": 3, "rep": 4, "killcredit": 5, "spell": 6}
 
@@ -136,6 +140,279 @@ def load_zone_names(questiedb_dir):
             area = int(m.group(2))
             names.setdefault(area, m.group(1).replace("_", " ").title())
     return names
+
+
+# --------------------------------------------------------------------------------------------
+# Questie quest blacklist (spec 8a "Questie blacklist layer"). The Lua file is parsed as TEXT;
+# it is never executed. Only an allow-listed expression grammar is evaluated, in the Forever
+# context: Expansions.Current = Era, Questie.IsSoD/IsTitanReforged/IsChinaRegion = false.
+# --------------------------------------------------------------------------------------------
+
+BLACKLIST_FILE = "Database/Corrections/QuestieQuestBlacklist.lua"
+EXPANSION_ORDER = {"Era": 1, "Tbc": 2, "Wotlk": 3, "Cata": 4, "MoP": 5}  # Questie Modules/Expansions.lua
+FOREVER_CONTEXT = {"Expansions.Current": "Era", "Questie.IsSoD": False,
+                   "Questie.IsTitanReforged": False, "Questie.IsChinaRegion": False}
+HIDE_ON_MAP = "HIDE_ON_MAP"
+
+
+class BlacklistError(Exception):
+    pass
+
+
+class _Deferred:
+    """A value we refuse to evaluate in the Forever context (e.g. ContentPhases.activePhases.TBC).
+    Allowed only where Lua short-circuiting guarantees it is never reached."""
+    def __init__(self, text):
+        self.text = text
+
+
+_TOKEN = re.compile(r"\s*(?:(?P<num>\d+)|(?P<op>==|~=|<=|>=|<|>|\(|\))|(?P<name>[A-Za-z_][A-Za-z0-9_.]*))")
+
+
+def _tokenize(expr):
+    pos, out = 0, []
+    expr = expr.strip()
+    while pos < len(expr):
+        m = _TOKEN.match(expr, pos)
+        if not m or m.end() == pos:
+            raise BlacklistError(f"unrecognized text at {expr[pos:]!r}")
+        pos = m.end()
+        if m.group("num"):
+            out.append(("num", int(m.group("num"))))
+        elif m.group("op"):
+            out.append(("op", m.group("op")))
+        else:
+            out.append(("name", m.group("name")))
+    return out
+
+
+def eval_blacklist_expr(expr):
+    """Evaluate one allow-listed Questie condition with Lua value semantics.
+
+    Grammar:  or_expr  := and_expr ('or' and_expr)*
+              and_expr := not_expr ('and' not_expr)*
+              not_expr := 'not' not_expr | cmp
+              cmp      := atom (('=='|'~='|'<'|'>='|'<='|'>') atom)?
+              atom     := 'true' | 'false' | 'HIDE_ON_MAP' | Expansions.<X> | Questie.<Flag>
+                        | ContentPhases.activePhases.TBC | <integer> | '(' or_expr ')'
+    Integers and ContentPhases are allowed only as comparison operands (the TBC phase form).
+    Returns True, False or "HIDE_ON_MAP"; raises BlacklistError for anything else.
+    """
+    toks = _tokenize(expr)
+    i = 0
+
+    def peek():
+        return toks[i] if i < len(toks) else (None, None)
+
+    def take():
+        nonlocal i
+        t = peek()
+        i += 1
+        return t
+
+    def truthy(v):
+        if isinstance(v, _Deferred):
+            raise BlacklistError(f"{v.text} would be evaluated in the Forever context")
+        return v is not False and v is not None
+
+    def atom():
+        kind, val = take()
+        if kind == "op" and val == "(":
+            v = or_expr()
+            if take() != ("op", ")"):
+                raise BlacklistError("missing ')'")
+            return v
+        if kind == "num":
+            return ("num", val)
+        if kind == "name":
+            if val == "true":
+                return True
+            if val == "false":
+                return False
+            if val == HIDE_ON_MAP:
+                return HIDE_ON_MAP
+            if val == "Expansions.Current":
+                return ("exp", EXPANSION_ORDER[FOREVER_CONTEXT[val]])
+            if val.startswith("Expansions.") and val[len("Expansions."):] in EXPANSION_ORDER:
+                return ("exp", EXPANSION_ORDER[val[len("Expansions."):]])
+            if val in FOREVER_CONTEXT:  # Questie.Is* flags
+                return FOREVER_CONTEXT[val]
+            if val == "ContentPhases.activePhases.TBC":
+                return ("phase", val)
+        raise BlacklistError(f"unrecognized token {val!r}")
+
+    def cmp():
+        left = atom()
+        kind, op = peek()
+        if kind == "op" and op in ("==", "~=", "<", ">=", "<=", ">"):
+            take()
+            right = atom()
+            kinds = (left[0] if isinstance(left, tuple) else None, right[0] if isinstance(right, tuple) else None)
+            if kinds == ("exp", "exp"):
+                a, b = left[1], right[1]
+                return {"==": a == b, "~=": a != b, "<": a < b, ">=": a >= b, "<=": a <= b, ">": a > b}[op]
+            if kinds == ("phase", "num"):
+                return _Deferred(f"{left[1]} {op} {right[1]}")
+            raise BlacklistError(f"unsupported comparison {kinds[0]} {op} {kinds[1]}")
+        if isinstance(left, tuple):
+            raise BlacklistError(f"bare operand {left[0]} outside a comparison")
+        return left
+
+    def not_expr():
+        if peek() == ("name", "not"):
+            take()
+            return not truthy(not_expr())
+        return cmp()
+
+    def and_expr():
+        v = not_expr()
+        while peek() == ("name", "and"):
+            take()
+            r = not_expr()
+            v = r if truthy(v) else v  # Lua: a and b -> b if a is truthy else a
+        return v
+
+    def or_expr():
+        v = and_expr()
+        while peek() == ("name", "or"):
+            take()
+            r = and_expr()
+            v = v if truthy(v) else r  # Lua: a or b -> a if a is truthy else b
+        return v
+
+    result = or_expr()
+    if i != len(toks):
+        raise BlacklistError(f"trailing tokens {toks[i:]}")
+    if isinstance(result, _Deferred):
+        raise BlacklistError(f"{result.text} decides the result in the Forever context")
+    if result is True or result is False or result == HIDE_ON_MAP:
+        return result
+    raise BlacklistError(f"result {result!r} is not true/false/HIDE_ON_MAP")
+
+
+def git_head(path):
+    try:
+        return subprocess.run(["git", "-C", path, "rev-parse", "HEAD"], capture_output=True,
+                              text=True, check=True).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return None
+
+
+def load_questie_blacklist(questie_dir):
+    """Parse QuestieQuestBlacklist:Load()'s table as text. Returns a dict, or raises BlacklistError."""
+    path = os.path.join(questie_dir, BLACKLIST_FILE)
+    if not os.path.exists(path):
+        raise BlacklistError(f"{path} not found (clone Questie to {questie_dir})")
+    with open(path, encoding="utf-8") as f:
+        text = f.read()
+    start = text.find("function QuestieQuestBlacklist:Load()")
+    if start < 0:
+        raise BlacklistError("QuestieQuestBlacklist:Load() not found")
+    end = text.find("if Questie.IsSoD then", start)
+    if end < 0:
+        raise BlacklistError("'if Questie.IsSoD then' not found after Load()")
+    body = text[start:end]
+    open_at = body.find("local questsToBlacklist = {")
+    close_at = body.rfind("}")
+    if open_at < 0 or close_at < open_at:
+        raise BlacklistError("questsToBlacklist table not found")
+    table = body[body.index("{", open_at) + 1:close_at]
+    entries, failures, duplicates = {}, [], []
+    for n, raw in enumerate(table.splitlines(), 1):
+        line = raw.split("--", 1)[0].strip()
+        if not line:
+            continue
+        m = re.match(r"^\[(\d+)\]\s*=\s*(.+?)\s*,?$", line)
+        if not m:
+            failures.append(f"line {n}: not a [questID] = value entry: {line!r}")
+            continue
+        qid, expr = int(m.group(1)), m.group(2)
+        try:
+            value = eval_blacklist_expr(expr)
+        except (BlacklistError, KeyError) as e:
+            failures.append(f"quest {qid}: {expr!r}: {e}")
+            continue
+        if qid in entries:
+            duplicates.append(qid)
+        entries[qid] = value  # Lua table constructor: the last assignment wins
+    if failures:
+        raise BlacklistError("unrecognized blacklist expressions:\n  " + "\n  ".join(failures))
+    return {
+        "path": path,
+        "commit": git_head(questie_dir),
+        "entries": len(entries),
+        "duplicates": sorted(set(duplicates)),
+        "blacklisted": sorted(q for q, v in entries.items() if v is True),
+        "hiddenOnMap": sorted(q for q, v in entries.items() if v == HIDE_ON_MAP),
+    }
+
+
+OVERRIDE_EVIDENCE_FIELDS = ("date", "character", "observation", "source")
+
+
+def load_overrides(path):
+    """tools/data/forever_overrides.json: hand-maintained, evidence required. Raises on bad entries."""
+    if not os.path.exists(path):
+        raise BlacklistError(f"{path} not found")
+    data = load_json(path)
+    entries = data.get("overrides") if isinstance(data, dict) else None
+    if not isinstance(entries, list):
+        raise BlacklistError(f"{path}: 'overrides' must be a list")
+    problems, out = [], []
+    for n, e in enumerate(entries):
+        where = f"overrides[{n}]"
+        if not isinstance(e, dict):
+            problems.append(f"{where}: not an object")
+            continue
+        if not isinstance(e.get("questID"), int) or e["questID"] <= 0:
+            problems.append(f"{where}: questID must be a positive integer")
+        if e.get("action") != "unblacklist":
+            problems.append(f"{where}: action must be \"unblacklist\"")
+        if not isinstance(e.get("addedBy"), str) or not e["addedBy"].strip():
+            problems.append(f"{where}: addedBy is required")
+        ev = e.get("evidence")
+        if not isinstance(ev, dict):
+            problems.append(f"{where}: evidence is required")
+        else:
+            for k in OVERRIDE_EVIDENCE_FIELDS:
+                if not isinstance(ev.get(k), str) or not ev[k].strip():
+                    problems.append(f"{where}: evidence.{k} is required")
+        out.append(e)
+    if problems:
+        raise BlacklistError("invalid Forever overrides:\n  " + "\n  ".join(problems))
+    return out
+
+
+def apply_blacklist(bl, overrides):
+    """Apply overrides after the blacklist; returns (blacklisted set, hidden set, applied, unused)."""
+    blacklisted, hidden = set(bl["blacklisted"]), set(bl["hiddenOnMap"])
+    applied, unused = [], []
+    for o in overrides:
+        if o["questID"] in blacklisted:
+            blacklisted.discard(o["questID"])
+            applied.append(o)
+        else:
+            unused.append(o)
+    return blacklisted, hidden, applied, unused
+
+
+def write_blacklist_json(path, bl, blacklisted, hidden, applied):
+    out = {
+        "source": "Questie QuestieQuestBlacklist:Load() table, parsed as text (never executed)",
+        "repo": "https://github.com/Questie/Questie",
+        "commit": bl["commit"],
+        "file": BLACKLIST_FILE,
+        "evaluatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "context": {"Expansions.Current": "Era", "Questie.IsSoD": False,
+                    "Questie.IsTitanReforged": False, "Questie.IsChinaRegion": False},
+        "entries": bl["entries"],
+        "blacklisted": sorted(blacklisted),
+        "hiddenOnMap": sorted(hidden),
+        "overridden": sorted(o["questID"] for o in applied),
+    }
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(out, f, indent=1)
+        f.write("\n")
 
 
 def load_zone_bounds(questiedb_dir):
@@ -202,6 +479,7 @@ class Export:
         self.sub_to_parent = int_keys(support["subZoneToParentZone"])
         self.sub_to_parent.update(int_keys(support["subZoneToParentZoneOverride"]))
         self.warnings = []
+        self.blacklisted, self.hidden_on_map = set(), set()  # set by main() from Questie's blacklist
         prov_path = os.path.join(export_dir, "provenance.json")
         if os.path.exists(prov_path):
             prov = load_json(prov_path)
@@ -474,6 +752,8 @@ def build_quest(qid, q, export, refs):
     if q.get("requiredSkill"): flags |= QUEST_FLAGS["PROFESSION"]
     if start_label == "U": flags |= QUEST_FLAGS["NO_START_LOC"]
     if finish_label == "U": flags |= QUEST_FLAGS["NO_FINISH_LOC"]
+    if qid in export.blacklisted: flags |= QUEST_FLAGS["BLACKLISTED"]
+    if qid in export.hidden_on_map: flags |= QUEST_FLAGS["HIDDEN_ON_MAP"]
 
     record = {
         "NAME": q.get("name"),
@@ -751,21 +1031,65 @@ def build(export, zone_names):
     #    the starting zone is the most common zone among level-1 quests restricted to a subset
     #    of the faction that includes this race (e.g. the "Welcome!" quests); the starting
     #    quests are that zone's level-1, prerequisite-free, NPC-started quests the race can take.
-    starts = {}
+    #    BLACKLISTED quests are ignored (spec 8a); the unfiltered result is kept for the report.
     area_of = {qid: (q.get("zoneOrSort") or 0) for qid, q in export.quests.items()}
+    starts = derive_starts(per_faction, export, area_of, qi, issues, skip_blacklisted=True)
+    starts_unfiltered = derive_starts(per_faction, export, area_of, qi, [], skip_blacklisted=False)
+    return sides, per_faction, starts, starts_unfiltered, issues, stats, dynamic_counts, class_dynamic_quests
+
+
+def derive_starts(per_faction, export, area_of, qi, issues, skip_blacklisted):
+    """Starting zone + starting quests per race.
+
+    Zone evidence, in order: (1) non-blacklisted race-specific level-1 quests; (2) blacklisted
+    race-specific level-1 quests as a zone hint only (e.g. the "Welcome!" quests: their zone is
+    valid evidence of where the race starts; zone label E). The starting QUEST list never
+    contains BLACKLISTED quests when skip_blacklisted is set.
+    """
+    bl_flag = QUEST_FLAGS["BLACKLISTED"]
+    starts = {}
     for race_id, (race_name, bit, fac) in RACES.items():
-        quests = per_faction[fac]["quests"]
-        zones = Counter()
-        for qid, rec in quests.items():
-            races = rec[qi["RACES"]] if qi["RACES"] < len(rec) else None
-            req = rec[qi["REQ_LEVEL"]] if qi["REQ_LEVEL"] < len(rec) else None
-            if races and races & bit and races != FACTION_MASK[fac] and (req or 0) <= 1 and area_of.get(qid, 0) > 0:
-                zones[area_of[qid]] += 1
+        all_quests = per_faction[fac]["quests"]
+
+        def flags_of(rec):
+            return (rec[qi["FLAGS"]] if qi["FLAGS"] < len(rec) else 0) or 0
+
+        def zone_votes(blacklisted):
+            zones, first = Counter(), {}
+            for qid, rec in sorted(all_quests.items()):
+                if bool(flags_of(rec) & bl_flag) != blacklisted:
+                    continue
+                races = rec[qi["RACES"]] if qi["RACES"] < len(rec) else None
+                req = rec[qi["REQ_LEVEL"]] if qi["REQ_LEVEL"] < len(rec) else None
+                if races and races & bit and races != FACTION_MASK[fac] and (req or 0) <= 1 and area_of.get(qid, 0) > 0:
+                    zones[area_of[qid]] += 1
+                    first.setdefault(area_of[qid], qid)
+            return zones, first
+
+        if skip_blacklisted:
+            zones, first = zone_votes(False)
+            evidence_kind = "quest"
+            if not zones:
+                zones, first = zone_votes(True)
+                evidence_kind = "blacklisted-hint"
+            quests = {qid: rec for qid, rec in all_quests.items() if not flags_of(rec) & bl_flag}
+        else:  # unfiltered (report only): every quest counts as evidence and may be listed
+            z1, f1 = zone_votes(False)
+            z2, f2 = zone_votes(True)
+            zones, first = z1 + z2, {**f2, **f1}
+            evidence_kind = "quest"
+            quests = all_quests
         if not zones:
             starts[race_id] = {"quests": []}
             issues.append(("no-start-zone", fac, race_id, f"{race_name}: no race-specific level-1 quest found"))
             continue
         area = zones.most_common(1)[0][0]
+        ev_qid = first[area]
+        if evidence_kind == "quest":
+            labels = all_quests[ev_qid][qi["LABELS"]] if qi["LABELS"] < len(all_quests[ev_qid]) else None
+            zone_label = (labels or "E")[0]
+        else:
+            zone_label = "E"
         start_map = export.ui_map(area)
         found = []
         for qid, rec in quests.items():
@@ -777,9 +1101,9 @@ def build(export, zone_names):
             if get("MAP") == start_map and (get("REQ_LEVEL") or 0) <= 1 and not get("PRE_ALL") \
                     and not get("PRE_ANY") and (not races or races & bit) and start and start[0]:
                 found.append(qid)
-        starts[race_id] = {"area": area, "map": export.ui_map(area), "quests": sorted(found)}
-
-    return sides, per_faction, starts, issues, stats, dynamic_counts, class_dynamic_quests
+        starts[race_id] = {"area": area, "map": start_map, "quests": sorted(found),
+                           "zoneEvidence": f"{evidence_kind}:{ev_qid}", "zoneLabel": zone_label}
+    return starts
 
 
 # --------------------------------------------------------------------------------------------
@@ -807,7 +1131,7 @@ def write_schema(path, commit):
         f.write("\n".join(lines) + "\n")
 
 
-def write_meta(path, export, starts, counts, zone_bounds, bounds_info):
+def write_meta(path, export, starts, counts, zone_bounds, bounds_info, blacklist_meta):
     m = export.manifest
     meta = {
         "questiedbCommit": m.get("questiedbCommit"),
@@ -819,6 +1143,7 @@ def write_meta(path, export, starts, counts, zone_bounds, bounds_info):
         "zoneBounds": {ui: {k: b[k] for k in ("left", "right", "top", "bottom")}
                        for ui, b in zone_bounds.items()},
         "zoneBoundsSource": f"QuestieDB conversion.json target_bounds, build {bounds_info['build']}",
+        "questieBlacklist": blacklist_meta,
     }
     with open(path, "w", encoding="utf-8") as f:
         f.write(HEADER.format(commit=m.get("questiedbCommit", "?")[:10]))
@@ -843,7 +1168,8 @@ def write_side(path, side, tables, commit):
 # --------------------------------------------------------------------------------------------
 
 def write_reports(report_md, gaps_csv, export, sides, per_faction, starts, issues, stats,
-                  dynamic_counts, class_dynamic_quests, zone_names, sizes, zone_bounds, bounds_info):
+                  dynamic_counts, class_dynamic_quests, zone_names, sizes, zone_bounds, bounds_info,
+                  bl, bl_applied, bl_unused, starts_unfiltered):
     qi = {n: i for i, n in enumerate(QUEST_FIELDS)}
 
     def field(rec, name):
@@ -963,15 +1289,59 @@ def write_reports(report_md, gaps_csv, export, sides, per_faction, starts, issue
     w("")
     w("## Starting zones by race\n")
     w("Derived from the data (race-specific level-1 quests → zone → that zone's level-1 quests); nothing hand-entered.\n")
-    w("| Race | Faction | Zone | uiMap | Starting quests |\n|---|---|---|---|---|")
+    w("Zone evidence: `quest:<id>` = a non-blacklisted race-specific level-1 quest; `blacklisted-hint:<id>` = a "
+      "blacklisted one used only to locate the zone (label E); the quest list never contains BLACKLISTED quests.\n")
+    w("| Race | Faction | Zone | uiMap | Zone evidence | Label | Starting quests |\n|---|---|---|---|---|---|---|")
     for race_id, (race_name, _, fac) in RACES.items():
         st = starts.get(race_id) or {}
         qs = st.get("quests") or []
         names = ", ".join(f"{q} {per_faction[fac]['quests'][q][0]}" for q in qs[:5])
         more = f" (+{len(qs) - 5} more)" if len(qs) > 5 else ""
         zone = zone_names.get(st.get("area"), f"area {st.get('area')}") if st.get("area") else "**not found**"
-        w(f"| {race_name} | {fac} | {zone} | {st.get('map') or '-'} | {names or '**none found**'}{more} |")
+        w(f"| {race_name} | {fac} | {zone} | {st.get('map') or '-'} | {st.get('zoneEvidence') or '-'} | "
+          f"{st.get('zoneLabel') or '-'} | {names or '**none found**'}{more} |")
     w("")
+    w("## Questie blacklist\n")
+    w(f"Source: Questie `{BLACKLIST_FILE}` at commit `{(bl['commit'] or '?')[:10]}`, "
+      "`QuestieQuestBlacklist:Load()` table only, **parsed as text (never executed)** with an allow-listed "
+      "condition grammar in the Forever context (`Expansions.Current = Era`, `Questie.IsSoD/IsTitanReforged/"
+      "IsChinaRegion = false`). Any unrecognized expression fails the build. Audit list: "
+      "`tools/.cache/forever/questie_blacklist.json`. Records are kept and flagged, never deleted.\n")
+    bl_flag, hid_flag = QUEST_FLAGS["BLACKLISTED"], QUEST_FLAGS["HIDDEN_ON_MAP"]
+    n_bl = sum(1 for r in allq.values() if (field(r, "FLAGS") or 0) & bl_flag)
+    n_hid = sum(1 for r in allq.values() if (field(r, "FLAGS") or 0) & hid_flag)
+    w("| | Questie entries | In our data (available quests) |\n|---|---|---|")
+    w(f"| evaluated entries | {bl['entries']} | |")
+    w(f"| `BLACKLISTED` (256) | {bl['blacklistedFinal']} | {n_bl} |")
+    w(f"| `HIDDEN_ON_MAP` (512) | {len(bl['hiddenOnMap'])} | {n_hid} |")
+    w(f"| unresolved expressions | 0 | |")
+    w(f"| Forever overrides applied | {len(bl_applied)} | |")
+    w("")
+    if bl["duplicates"]:
+        w(f"Duplicate keys in Questie's table (last assignment wins, as in Lua): {', '.join(map(str, bl['duplicates']))}.\n")
+    w("Starting-zone quests removed by the blacklist (starting-zone detection ignores BLACKLISTED quests):\n")
+    w("| Race | Faction | Zone before | Zone after | Blacklisted starting quests | Other starting quests lost |\n"
+      "|---|---|---|---|---|---|")
+    for race_id, (race_name, _, fac) in RACES.items():
+        before, after = starts_unfiltered.get(race_id) or {}, starts.get(race_id) or {}
+        dropped = sorted(set(before.get("quests") or []) - set(after.get("quests") or []))
+        zb = zone_names.get(before.get("area"), f"area {before['area']}" if before.get("area") else "-")
+        za = zone_names.get(after.get("area"), f"area {after['area']}" if after.get("area") else "**not found**")
+        is_bl = lambda q: q in allq and (field(allq[q], "FLAGS") or 0) & bl_flag
+        names_bl = ", ".join(f"{q} {allq[q][0]}" for q in dropped if is_bl(q)) or "none"
+        names_lost = ", ".join(f"{q} {allq[q][0]}" for q in dropped if q in allq and not is_bl(q)) or "none"
+        w(f"| {race_name} | {fac} | {zb} | {za} | {names_bl} | {names_lost} |")
+    w("")
+    w("Forever overrides (`tools/data/forever_overrides.json`, evidence required):\n")
+    if not bl_applied and not bl_unused:
+        w("None.\n")
+    else:
+        w("| Quest | Applied | Evidence | Added by |\n|---|---|---|---|")
+        for o, ok in [(o, True) for o in bl_applied] + [(o, False) for o in bl_unused]:
+            ev = o["evidence"]
+            w(f"| {o['questID']} | {'yes' if ok else 'no (not blacklisted)'} | {ev['date']}, {ev['character']}: "
+              f"{ev['observation']} ({ev['source']}) | {o['addedBy']} |")
+        w("")
     w("## Zone sizes (world yards)\n")
     w(f"Source: QuestieDB `data/Forever/conversion.json` `geometry.transforms[].target_bounds`, "
       f"build {bounds_info['build']} (read as plain JSON). Label **O**: Forever map geometry. "
@@ -1072,6 +1442,10 @@ def main():
     ap.add_argument("--export", default="tools/.cache/forever", help="QuestieDB export directory")
     ap.add_argument("--questiedb", default=os.path.expanduser("~/wow-tools/QuestieDB"),
                     help="QuestieDB checkout (zone names only)")
+    ap.add_argument("--questie", default=os.path.expanduser("~/wow-tools/Questie"),
+                    help="Questie checkout (quest blacklist, read as text only)")
+    ap.add_argument("--overrides", default=os.path.join("tools", "data", "forever_overrides.json"),
+                    help="hand-maintained Forever blacklist overrides")
     ap.add_argument("--out", default="Data", help="output directory for Data/*.lua")
     ap.add_argument("--docs", default="docs", help="output directory for the coverage report")
     ap.add_argument("--parse-check", action="store_true",
@@ -1087,7 +1461,17 @@ def main():
 
     for warning in export.warnings:
         print("WARNING:", warning)
-    sides, per_faction, starts, issues, stats, dynamic_counts, class_dyn = build(export, zone_names)
+    try:
+        bl = load_questie_blacklist(args.questie)
+        overrides = load_overrides(args.overrides)
+    except BlacklistError as e:
+        sys.exit(f"BUILD FAILED (Questie blacklist): {e}")
+    export.blacklisted, export.hidden_on_map, bl_applied, bl_unused = apply_blacklist(bl, overrides)
+    bl["blacklistedFinal"] = len(export.blacklisted)
+    for o in bl_unused:
+        print(f"WARNING: override for quest {o['questID']} not applied: it is not blacklisted")
+    blacklist_meta = {"commit": bl["commit"], "file": BLACKLIST_FILE, "count": len(export.blacklisted)}
+    sides, per_faction, starts, starts_unfiltered, issues, stats, dynamic_counts, class_dyn = build(export, zone_names)
 
     os.makedirs(args.out, exist_ok=True)
     os.makedirs(args.docs, exist_ok=True)
@@ -1100,7 +1484,9 @@ def main():
     }
     counts = {side: {k: len(v) for k, v in t.items() if k != "classQuests"} for side, t in sides.items()}
     write_schema(paths["Schema"], commit)
-    write_meta(paths["Meta"], export, starts, counts, zone_bounds, bounds_info)
+    write_meta(paths["Meta"], export, starts, counts, zone_bounds, bounds_info, blacklist_meta)
+    write_blacklist_json(os.path.join(args.export, "questie_blacklist.json"), bl, export.blacklisted,
+                         export.hidden_on_map, bl_applied)
     write_zone_bounds_json(os.path.join(args.export, "zone_bounds.json"), zone_bounds, bounds_info)
     for side in ("Neutral", "Horde", "Alliance"):
         write_side(paths[side], side, sides[side], commit)
@@ -1109,7 +1495,7 @@ def main():
     new_gaps, old_gaps, label_counts, n_avail, n_new = write_reports(
         os.path.join(args.docs, "DATA_COVERAGE.md"), os.path.join(args.docs, "data-gaps.csv"),
         export, sides, per_faction, starts, issues, stats, dynamic_counts, class_dyn, zone_names, sizes,
-        zone_bounds, bounds_info)
+        zone_bounds, bounds_info, bl, bl_applied, bl_unused, starts_unfiltered)
 
     if args.parse_check:
         errors, skipped = validate_lua(paths.values())
@@ -1125,6 +1511,9 @@ def main():
     print(f"New Forever quests missing: XP {new_gaps['no XP']}, start loc {new_gaps['no start location']}, "
           f"finish loc {new_gaps['no finish location']} (of {new_gaps['total']})")
     print(f"Zone bounds: {len(zone_bounds)} maps (build {bounds_info['build']})")
+    print(f"Questie blacklist {(bl['commit'] or '?')[:10]}: {bl['entries']} entries -> "
+          f"{len(export.blacklisted)} blacklisted, {len(export.hidden_on_map)} hidden on map, "
+          f"{len(bl_applied)} overrides applied")
     print(f"Integrity issues: {len(issues)}  |  dynamic: Horde {dynamic_counts['Horde']}, "
           f"Alliance {dynamic_counts['Alliance']}, class-specific {len(class_dyn)}")
     if skipped:

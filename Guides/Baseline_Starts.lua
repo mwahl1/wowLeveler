@@ -4,24 +4,21 @@
 -- quest level <= 17), in simulated level order, one quest at a time: ACCEPT -> OBJECTIVE(s) -> TURNIN.
 -- est.src is the weakest label of the step's estimate (E = Classic/placeholder, U = unknown: see docs/ROUTE_EFFICIENCY.md).
 -- Levels and GRIND steps assume every class quest's XP (all classes in one list): approximate.
--- Quest data: QuestieDB aca0da1c4a (GPLv3) via the M3 export.
+-- Quest data: QuestieDB aca0da1c4a (GPLv3) via the M3 export; Questie blacklist 74dc317241 applied (blacklisted quests skipped).
 -- Skipped raceID 96: Skyborne Horde: no starting zone in the data (Data/Meta.lua startingQuests has no map).
 
 local _, ns = ...
 
--- Human (races 1), uiMap 1429: 69 quests, 182 steps, 0 GRIND
--- skipped (8): 16:repeatable 7677:above_baseline_window:req_level
---   7678:above_baseline_window:req_level 91736:repeatable 91751:needs_state:skill
---   91753:needs_state:skill 97045:above_baseline_window:req_level
---   97170:above_baseline_window:req_level
+-- Human (races 1), uiMap 1429: 68 quests, 180 steps, 0 GRIND
+-- skipped (9): 16:repeatable 5805:questie_blacklist 7677:questie_blacklist 7678:questie_blacklist
+--   91736:repeatable 91751:needs_state:skill 91753:needs_state:skill
+--   97045:above_baseline_window:req_level 97170:above_baseline_window:req_level
 ns.Guides.Register({
-  id = "baseline.start.1429", kind = "start", faction = "Alliance", races = {1}, levels = {1,10}, entry = {minLevel=1}, exit = {completed={783,5805,7,5261,33,91741,92124,91743,15,91745,91752,91758,91772,18,3903,3904,3905,21,54,2158,6,91775,91777,85,86,84,106,111,107,60,61,47,62,99127,99128,99129,99130,99131,99143,112,114,91732,87,91723,83,5545,88,76,239,11,40,35,37,45,52,71,39,46,59,123,147,91724,91725,91733,91738,109,176,91740,91746}}, source = "optimizer@baseline-0.1.0",
+  id = "baseline.start.1429", kind = "start", faction = "Alliance", races = {1}, levels = {1,10}, entry = {minLevel=1}, exit = {completed={783,7,5261,33,91741,92124,91743,15,91745,91752,91758,91772,18,3903,3904,3905,21,54,2158,6,91775,91777,85,86,84,106,111,107,60,61,47,62,99127,99128,99129,99130,99131,99143,112,114,91732,87,91723,83,5545,88,76,239,11,40,35,37,45,52,71,39,46,59,123,147,91724,91725,91733,91738,109,176,91740,91746}}, source = "optimizer@baseline-0.1.0",
   steps = {
     { id = "baseline.start.1429.a783", type = "ACCEPT", quest = 783, est = {src = "U"} },
     { id = "baseline.start.1429.t783", type = "TURNIN", quest = 783, est = {seconds = 12, xp = 40, src = "E"} },
-    { id = "baseline.start.1429.a5805", type = "ACCEPT", quest = 5805, est = {src = "U"} },
-    { id = "baseline.start.1429.t5805", type = "TURNIN", quest = 5805, est = {src = "U"} },
-    { id = "baseline.start.1429.a7", type = "ACCEPT", quest = 7, est = {seconds = 15, src = "E"} },
+    { id = "baseline.start.1429.a7", type = "ACCEPT", quest = 7, est = {seconds = 5, src = "E"} },
     { id = "baseline.start.1429.o7_1", type = "OBJECTIVE", quest = 7, objective = 1, est = {src = "U"} },
     { id = "baseline.start.1429.t7", type = "TURNIN", quest = 7, est = {seconds = 25, xp = 170, src = "E"} },
     { id = "baseline.start.1429.a5261", type = "ACCEPT", quest = 5261, est = {seconds = 12, src = "E"} },
@@ -202,8 +199,8 @@ ns.Guides.Register({
   },
 })
 
--- Dwarf/Gnome (races 3, 7), uiMap 1426: 56 quests, 155 steps, 0 GRIND
--- skipped (38): 308:repeatable 403:repeatable 466:above_baseline_window:req_level
+-- Dwarf/Gnome (races 3, 7), uiMap 1426: 55 quests, 153 steps, 0 GRIND
+-- skipped (39): 308:repeatable 403:repeatable 466:above_baseline_window:req_level
 --   467:above_baseline_window:req_level 2904:above_baseline_window:req_level
 --   2922:above_baseline_window:req_level 2923:above_baseline_window:req_level
 --   2924:above_baseline_window:req_level 2925:above_baseline_window:req_level
@@ -213,24 +210,19 @@ ns.Guides.Register({
 --   2945:above_baseline_window:req_level 2947:above_baseline_window:req_level
 --   2951:above_baseline_window:req_level 2952:above_baseline_window:req_level
 --   2953:above_baseline_window:req_level 2962:above_baseline_window:req_level
---   4601:above_baseline_window:req_level 4602:above_baseline_window:req_level
---   4603:above_baseline_window:req_level 4604:above_baseline_window:req_level
---   4605:above_baseline_window:req_level 4606:above_baseline_window:req_level
---   7673:above_baseline_window:req_level 7674:above_baseline_window:req_level
---   7675:above_baseline_window:req_level 7676:above_baseline_window:req_level
---   95217:needs_state:skill 97017:above_baseline_window:req_level
---   97018:above_baseline_window:req_level 97046:above_baseline_window:req_level
---   97188:above_baseline_window:req_level 99207:above_baseline_window:req_level
---   99209:above_baseline_window:req_level
+--   4601:questie_blacklist 4602:questie_blacklist 4603:questie_blacklist 4604:questie_blacklist
+--   4605:questie_blacklist 4606:questie_blacklist 5841:questie_blacklist 7673:questie_blacklist
+--   7674:questie_blacklist 7675:questie_blacklist 7676:questie_blacklist 95217:needs_state:skill
+--   97017:above_baseline_window:req_level 97018:above_baseline_window:req_level
+--   97046:above_baseline_window:req_level 97188:above_baseline_window:req_level
+--   99207:above_baseline_window:req_level 99209:above_baseline_window:req_level
 ns.Guides.Register({
-  id = "baseline.start.1426", kind = "start", faction = "Alliance", races = {3,7}, levels = {1,9}, entry = {minLevel=1}, exit = {completed={179,5841,170,183,233,182,234,3361,218,282,420,2160,400,3364,3365,310,317,97277,5541,311,318,313,98321,319,320,98322,98319,98323,99158,99159,99160,99161,99162,315,432,98326,287,291,412,95041,95212,95213,95214,415,413,414,419,433,417,314,312,96408,96392,96390,96391,98423}}, source = "optimizer@baseline-0.1.0",
+  id = "baseline.start.1426", kind = "start", faction = "Alliance", races = {3,7}, levels = {1,9}, entry = {minLevel=1}, exit = {completed={179,170,183,233,182,234,3361,218,282,420,2160,400,3364,3365,310,317,97277,5541,311,318,313,98321,319,320,98322,98319,98323,99158,99159,99160,99161,99162,315,432,98326,287,291,412,95041,95212,95213,95214,415,413,414,419,433,417,314,312,96408,96392,96390,96391,98423}}, source = "optimizer@baseline-0.1.0",
   steps = {
     { id = "baseline.start.1426.a179", type = "ACCEPT", quest = 179, est = {src = "U"} },
     { id = "baseline.start.1426.o179_1", type = "OBJECTIVE", quest = 179, objective = 1, est = {src = "U"} },
     { id = "baseline.start.1426.t179", type = "TURNIN", quest = 179, est = {seconds = 20, xp = 80, src = "E"} },
-    { id = "baseline.start.1426.a5841", type = "ACCEPT", quest = 5841, est = {src = "U"} },
-    { id = "baseline.start.1426.t5841", type = "TURNIN", quest = 5841, est = {src = "U"} },
-    { id = "baseline.start.1426.a170", type = "ACCEPT", quest = 170, est = {seconds = 10, src = "E"} },
+    { id = "baseline.start.1426.a170", type = "ACCEPT", quest = 170, est = {seconds = 7, src = "E"} },
     { id = "baseline.start.1426.o170_1", type = "OBJECTIVE", quest = 170, objective = 1, est = {src = "U"} },
     { id = "baseline.start.1426.o170_2", type = "OBJECTIVE", quest = 170, objective = 2, est = {src = "U"} },
     { id = "baseline.start.1426.t170", type = "TURNIN", quest = 170, est = {seconds = 29, xp = 170, src = "E"} },
@@ -383,18 +375,17 @@ ns.Guides.Register({
   },
 })
 
--- Night Elf (races 4), uiMap 1438: 61 quests, 171 steps, 0 GRIND
--- skipped (5): 978:above_baseline_window:req_level 979:above_baseline_window:req_level
---   3661:above_baseline_window:req_level 5250:above_baseline_window:req_level
+-- Night Elf (races 4), uiMap 1438: 59 quests, 166 steps, 0 GRIND
+-- skipped (7): 934:questie_blacklist 978:above_baseline_window:req_level
+--   979:above_baseline_window:req_level 3661:above_baseline_window:req_level
+--   5250:above_baseline_window:req_level 5842:questie_blacklist
 --   8734:above_baseline_window:req_level
 ns.Guides.Register({
-  id = "baseline.start.1438", kind = "start", faction = "Alliance", races = {4}, levels = {1,10}, entry = {minLevel=1}, exit = {completed={458,5842,456,457,459,97977,4495,3519,3521,3522,916,917,920,921,928,929,2159,97236,488,997,2438,475,476,489,918,919,922,87288,2459,2541,932,487,490,933,483,923,2498,2499,99046,99047,2561,930,931,2399,99050,99053,99073,934,7383,935,98046,98065,937,486,98403,927,98392,98398,940,938,941}}, source = "optimizer@baseline-0.1.0",
+  id = "baseline.start.1438", kind = "start", faction = "Alliance", races = {4}, levels = {1,10}, entry = {minLevel=1}, exit = {completed={458,456,457,459,97977,4495,3519,3521,3522,916,917,920,921,928,929,2159,97236,488,997,2438,475,476,489,918,919,922,87288,2459,2541,932,487,490,933,483,923,2498,2499,99046,99047,2561,930,931,2399,99050,99053,99073,7383,935,98046,98065,937,486,98403,927,98392,98398,940,938,941}}, source = "optimizer@baseline-0.1.0",
   steps = {
     { id = "baseline.start.1438.a458", type = "ACCEPT", quest = 458, est = {src = "U"} },
     { id = "baseline.start.1438.t458", type = "TURNIN", quest = 458, est = {seconds = 31, xp = 40, src = "E"} },
-    { id = "baseline.start.1438.a5842", type = "ACCEPT", quest = 5842, est = {src = "U"} },
-    { id = "baseline.start.1438.t5842", type = "TURNIN", quest = 5842, est = {src = "U"} },
-    { id = "baseline.start.1438.a456", type = "ACCEPT", quest = 456, est = {seconds = 6, src = "E"} },
+    { id = "baseline.start.1438.a456", type = "ACCEPT", quest = 456, est = {seconds = 15, src = "E"} },
     { id = "baseline.start.1438.o456_1", type = "OBJECTIVE", quest = 456, objective = 1, est = {src = "U"} },
     { id = "baseline.start.1438.o456_2", type = "OBJECTIVE", quest = 456, objective = 2, est = {src = "U"} },
     { id = "baseline.start.1438.t456", type = "TURNIN", quest = 456, est = {seconds = 23, xp = 170, src = "E"} },
@@ -523,10 +514,7 @@ ns.Guides.Register({
     { id = "baseline.start.1438.t99053", type = "TURNIN", quest = 99053, est = {seconds = 137, xp = 840, src = "E"} },
     { id = "baseline.start.1438.a99073", type = "ACCEPT", quest = 99073, est = {seconds = 23, src = "E"} },
     { id = "baseline.start.1438.t99073", type = "TURNIN", quest = 99073, est = {seconds = 215, xp = 85, src = "E"} },
-    { id = "baseline.start.1438.a934", type = "ACCEPT", quest = 934, est = {src = "U"} },
-    { id = "baseline.start.1438.o934_1", type = "OBJECTIVE", quest = 934, objective = 1, est = {src = "U"} },
-    { id = "baseline.start.1438.t934", type = "TURNIN", quest = 934, est = {xp = 660, src = "U"} },
-    { id = "baseline.start.1438.a7383", type = "ACCEPT", quest = 7383, est = {src = "U"} },
+    { id = "baseline.start.1438.a7383", type = "ACCEPT", quest = 7383, est = {seconds = 241, src = "E"} },
     { id = "baseline.start.1438.o7383_1", type = "OBJECTIVE", quest = 7383, objective = 1, est = {src = "U"} },
     { id = "baseline.start.1438.t7383", type = "TURNIN", quest = 7383, est = {seconds = 246, xp = 660, src = "E"} },
     { id = "baseline.start.1438.a935", type = "ACCEPT", quest = 935, est = {seconds = 5, src = "E"} },
@@ -834,20 +822,16 @@ ns.Guides.Register({
   },
 })
 
--- Orc/Troll (races 2, 8), uiMap 1411: 55 quests, 163 steps, 0 GRIND
--- skipped (8): 813:repeatable 926:repeatable 7664:above_baseline_window:req_level
---   7665:above_baseline_window:req_level 96873:needs_state:skill 96874:needs_state:skill
+-- Orc/Troll (races 2, 8), uiMap 1411: 53 quests, 159 steps, 0 GRIND
+-- skipped (10): 787:questie_blacklist 813:repeatable 926:repeatable 5843:questie_blacklist
+--   7664:questie_blacklist 7665:questie_blacklist 96873:needs_state:skill 96874:needs_state:skill
 --   96875:needs_state:skill 96989:above_baseline_window:req_level
 ns.Guides.Register({
-  id = "baseline.start.1411", kind = "start", faction = "Horde", races = {2,8}, levels = {1,10}, entry = {minLevel=1}, exit = {completed={787,4641,5843,788,97279,789,4402,5441,6394,790,804,2161,96821,96825,830,831,784,96822,791,823,818,825,99123,786,817,96876,815,808,97225,97223,812,834,826,837,835,97281,97282,99048,99049,816,99051,99052,806,828,827,829,832,96877,840,842,809,924}}, source = "optimizer@baseline-0.1.0",
+  id = "baseline.start.1411", kind = "start", faction = "Horde", races = {2,8}, levels = {1,10}, entry = {minLevel=1}, exit = {completed={4641,788,97279,789,4402,5441,6394,790,804,2161,96821,96825,830,831,784,96822,791,823,818,825,99123,786,817,96876,815,808,97225,97223,812,834,826,837,835,97281,97282,99048,99049,816,99051,99052,806,828,827,829,832,96877,840,842,809,924}}, source = "optimizer@baseline-0.1.0",
   steps = {
-    { id = "baseline.start.1411.a787", type = "ACCEPT", quest = 787, est = {src = "U"} },
-    { id = "baseline.start.1411.t787", type = "TURNIN", quest = 787, est = {xp = 40, src = "U"} },
-    { id = "baseline.start.1411.a4641", type = "ACCEPT", quest = 4641, est = {seconds = 17, src = "E"} },
+    { id = "baseline.start.1411.a4641", type = "ACCEPT", quest = 4641, est = {src = "U"} },
     { id = "baseline.start.1411.t4641", type = "TURNIN", quest = 4641, est = {seconds = 17, xp = 40, src = "E"} },
-    { id = "baseline.start.1411.a5843", type = "ACCEPT", quest = 5843, est = {src = "U"} },
-    { id = "baseline.start.1411.t5843", type = "TURNIN", quest = 5843, est = {src = "U"} },
-    { id = "baseline.start.1411.a788", type = "ACCEPT", quest = 788, est = {seconds = 16, src = "E"} },
+    { id = "baseline.start.1411.a788", type = "ACCEPT", quest = 788, est = {seconds = 5, src = "E"} },
     { id = "baseline.start.1411.o788_1", type = "OBJECTIVE", quest = 788, objective = 1, est = {src = "U"} },
     { id = "baseline.start.1411.t788", type = "TURNIN", quest = 788, est = {seconds = 27, xp = 170, src = "E"} },
     { id = "baseline.start.1411.a97279", type = "ACCEPT", quest = 97279, est = {seconds = 5, src = "E"} },
@@ -1007,20 +991,18 @@ ns.Guides.Register({
   },
 })
 
--- Undead (races 5), uiMap 1420: 59 quests, 184 steps, 1 GRIND
--- skipped (11): 366:prereq_outside:357 409:prereq_outside:366 410:repeatable
---   411:prereq_outside:409 431:repeatable 5901:above_baseline_window:req_level
---   5902:above_baseline_window:req_level 93030:above_baseline_window:req_level
---   96997:above_baseline_window:req_level 97203:above_baseline_window:req_level
---   99208:above_baseline_window:req_level
+-- Undead (races 5), uiMap 1420: 58 quests, 182 steps, 1 GRIND
+-- skipped (12): 366:prereq_outside:357 409:prereq_outside:366 410:repeatable
+--   411:prereq_outside:409 431:repeatable 5847:questie_blacklist
+--   5901:above_baseline_window:req_level 5902:above_baseline_window:req_level
+--   93030:above_baseline_window:req_level 96997:above_baseline_window:req_level
+--   97203:above_baseline_window:req_level 99208:above_baseline_window:req_level
 ns.Guides.Register({
-  id = "baseline.start.1420", kind = "start", faction = "Horde", races = {5}, levels = {1,10}, entry = {minLevel=1}, exit = {completed={363,5847,364,3901,376,3902,380,381,98389,8,590,382,383,6395,404,99134,99141,5481,5482,361,365,407,86784,99144,367,358,405,427,374,426,375,370,359,360,368,371,398,362,95314,99142,356,369,492,97558,354,355,445,372,99156,408,95328,96895,96897,96898,96899,96896,98545,99152,99153}}, source = "optimizer@baseline-0.1.0",
+  id = "baseline.start.1420", kind = "start", faction = "Horde", races = {5}, levels = {1,10}, entry = {minLevel=1}, exit = {completed={363,364,3901,376,3902,380,381,98389,8,590,382,383,6395,404,99134,99141,5481,5482,361,365,407,86784,99144,367,358,405,427,374,426,375,370,359,360,368,371,398,362,95314,99142,356,369,492,97558,354,355,445,372,99156,408,95328,96895,96897,96898,96899,96896,98545,99152,99153}}, source = "optimizer@baseline-0.1.0",
   steps = {
     { id = "baseline.start.1420.a363", type = "ACCEPT", quest = 363, est = {src = "U"} },
     { id = "baseline.start.1420.t363", type = "TURNIN", quest = 363, est = {seconds = 36, xp = 40, src = "E"} },
-    { id = "baseline.start.1420.a5847", type = "ACCEPT", quest = 5847, est = {src = "U"} },
-    { id = "baseline.start.1420.t5847", type = "TURNIN", quest = 5847, est = {src = "U"} },
-    { id = "baseline.start.1420.a364", type = "ACCEPT", quest = 364, est = {seconds = 16, src = "E"} },
+    { id = "baseline.start.1420.a364", type = "ACCEPT", quest = 364, est = {seconds = 5, src = "E"} },
     { id = "baseline.start.1420.o364_1", type = "OBJECTIVE", quest = 364, objective = 1, est = {src = "U"} },
     { id = "baseline.start.1420.o364_2", type = "OBJECTIVE", quest = 364, objective = 2, est = {src = "U"} },
     { id = "baseline.start.1420.t364", type = "TURNIN", quest = 364, est = {seconds = 22, xp = 170, src = "E"} },
@@ -1203,19 +1185,17 @@ ns.Guides.Register({
   },
 })
 
--- Tauren (races 6), uiMap 1412: 53 quests, 155 steps, 1 GRIND
--- skipped (11): 96241:above_baseline_window:req_level 96259:above_baseline_window:req_level
---   96260:above_baseline_window:req_level 96261:above_baseline_window:req_level
---   96294:above_baseline_window:req_level 96982:above_baseline_window:req_level
---   97204:above_baseline_window:req_level 98477:above_baseline_window:req_level
---   99196:above_baseline_window:quest_level 99197:above_baseline_window:req_level
---   99198:above_baseline_window:req_level
+-- Tauren (races 6), uiMap 1412: 52 quests, 153 steps, 1 GRIND
+-- skipped (12): 5844:questie_blacklist 96241:above_baseline_window:req_level
+--   96259:above_baseline_window:req_level 96260:above_baseline_window:req_level
+--   96261:above_baseline_window:req_level 96294:above_baseline_window:req_level
+--   96982:above_baseline_window:req_level 97204:above_baseline_window:req_level
+--   98477:above_baseline_window:req_level 99196:above_baseline_window:quest_level
+--   99197:above_baseline_window:req_level 99198:above_baseline_window:req_level
 ns.Guides.Register({
-  id = "baseline.start.1412", kind = "start", faction = "Horde", races = {6}, levels = {1,10}, entry = {minLevel=1}, exit = {completed={5844,747,752,750,753,755,757,780,781,95805,763,1656,3376,748,96130,767,754,761,99108,771,772,756,99411,745,98430,758,743,749,751,766,746,99079,99081,99101,773,775,759,760,76156,98435,764,98424,833,76160,76240,99080,99082,765,98427,770,854,776,861}}, source = "optimizer@baseline-0.1.0",
+  id = "baseline.start.1412", kind = "start", faction = "Horde", races = {6}, levels = {1,10}, entry = {minLevel=1}, exit = {completed={747,752,750,753,755,757,780,781,95805,763,1656,3376,748,96130,767,754,761,99108,771,772,756,99411,745,98430,758,743,749,751,766,746,99079,99081,99101,773,775,759,760,76156,98435,764,98424,833,76160,76240,99080,99082,765,98427,770,854,776,861}}, source = "optimizer@baseline-0.1.0",
   steps = {
-    { id = "baseline.start.1412.a5844", type = "ACCEPT", quest = 5844, est = {src = "U"} },
-    { id = "baseline.start.1412.t5844", type = "TURNIN", quest = 5844, est = {src = "U"} },
-    { id = "baseline.start.1412.a747", type = "ACCEPT", quest = 747, est = {seconds = 11, src = "E"} },
+    { id = "baseline.start.1412.a747", type = "ACCEPT", quest = 747, est = {src = "U"} },
     { id = "baseline.start.1412.o747_1", type = "OBJECTIVE", quest = 747, objective = 1, est = {src = "U"} },
     { id = "baseline.start.1412.o747_2", type = "OBJECTIVE", quest = 747, objective = 2, est = {src = "U"} },
     { id = "baseline.start.1412.t747", type = "TURNIN", quest = 747, est = {seconds = 25, xp = 170, src = "E"} },

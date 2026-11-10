@@ -140,6 +140,37 @@ local function checkFaction(ns, faction, class)
   end
   for id, o in pairs(D.objects) do checkSpawns("object", id, o[O.SPAWNS]) end
 
+  -- Questie blacklist layer (spec 8a): Meta present, flags consistent
+  local QB = M.questieBlacklist
+  if type(QB) ~= "table" or type(QB.commit) ~= "string" or type(QB.file) ~= "string" or type(QB.count) ~= "number" then
+    fail("Meta.questieBlacklist missing or incomplete")
+  end
+  local F = S.QUEST_FLAGS
+  if F.BLACKLISTED ~= 256 or F.HIDDEN_ON_MAP ~= 512 then fail("QUEST_FLAGS BLACKLISTED/HIDDEN_ON_MAP missing or wrong") end
+  local nBl, nHid = 0, 0
+  for id, q in pairs(D.quests) do
+    local flags = q[Q.FLAGS] or 0
+    local bl = math.floor(flags / 256) % 2 == 1
+    local hid = math.floor(flags / 512) % 2 == 1
+    if bl then nBl = nBl + 1 end
+    if hid then nHid = nHid + 1 end
+    if bl and hid then fail(tag .. " quest " .. id .. " is both BLACKLISTED and HIDDEN_ON_MAP") end
+    if flags >= 1024 then fail(tag .. " quest " .. id .. " has unknown flag bits " .. flags) end
+  end
+  if type(QB) == "table" and type(QB.count) == "number" and nBl > QB.count then
+    fail(tag .. " " .. nBl .. " BLACKLISTED quests loaded, more than Meta count " .. QB.count)
+  end
+  for raceID, info in pairs(M.startingQuests) do
+    for _, qid in ipairs(info.quests or {}) do
+      local q = D.quests[qid]
+      if q and math.floor((q[Q.FLAGS] or 0) / 256) % 2 == 1 then
+        fail(tag .. " starting quest " .. qid .. " for race " .. raceID .. " is BLACKLISTED")
+      end
+    end
+  end
+  print(string.format("%s questie blacklist: %d BLACKLISTED, %d HIDDEN_ON_MAP loaded (Questie %s, %d total)",
+    tag, nBl, nHid, tostring(QB and QB.commit and QB.commit:sub(1, 10)), QB and QB.count or -1))
+
   -- Zone bounds (world yards): 4 finite numbers with nonzero extents
   local nBounds = 0
   if type(M.zoneBounds) ~= "table" then fail("Meta has no zoneBounds table") end

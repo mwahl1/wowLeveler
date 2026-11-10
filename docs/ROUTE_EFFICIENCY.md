@@ -59,7 +59,7 @@ Until zone sizes exist, **path length in map percent** (same-map legs) is the on
 1. **Identical boundary states.** Routes are compared segment by segment only between equal entry states: same level (± 0.5 level tolerance, stated), the same completed-quest set at entry, same class and race. Exit states must be equal too (same level target), or the comparison is XP/hour-normalised and says so.
 2. **Naive baseline** (`tools/optimizer/baseline.py`): in the race's starting uiMap (Data/Meta.lua `startingQuests`), every quest the race/class/faction can do inside the baseline window (required level ≤ 12 and quest level ≤ 17 = 12 + 5 by default; `--max-req-level`, `--max-quest-level`; a definition, not game data; excluded with reason `above_baseline_window:req_level` / `:quest_level`), in simulated level order (lowest quest level whose prerequisites are done and whose required level is reached), each quest alone: ACCEPT → OBJECTIVE(s) → TURNIN. No batching, hearth, flights or death skips. When no quest is level-feasible a GRIND step (time U) is inserted. Default class Warrior (open to every Classic race; Skyborne unverified); steps of class-restricted quests carry `when = { classes = {...} }`. Route `exit = { completed = {all baseline quests} }` (spec 3.4).
    - Followed: PRE_ANY (any one positive entry done satisfies it; PRE_ALL is checked only when PRE_ANY is absent, as Questie does; a negative entry in PRE_ANY matters only when no positive entry can be satisfied, then the quest is excluded as unresolved, `negative_pre_any`), PRE_ALL (a positive entry also accepts its exclusiveTo fallback; a negative entry −X needs X itself, no fallback), exclusive groups (lowest level kept), breadcrumb before target, quest before its nextQuestInChain, `availableStartingWith` after its quest, `availableUntilCompleted` before its quest. `disabledByQuest` always holds because only one baseline quest is active at a time.
-   - Excluded with a reason: repeatable, profession/rep/spell/spec/rank requirements (state unknown), prerequisites outside the start map, unresolved negative PRE_ANY, other classes' quests.
+   - Excluded with a reason: **Questie blacklist** (`questie_blacklist`: quests in `tools/.cache/forever/questie_blacklist.json` `blacklisted` and not in `overridden`; dependents become `prereq_blacklisted:<id>`; the audit file is required, a missing file stops the tool; HIDDEN_ON_MAP quests stay), repeatable, profession/rep/spell/spec/rank requirements (state unknown), prerequisites outside the start map, unresolved negative PRE_ANY, other classes' quests.
 3. **Modelled vs measured.** An optimised route is "better" only if its time is lower and the inputs are labelled. Reporting rules:
    - measured (V) win: both routes recorded from identical boundary states;
    - modelled win: both routes modelled with the **same** parameter set; reported with the weakest label of the terms that differ ("E: −8 min, travel term"), never as a measurement;
@@ -121,21 +121,21 @@ Each item becomes O/V only with an in-game observation (recorder event or a date
 4. **Promotion.** Aggregates are written as a `--params` override file and as per-map zone-size estimates with label **V** (our recorder), each with sample count and date. Terms with fewer than N samples (N to be set when data arrives) stay at their old label.
 5. **Model check.** Re-run the baseline and any optimised route with the measured parameters; report measured ÷ modelled per term (section 4, model quality).
 
-## 9. Current baseline (2026-11-10)
+## 9. Current baseline (2026-11-10, Questie blacklist 74dc3172 applied)
 
 `python3 -B tools/optimizer/baseline.py --all` (Warrior; window required level ≤ 12, quest level ≤ 17; grind on). XP from M3; levels with the E XP table. Travel uses QuestieDB zone bounds (O) × E speed placeholders. **Combat is still U everywhere**, so every objective step is U and no route has a modelled total.
 
 | Race | Map (size label) | Quests | Quest lvls | Steps | GRIND steps (XP) | Quest XP (quests w/o XP) | End lvl | Modelled time | Known part (E) | Steps with U time |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Human | 1429 (O) | 69 | 1–12 | 182 | 0 (0) | ≥28605 (2) U | 10 U | U | 3h07m | 50/182 |
-| Dwarf | 1426 (O) | 56 | 1–16 | 155 | 0 (0) | ≥25950 (2) U | 9 U | U | 3h06m | 54/155 |
-| Night Elf | 1438 (O) | 61 | 1–12 | 171 | 0 (0) | ≥29265 (2) U | 10 U | U | 2h51m | 63/171 |
-| Gnome | 1426 (O) | 56 | 1–16 | 155 | 0 (0) | ≥25950 (2) U | 9 U | U | 3h06m | 54/155 |
+| Human | 1429 (O) | 68 | 1–12 | 180 | 0 (0) | ≥28605 (1) U | 10 U | U | 3h07m | 48/180 |
+| Dwarf | 1426 (O) | 55 | 1–16 | 153 | 0 (0) | ≥25950 (1) U | 9 U | U | 3h06m | 52/153 |
+| Night Elf | 1438 (O) | 59 | 1–12 | 166 | 0 (0) | ≥28605 (1) U | 10 U | U | 2h55m | 57/166 |
+| Gnome | 1426 (O) | 55 | 1–16 | 153 | 0 (0) | ≥25950 (1) U | 9 U | U | 3h06m | 52/153 |
 | Skyborne A | 2521 (U) | 86 | 1–13 | 261 | 2 (520) | 39505 (0) E | 11 U | U | 0h14m | 207/261 |
-| Orc | 1411 (O) | 55 | 1–14 | 163 | 0 (0) | ≥32115 (1) U | 10 U | U | 3h13m | 67/163 |
-| Undead | 1420 (O) | 59 | 1–13 | 184 | 1 (1465) | ≥30865 (1) U | 10 U | U | 3h31m | 75/184 |
-| Tauren | 1412 (O) | 53 | 1–14 | 155 | 1 (925) | ≥27515 (1) U | 10 U | U | 3h03m | 67/155 |
-| Troll | 1411 (O) | 55 | 1–14 | 163 | 0 (0) | ≥32115 (1) U | 10 U | U | 3h13m | 67/163 |
+| Orc | 1411 (O) | 53 | 1–14 | 159 | 0 (0) | 32075 (0) E | 10 E | U | 3h12m | 64/159 |
+| Undead | 1420 (O) | 58 | 1–13 | 182 | 1 (1465) | 30865 (0) E | 10 U | U | 3h30m | 73/182 |
+| Tauren | 1412 (O) | 52 | 2–14 | 153 | 1 (925) | 27515 (0) E | 10 U | U | 3h03m | 66/153 |
+| Troll | 1411 (O) | 53 | 1–14 | 159 | 0 (0) | 32075 (0) E | 10 E | U | 3h12m | 64/159 |
 | Skyborne H | – | – | – | – | – | – | – | U | – | data gap: no starting zone |
 
 "Known part" = travel (E) + interaction placeholders (E) of the terms that can be modelled, including the travel legs of objective steps whose combat is U: a **lower bound**, not a time estimate. It also shows how wasteful the naive one-quest-at-a-time order is (about 3 hours of modelled walking per starting zone). Skyborne Alliance has no zone bounds, so its known part is only interaction time.
@@ -146,15 +146,15 @@ The Tauren level-60 "A Donation of …" quests (required level 12, no XP in the 
 
 Generated by `python3 -B tools/optimizer/baseline.py --write-guides` (deterministic; a test fails if the file differs from a fresh render). One `kind = "start"` def per starting zone, `source = "optimizer@baseline-<version>"`, header "naive level-ordered baseline, NOT optimized; labels E/U". Races sharing a zone share a def (Orc/Troll `{2,8}`, Dwarf/Gnome `{3,7}`); Skyborne Horde is skipped with a comment. Unlike the CLI table (Warrior), the file covers **every class**: a quest's applicable classes/races are its own masks intersected with its prerequisites' (e.g. Vile Familiars 792 excludes Warlocks, so 794 after it does too), and those steps carry `when = { classes = {...} }` (and `races` when a shared def has race-only quests). `exit = { completed = {...} }` lists only quests that apply to every class and race of the def. Skipped quests are listed per def with their reason. Class quests filed under a class sort (no uiMap) are not in any starting-zone baseline; they belong in class overlays (spec 3.5).
 
-| Def | Races | Quests | Steps | GRIND | Skipped |
-|---|---|---|---|---|---|
-| baseline.start.1429 | 1 | 69 | 182 | 0 | 8 |
-| baseline.start.1426 | 3, 7 | 56 | 155 | 0 | 38 |
-| baseline.start.1438 | 4 | 61 | 171 | 0 | 5 |
-| baseline.start.2521 | 95 | 86 | 261 | 2 | 4 |
-| baseline.start.1411 | 2, 8 | 55 | 163 | 0 | 8 |
-| baseline.start.1420 | 5 | 59 | 184 | 1 | 11 |
-| baseline.start.1412 | 6 | 53 | 155 | 1 | 11 |
+| Def | Races | Quests | Steps | GRIND | Skipped | First step |
+|---|---|---|---|---|---|---|
+| baseline.start.1429 | 1 | 68 | 180 | 0 | 9 | ACCEPT 783 |
+| baseline.start.1426 | 3, 7 | 55 | 153 | 0 | 39 | ACCEPT 179 |
+| baseline.start.1438 | 4 | 59 | 166 | 0 | 7 | ACCEPT 458 |
+| baseline.start.2521 | 95 | 86 | 261 | 2 | 4 | ACCEPT 92460 |
+| baseline.start.1411 | 2, 8 | 53 | 159 | 0 | 10 | ACCEPT 4641 |
+| baseline.start.1420 | 5 | 58 | 182 | 1 | 12 | ACCEPT 363 |
+| baseline.start.1412 | 6 | 52 | 153 | 1 | 12 | ACCEPT 747 |
 
 ## 10. Data gaps that block time estimates
 

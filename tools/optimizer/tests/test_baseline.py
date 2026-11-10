@@ -39,7 +39,7 @@ class _FakeExport:
 class FakeWorld:
     MAP = 9999
 
-    def __init__(self, quests, outside=()):
+    def __init__(self, quests, outside=(), blacklist=()):
         """quests: {qid: dict of record fields (+ raw fields under 'raw')}; outside: IDs that exist
         in the database but not in the start map."""
         self.recs = {}
@@ -52,19 +52,26 @@ class FakeWorld:
         for qid in outside:
             self.recs[qid] = ({}, {"NAME": f"q{qid}", "MAP": 1, "LEVEL": 1, "REQ_LEVEL": 1})
         self.export = _FakeExport(self.recs)
+        self.blacklist = set(blacklist)
 
     def quests(self, faction, cls=None):
         return self.recs
 
 
-def select(quests, outside=(), **kw):
-    w = FakeWorld(quests, outside)
+def select(quests, outside=(), blacklist=(), **kw):
+    w = FakeWorld(quests, outside, blacklist)
     cand, edges, excluded = B.select_quests(w, 2, "WARRIOR", FakeWorld.MAP, **kw)
     order = B.order_quests(cand, edges, excluded, M.TimeModel(), grind=True)
     return order, excluded
 
 
 class SyntheticRuleTests(unittest.TestCase):
+    def test_blacklist_excludes_quest_and_dependents(self):
+        order, excluded = select({1: {}, 2: {"PRE_ALL": [1]}, 3: {}}, blacklist=(1,))
+        self.assertEqual(order, [3])
+        self.assertEqual(excluded[1], "questie_blacklist")
+        self.assertEqual(excluded[2], "prereq_blacklisted:1")
+
     def test_negative_pre_all_needs_the_quest_itself(self):
         # 1 is outside the map; 2 is in 1's exclusive group. +1 accepts the exclusiveTo fallback,
         # -1 must not (spec 6.7).
@@ -317,3 +324,51 @@ class GuideFileTests(unittest.TestCase):
             self.skipTest("luac 5.1 not installed")
         out = subprocess.run([luac, "-p", B.GUIDES_FILE], capture_output=True, text=True, timeout=60)
         self.assertEqual(out.returncode, 0, out.stderr)
+
+
+class BlacklistTests(unittest.TestCase):
+    def test_missing_audit_file_fails_clearly(self):
+        with self.assertRaises(M.BlacklistMissing) as cm:
+            M.load_blacklist(os.path.join(M.CACHE_DIR, "does_not_exist.json"))
+        self.assertIn("Questie blacklist", str(cm.exception))
+        self.assertIn("not found", str(cm.exception))
+
+    def test_overrides_are_not_blacklisted(self):
+        bl = M.load_blacklist()
+        self.assertFalse(bl["blacklisted"] & bl["overridden"])
+        self.assertEqual(world().blacklist, bl["blacklisted"])
+
+    def test_no_blacklisted_quest_in_any_route(self):
+        bl = world().blacklist
+        for g, res in B.guide_results(world()):
+            quests = {s["quest"] for s in res["route"]["steps"] if s.get("quest")}
+            self.assertFalse(quests & bl, (g, sorted(quests & bl)))
+            for r in g:
+                single = run(r)
+                self.assertFalse({s.get("quest") for s in single["route"]["steps"]} & bl, r)
+        with open(B.GUIDES_FILE, encoding="utf-8") as f:
+            text = f.read()
+        import re
+        ids = {int(m) for m in re.findall(r"quest = (\d+)", text)}
+        self.assertFalse(ids & bl, sorted(ids & bl))
+
+    def test_787_absent(self):
+        self.assertIn(787, world().blacklist)
+        res = dict(B.guide_results(world()))[(2, 8)]
+        self.assertNotIn(787, res["order"])
+        self.assertEqual(res["excluded"].get(787), "questie_blacklist")
+
+    def test_orc_troll_first_step(self):
+        res = dict(B.guide_results(world()))[(2, 8)]
+        first = res["route"]["steps"][0]
+        self.assertEqual(first["type"], "ACCEPT")
+        self.assertIn(first["quest"], world().start(2)["quests"])
+        self.assertNotIn(first["quest"], world().blacklist)
+        self.assertEqual(world().start(2)["quests"], world().start(8)["quests"])
+
+    def test_hidden_on_map_quests_stay(self):
+        hidden = M.load_blacklist()["hiddenOnMap"] - world().blacklist
+        for g, res in B.guide_results(world()):
+            for q, reason in res["excluded"].items():
+                if q in hidden:
+                    self.assertNotEqual(reason, "questie_blacklist")

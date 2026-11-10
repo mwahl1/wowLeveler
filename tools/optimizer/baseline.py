@@ -93,6 +93,9 @@ def select_quests(world, race_id, cls, start_map, max_req_level=None, max_quest_
             continue
         if not race_set(rec, races):
             continue  # another race's quest: not counted as an exclusion
+        if qid in world.blacklist:
+            excluded[qid] = "questie_blacklist"
+            continue
         classes = rec.get("CLASSES") or 0
         if classes and classes & M.ALL_CLASSES_MASK != M.ALL_CLASSES_MASK and cls != ALL:
             if cls is None:
@@ -155,6 +158,8 @@ def select_quests(world, race_id, cls, start_map, max_req_level=None, max_quest_
                 alt = [e for e in exclusive_of(need) if e in cand] if p > 0 else []
                 if alt:
                     preds.add(min(alt))
+                elif need in world.blacklist:
+                    reason = f"prereq_blacklisted:{need}"
                 elif need not in world.export.quests:
                     reason = f"missing_prereq:{need}"
                 else:
@@ -488,7 +493,7 @@ def build_baseline(world, race_id, cls=DEFAULT_CLASS, model=None, sizes=None, gr
     levels = [cand[q][1].get("LEVEL") for q in order if cand[q][1].get("LEVEL") is not None]
     reasons = {}
     for r in excluded.values():
-        k = r.split(":")[0] if r.startswith(("prereq_outside", "missing_prereq", "exclusive", "level_gated",
+        k = r.split(":")[0] if r.startswith(("prereq_outside", "prereq_blacklisted", "missing_prereq", "exclusive", "level_gated",
                                               "available_with_outside")) else r
         reasons[k] = reasons.get(k, 0) + 1
     # Hidden unknowns make totals lower bounds: label them U, never E.
@@ -592,7 +597,8 @@ def render_guides(world, model=None, sizes=None):
         "-- est.src is the weakest label of the step's estimate (E = Classic/placeholder, U = unknown: "
         "see docs/ROUTE_EFFICIENCY.md).",
         "-- Levels and GRIND steps assume every class quest's XP (all classes in one list): approximate.",
-        f"-- Quest data: QuestieDB {commit} (GPLv3) via the M3 export.",
+        f"-- Quest data: QuestieDB {commit} (GPLv3) via the M3 export; Questie blacklist "
+        f"{(world.blacklist_info.get('commit') or 'unknown')[:10]} applied (blacklisted quests skipped).",
     ]
     for race, why in sorted(SKIPPED_STARTS.items()):
         out.append(f"-- Skipped raceID {race}: {why}.")
@@ -689,7 +695,11 @@ def main(argv=None):
         args.cls = None
     races = list(START_RACES) if args.all else (args.race or [])
     if args.write_guides:
-        world = M.World()
+        try:
+            world = M.World()
+        except M.BlacklistMissing as e:
+            print(f"error: {e}", file=sys.stderr)
+            return 2
         text = render_guides(world)
         os.makedirs(os.path.dirname(GUIDES_FILE), exist_ok=True)
         with open(GUIDES_FILE, "w", encoding="utf-8", newline="\n") as f:
@@ -707,7 +717,11 @@ def main(argv=None):
         if r not in M.RACES:
             ap.error(f"unknown raceID {r}")
 
-    world = M.World()
+    try:
+        world = M.World()
+    except M.BlacklistMissing as e:
+        print(f"error: {e}", file=sys.stderr)
+        return 2
     model = M.TimeModel.from_overrides(args.params)
     sizes = M.ZoneSizes.load(overrides=args.zone_sizes)
     results = []
