@@ -295,12 +295,31 @@ The engine emits `GUIDE_UPDATED` with the view; the UI only renders. Manual acti
 
 On every status transition the engine emits `STEP_DONE {stepId, segmentId, t, level, xp, map, x, y}`. The recorder already stores events; these give per-step and per-segment durations and XP. They are the raw material for route-efficiency measurement (section 9).
 
-## 8. Open questions for you
+## 8. Decisions (2026-11-10)
 
-1. **Segment switches:** suggest only (my recommendation) or auto-switch when clearly better?
-2. **Death skips:** opt-in setting, off by default (recommendation), shown only with an estimated time saving.
-3. **Questie's hidden-quest blacklist:** import it into M3 (GPLv3, from the Questie repo) so routes and recovery never point at unobtainable quests? Recommendation: yes, as a separate labelled layer.
-4. **Recovery tolerance:** how many levels over a segment's range before suggesting a switch (proposed: 2)?
+1. **Segment switches:** suggest only; auto-switch is a user setting, off by default.
+2. **Death skips:** opt-in setting `deathSkips`, off by default, shown only with an estimated time saving and its label.
+3. **Questie's hidden-quest blacklist:** desirable as a separate labelled layer, but importing it means executing new external Lua (Questie repo). **Awaiting user approval**; until then routes must avoid such quests by authoring.
+4. **Recovery tolerance:** 2 levels above a segment's range before suggesting a switch.
+
+## 8a. Shared interfaces (fixed before parallel implementation)
+
+**M3.1 quest fields**, appended after `TRIGGER` in this order (existing indexes unchanged):
+`BREADCRUMBS` (list of quest IDs), `DISABLED_BY` (quest ID), `AVAILABLE_UNTIL` (quest ID; `availableUntilCompleted`), `AVAILABLE_WITH` (quest ID; `availableStartingWith`), `MIN_REP` ({factionID, value}), `MAX_REP` ({factionID, value}), `REQ_SPELL` (spell ID; negative = must NOT know), `REQ_SPEC` (number), `REQ_RANKS` (list of {skill, value}).
+
+**Availability API** (`Guide/Availability.lua`, pure Lua):
+```lua
+local status, reason = ns.Availability.Check(questID, state)
+-- status: "COMPLETED" | "ACTIVE" | "AVAILABLE" | "LEVEL_TOO_LOW" | "UNAVAILABLE" | "UNKNOWN"
+-- reason: short machine-readable string, e.g. "race", "class", "prereq:788", "exclusive:794",
+--         "next_in_chain:794", "breadcrumb_target", "active_breadcrumb", "disabled_by:123",
+--         "available_until:123", "available_with:123", "negative_pre_any:-4962",
+--         "missing_prereq:2955", "needs_state:skill", "needs_state:rep", "needs_state:spell",
+--         "max_level", "no_data"
+```
+Reads data through `ns.Data.GetQuest` and `ns.DataSchema`; reads `state` per section 3.1 (`completed`, `log`, `raceID`, `classFile`, `level`, optional `skills`, `reputations`, `knownSpells`). Order of checks mirrors Questie's `IsDoable`; level is checked last and only distinguishes `LEVEL_TOO_LOW` (`level < REQ_LEVEL`) from `AVAILABLE`.
+
+**Test harness** (`tools/run_tests.lua`, owned by QA): discovers `tests/*_test.lua`; provides `T.addon(faction, class)` → namespace with `Core/Data.lua`, `Data/*.lua` and `Guide/*.lua` loaded (cached per faction/class), `T.state{...}` → CharacterState with defaults, `T.inject(ns, questID, fields)` → adds a synthetic quest record using schema field names, and assertions `T.eq`, `T.ok`, `T.contains`. Exit code 0 only if all tests pass.
 
 ## 9. Route efficiency: measurement before content
 
