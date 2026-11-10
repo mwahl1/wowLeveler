@@ -5,12 +5,11 @@ Product goals: (1) **leveling speed**, i.e. the shortest practical /played time 
 Status labels: **planned** → **implemented** (code written) → **tested** (run in game) → **verified** (works as specified in game).
 
 ## Current status
-- **Priority:** P0, Foundation and compatibility
-- **Milestone:** M1, diagnostics probe + overlay prototype (commit `35bfd3e`)
-- **Implemented, not tested:** everything in M1
+- **Priority:** P0 (in-game test pending) and P1 in parallel
+- **Milestones:** M1 implemented, untested in game. M2 done (toolchain + export verified on Mac). M3 implemented; first full pipeline run pending.
 - **Tested in game:** nothing yet
-- **Blocker:** in-game test pending (developer currently has no game access)
-- **Next task:** install M1 on the Windows PC, run `/reload` + `/ln probe`, report results
+- **Blockers:** game access (P0); GitHub push needs a new token (local commits unpushed)
+- **Next task:** run `tools/update_data.sh --no-pull` on the Mac and report the output
 
 ## Confirmed decisions
 - **D1: Client target.** Forever runs on the Mainline (Retail 12.x) client family; Midnight addon restrictions apply. TOC `## Interface: 16001` (from `Questie_Forever.toc`, 2026-11-10).
@@ -44,8 +43,15 @@ Status labels: **planned** → **implemented** (code written) → **tested** (ru
 | M | Priority | Scope | Status |
 |---|---|---|---|
 | M1 | P0 | Probe (24 API checks), overlay (character, XP, location, live objectives), event recorder, slash commands | implemented, untested |
-| M2 | P1 | Lua 5.1 + QuestieDB toolchain set up locally; export of fully corrected Forever data | planned (prep can run while P0 test is pending) |
-| M3 | P1 | Our compact `Data/` tables + validation report (Valley of Trials first) | planned |
+| M2 | P1 | Lua 5.1 + QuestieDB toolchain set up locally; export of fully corrected Forever data | done: verified on Mac (5,682 quests, 104,905 corrections) |
+| M3 | P1 | `tools/build_data.py` → `Data/*.lua` (faction-split, lazily compiled), labels, faction/class corrections, coverage report, Lua 5.1 validator, `tools/update_data.sh`, in-game loader + probe check | implemented; pipeline run with provenance/dynamic export pending |
 
-## Known bugs
-- None recorded (nothing tested in game yet).
+## Data pipeline (P1)
+`tools/update_data.sh` = `git pull` QuestieDB → `tools/questiedb_export.lua` (QuestieDB's own loader + registry, run with Lua 5.1) → `tools/build_data.py` → `tools/validate_data.lua` (runs the addon's real loader for every faction × class). Output: `Data/*.lua`, `docs/DATA_COVERAGE.md`, `docs/data-gaps.csv`.
+
+Design: data files register source strings; at login only Neutral + the player's faction (+ class overrides) are compiled, then the strings are released. Records are positional arrays; index names live in the generated `Data/Schema.lua`. Labels per quest: requirements / start location / finish location / XP, each V/O/E/U.
+
+## Known issues
+- Not tested in game yet.
+- Skyborne (Horde) starting quests: none in data (the zone's quests are flagged Alliance-only). Re-check after the dynamic-correction export; otherwise a data gap for the recorder.
+- Negative prerequisite IDs (Questie convention) are not interpreted yet; reported in DATA_COVERAGE.md.

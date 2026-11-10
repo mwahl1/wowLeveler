@@ -118,6 +118,147 @@ for typeName, entry in pairs(loaded) do
   print(string.format("%-7s %6d entities", typeName, n))
 end
 
+-- Correction layers ----------------------------------------------------------------
+-- A second instance of QuestieDB's correction registry, used only to (a) record which
+-- Static layer last wrote each field, and (b) apply Dynamic (faction/class) corrections.
+-- The entity data above stays the authoritative result of QuestieDB's own loader.
+
+local corrections = dofile("generator/corrections.lua")
+local registry = assert(corrections.registryFor(flavor), "no correction registry")
+local OWNER = registry.OWNER
+local OP_OFFSET = 1000 -- tablePatch encodes add/remove operations as fieldIndex + n*1000
+
+local raw = flavorLoader.load(flavor, nil, false)
+local rawIds, provenance, layerNames = {}, {}, {}
+
+for _, entityType in ipairs(config.entityTypes) do
+  local typeName = entityType.name
+  local names = {}
+  for name, index in pairs(loaded[typeName].meta.keys) do names[index] = name end
+
+  local ids = {}
+  for id in pairs(raw[typeName].entities) do ids[#ids + 1] = id end
+  table.sort(ids)
+  rawIds[typeName] = ids
+
+  -- Last Static layer to touch each field (approximation: noOverwrites layers counted as writers)
+  local byId = {}
+  for _, entry in ipairs(registry.Select({ datatype = typeName, dynamic = false, owner = OWNER })) do
+    if registry.EntryApplies(entry, flavor) then
+      local ok, rows = pcall(entry.func)
+      if ok and type(rows) == "table" then
+        layerNames[entry.name] = true
+        for id, fields in pairs(rows) do
+          if type(fields) == "table" then
+            local key = tostring(id)
+            byId[key] = byId[key] or {}
+            for fieldKey in pairs(fields) do
+              if type(fieldKey) == "number" then
+                local index = fieldKey % OP_OFFSET
+                byId[key][names[index] or ("field" .. index)] = entry.name
+              end
+            end
+          end
+        end
+      elseif not ok then
+        print("WARNING provenance: layer " .. tostring(entry.name) .. " failed: " .. tostring(rows))
+      end
+    end
+  end
+  provenance[typeName] = byId
+end
+
+writeJSON(outDir .. "/provenance.json", { rawIds = rawIds, lastStaticLayer = provenance })
+
+-- Dynamic corrections per faction and class. Providers read UnitFactionGroup and
+-- UnitClassBase at call time, so each combination is evaluated with stubbed values.
+
+local function deepCopy(v)
+  if type(v) ~= "table" then return v end
+  local out = {}
+  for k, child in pairs(v) do out[k] = deepCopy(child) end
+  return out
+end
+
+local function deepEqual(a, b)
+  if type(a) ~= "table" or type(b) ~= "table" then return a == b end
+  for k, v in pairs(a) do if not deepEqual(v, b[k]) then return false end end
+  for k in pairs(b) do if a[k] == nil then return false end end
+  return true
+end
+
+local FACTIONS = { "Horde", "Alliance" }
+local CLASSES = { "WARRIOR", "PALADIN", "HUNTER", "ROGUE", "PRIEST", "SHAMAN", "MAGE", "WARLOCK", "DRUID" }
+local dynamic, dynamicErrors, dynamicLayers = {}, {}, {}
+
+for _, faction in ipairs(FACTIONS) do
+  dynamic[faction] = {}
+  for _, class in ipairs(CLASSES) do
+    _G.UnitFactionGroup = function() return faction, faction end
+    _G.UnitClassBase = function() return class end
+    local perType = {}
+    for _, entityType in ipairs(config.entityTypes) do
+      local typeName = entityType.name
+      local static = loaded[typeName].entities
+      local names = {}
+      for name, index in pairs(loaded[typeName].meta.keys) do names[index] = name end
+
+      local work = {}
+      for _, entry in ipairs(registry.Select({ datatype = typeName, dynamic = true, owner = OWNER })) do
+        if registry.EntryApplies(entry, flavor) then
+          local ok, rows = pcall(entry.func)
+          if ok and type(rows) == "table" then
+            dynamicLayers[entry.name] = true
+            for id in pairs(rows) do
+              if work[id] == nil and static[id] ~= nil then work[id] = deepCopy(static[id]) end
+            end
+            local okMerge, err = pcall(registry.MergeInto, work, rows, entry.options, entry)
+            if not okMerge then dynamicErrors[#dynamicErrors + 1] = faction .. "/" .. class .. " " .. tostring(entry.name) .. ": " .. tostring(err) end
+          elseif not ok then
+            dynamicErrors[#dynamicErrors + 1] = faction .. "/" .. class .. " " .. tostring(entry.name) .. ": " .. tostring(rows)
+          end
+        end
+      end
+
+      -- Keep only fields that differ from the Static result
+      local diff = {}
+      for id, row in pairs(work) do
+        local base = static[id] or {}
+        local changed, removed = {}, {}
+        for index, value in pairs(row) do
+          if not deepEqual(value, base[index]) then changed[names[index] or ("field" .. index)] = value end
+        end
+        for index in pairs(base) do
+          if row[index] == nil then removed[#removed + 1] = names[index] or ("field" .. index) end
+        end
+        if next(changed) or #removed > 0 then
+          if #removed > 0 then changed.__removed = removed end
+          if not static[id] then changed.__new = true end
+          diff[tostring(id)] = changed
+        end
+      end
+      perType[typeName] = diff
+    end
+    dynamic[faction][class] = perType
+  end
+end
+_G.UnitFactionGroup, _G.UnitClassBase = nil, nil
+
+writeJSON(outDir .. "/dynamic.json", dynamic)
+for _, e in ipairs(dynamicErrors) do print("WARNING dynamic: " .. e) end
+
+local function keysOf(t)
+  local out = {}
+  for k in pairs(t) do out[#out + 1] = k end
+  table.sort(out)
+  return out
+end
+summary.staticLayers = keysOf(layerNames)
+summary.dynamicLayers = keysOf(dynamicLayers)
+summary.dynamicErrors = #dynamicErrors
+print("Static layers:  " .. table.concat(summary.staticLayers, ", "))
+print("Dynamic layers: " .. table.concat(summary.dynamicLayers, ", "))
+
 -- Support data (XP, zone mapping) --------------------------------------------------
 -- These files assign into QuestieLoader modules; a minimal stub captures them.
 
@@ -131,7 +272,15 @@ _G.QuestieLoader = {
   CreateModule = function(_, name) return moduleFor(name) end,
 }
 dofile("support/Forever/QuestXP/xpDB-classic.lua")
+local classicXP = {}
+for id, v in pairs(moduleFor("QuestXP").db) do classicXP[id] = v end
 dofile("support/Forever/QuestXP/xpDB-traces.lua")
+-- Entries replaced or added by the traces file were measured from Forever players
+local tracedXP = {}
+for id, v in pairs(moduleFor("QuestXP").db) do
+  if classicXP[id] ~= v then tracedXP[#tracedXP + 1] = id end
+end
+table.sort(tracedXP)
 dofile("support/Forever/Zones/areaIdToUiMapId.lua")
 dofile("support/Forever/Zones/subZoneToParentZone.lua")
 _G.QuestieLoader = nil
@@ -141,6 +290,7 @@ local function decode(s) return s and assert(loadstring(s))() or {} end
 
 writeJSON(outDir .. "/support.json", {
   questXP = moduleFor("QuestXP").db,               -- questID -> {level, xp}
+  questXPTraced = tracedXP,                        -- questIDs whose XP came from Forever traces
   areaIdToUiMapId = decode(zone.areaIdToUiMapId),
   areaIdToUiMapIdOverride = decode(zone.areaIdToUiMapIdOverride),
   subZoneToParentZone = decode(zone.subZoneToParentZone),

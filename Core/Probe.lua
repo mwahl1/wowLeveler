@@ -167,6 +167,22 @@ local CHECKS = {
       for e in pairs(ns.unknownEvents) do list[#list + 1] = e end
       return "partial", "unknown: " .. table.concat(list, ", ")
     end },
+  { "Quest database", function()
+      local st = ns.Data and ns.Data.status
+      if not st or st.state == "pending" then return "partial", "not loaded yet" end
+      local c = st.counts or {}
+      local detail = string.format("%s %s: %d quests, %d NPCs, %d objects, %d items, %d class overrides",
+        tostring(st.faction), tostring(st.class), c.quests or 0, c.npcs or 0, c.objects or 0, c.items or 0, c.classOverrides or 0)
+      if st.ms then detail = detail .. string.format(", %.0f ms", st.ms) end
+      if st.memoryKB then detail = detail .. string.format(", %.1f MB", st.memoryKB / 1024) end
+      if st.state ~= "loaded" then
+        return "error", detail .. " | " .. table.concat(st.errors or {}, " | ")
+      end
+      if (c.quests or 0) == 0 then return "partial", detail .. " (no data files built?)" end
+      local meta = ns.DataMeta
+      if meta then detail = detail .. ", QuestieDB " .. tostring(meta.questiedbCommit):sub(1, 10) end
+      return "pass", detail
+    end },
   { "Other addons", function()
       local found = {}
       for _, a in ipairs({ "Questie", "QuestieDB", "TomTom", "RXPGuides" }) do

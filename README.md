@@ -29,3 +29,14 @@ Drag the title bar to move the window and the bottom-right corner to resize it. 
 Results and recorded events are saved per character in:
 `WTF\Account\<ACCOUNT>\<Realm>\<Character>\SavedVariables\LevelingNavigator.lua`
 (written when you log out or `/reload`).
+
+## Rebuilding the quest database (developers)
+Requires Lua 5.1 and a QuestieDB checkout in `~/wow-tools` (see `docs/ROADMAP.md`). Then:
+```
+tools/update_data.sh            # pull latest QuestieDB, export, build, validate
+tools/update_data.sh --no-pull  # rebuild from the QuestieDB commit already checked out
+```
+Results: `Data/*.lua`, plus `docs/DATA_COVERAGE.md` and `docs/data-gaps.csv`.
+
+## License
+GPLv3. The quest data comes from [QuestieDB](https://github.com/Questie/QuestieDB) under its GPLv3 terms.
