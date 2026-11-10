@@ -6,10 +6,10 @@ Status labels: **planned** → **implemented** (code written) → **tested** (ru
 
 ## Current status
 - **Priority:** P0 (in-game test pending) and P1 in parallel
-- **Milestones:** M1 implemented, untested in game. M2 done (toolchain + export verified on Mac). M3 implemented; first full pipeline run pending.
+- **Milestones:** M1 implemented, untested in game. M2 done. M3 done offline: full pipeline run on Mac, Lua 5.1 validator 0 errors / 1 warning; untested in game.
 - **Tested in game:** nothing yet
 - **Blockers:** game access (P0); GitHub push needs a new token (local commits unpushed)
-- **Next task:** run `tools/update_data.sh --no-pull` on the Mac and report the output
+- **Next task:** P2 guide engine design (step format, state machine, recovery) while P0/M3 await the in-game test
 
 ## Confirmed decisions
 - **D1: Client target.** Forever runs on the Mainline (Retail 12.x) client family; Midnight addon restrictions apply. TOC `## Interface: 16001` (from `Questie_Forever.toc`, 2026-11-10).
@@ -44,7 +44,7 @@ Status labels: **planned** → **implemented** (code written) → **tested** (ru
 |---|---|---|---|
 | M1 | P0 | Probe (24 API checks), overlay (character, XP, location, live objectives), event recorder, slash commands | implemented, untested |
 | M2 | P1 | Lua 5.1 + QuestieDB toolchain set up locally; export of fully corrected Forever data | done: verified on Mac (5,682 quests, 104,905 corrections) |
-| M3 | P1 | `tools/build_data.py` → `Data/*.lua` (faction-split, lazily compiled), labels, faction/class corrections, coverage report, Lua 5.1 validator, `tools/update_data.sh`, in-game loader + probe check | implemented; pipeline run with provenance/dynamic export pending |
+| M3 | P1 | `tools/build_data.py` → `Data/*.lua` (faction-split, lazily compiled), labels, faction/class corrections, coverage report, Lua 5.1 validator, `tools/update_data.sh`, in-game loader + probe check | done offline (QuestieDB `aca0da1c4a`: 5,682 quests; validator 0 errors; ~50 ms / ~7.5 MB per faction outside the game); untested in game |
 
 ## Data pipeline (P1)
 `tools/update_data.sh` = `git pull` QuestieDB → `tools/questiedb_export.lua` (QuestieDB's own loader + registry, run with Lua 5.1) → `tools/build_data.py` → `tools/validate_data.lua` (runs the addon's real loader for every faction × class). Output: `Data/*.lua`, `docs/DATA_COVERAGE.md`, `docs/data-gaps.csv`.
@@ -53,5 +53,6 @@ Design: data files register source strings; at login only Neutral + the player's
 
 ## Known issues
 - Not tested in game yet.
-- Skyborne (Horde) starting quests: none in data (the zone's quests are flagged Alliance-only). Re-check after the dynamic-correction export; otherwise a data gap for the recorder.
+- Skyborne (Horde) start: Zephras Isle (zone 16593) has 111 quests; only 92598 "The Gift of Skysight" (lvl 2) allows Horde Skyborne, the rest are Alliance-only, and no faction correction changes that. Unresolved: verify in game with a Horde Skyborne character, or wait for a QuestieDB update.
+- 1,474 quests have no XP value (724 new Forever, 750 Classic-origin, many likely non-leveling: crafting, class, holiday). See `docs/data-gaps.csv`.
 - Negative prerequisite IDs (Questie convention) are not interpreted yet; reported in DATA_COVERAGE.md.

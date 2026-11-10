@@ -1,0 +1,1609 @@
+questID,name,content,factions,reqLevel,questLevel,zone,missingXP,missingStartLoc,missingFinishLoc,labels
+490,Bounty: Gnarlpine Furbolg,new,Alliance,5,8,Teldrassil,True,False,False,OOOU
+960,Onu is meditating,new,Alliance,1,1,Darkshore,True,False,False,OEEU
+5640,Desperate Prayer,new,Alliance,10,10,sort -262,True,False,False,OEEU
+5669,<NYI> A Blessing of Light,new,Alliance,15,15,sort -262,True,True,True,OUUU
+5670,<NYI> A Blessing of Light,new,Alliance,15,15,sort -262,True,True,True,OUUU
+5671,<NYI> A Blessing of Light,new,Alliance,15,15,sort -262,True,True,True,OUUU
+5678,Arcane Feedback,new,Alliance,20,20,sort -262,True,False,False,OEEU
+5686,<NYI> The Light Protects You,new,Alliance,25,25,sort -262,True,True,True,OUUU
+5687,<NYI> The Light Protects You,new,Alliance,25,25,sort -262,True,True,True,OUUU
+5691,<NYI> <TXT> In the Dark it was Created,new,Horde,15,15,sort -262,True,True,True,OUUU
+5692,<NYI> In the Dark It was Created,new,Horde,15,15,sort -262,True,True,True,OUUU
+5693,<NYI> In the Dark It was Created,new,Horde,15,15,sort -262,True,True,True,OUUU
+5704,<NYI> <TXT> Undead Priest Robe,new,Horde,25,25,sort -262,True,True,True,OUUU
+5705,<NYI> No Longer a Shadow,new,Horde,25,25,sort -262,True,True,True,OUUU
+5706,<NYI> No Longer a Shadow,new,Horde,25,25,sort -262,True,True,True,OUUU
+7668,The Darkreaver Menace,new,Horde,58,60,sort -82,True,False,False,OEEU
+7669,Again Into the Great Ossuary,new,Horde,58,60,sort -82,True,False,False,OEEU
+7670,Lord Grayson Shadowbreaker,new,Alliance,60,60,sort -141,True,False,False,OEEU
+60860,Your Reward has Arrived!,new,Horde/Alliance,,,no zone,True,False,False,OEEU
+78090,A Second Opinion,new,Alliance,22,30,sort -141,True,False,False,OEEU
+78093,Return to Delgren,new,Alliance,22,30,sort -141,True,False,False,OOEU
+78124,Nar'thalas Almanac,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+78127,The Dalaran Digest,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+78132,Dragonslayer's Helm,new,Horde/Alliance,15,25,no zone,True,False,False,OOOU
+78133,Dragonslayer's Shield,new,Horde/Alliance,15,25,no zone,True,False,False,OOOU
+78134,Dragonslayer's Lance,new,Horde/Alliance,15,25,no zone,True,False,False,OOOU
+78142,Bewitchments and Glamours,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+78143,Secrets of the Dreamers,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+78145,Arcanic Systems Manual,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+78146,Goaz Scrolls,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+78147,Crimes Against Anatomy,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+78148,Runes of the Sorcerer-Kings,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+78149,Fury of the Land,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+78150,Friend of the Library,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+78270,Goblin Lockpicks,new,Horde/Alliance,1,23,sort -162,True,False,False,OEEU
+78307,The Horn of Xelthos,new,Horde/Alliance,1,23,sort -162,True,True,False,OUOU
+78699,The Eye of Bhossca,new,Horde/Alliance,25,35,sort -162,True,True,False,OUOU
+78823,Terror of the Desert Skies,new,Horde/Alliance,26,40,Badlands,False,True,False,OUEO
+78916,The Heart of the Void,new,Alliance,25,25,Blackfathom Deeps,True,True,False,OUEU
+78917,The Heart of the Void,new,Horde,25,25,Blackfathom Deeps,True,True,False,OUEU
+79090,Repelling Invaders,new,Alliance,18,60,Ashenvale,True,False,False,OEOU
+79091,Archmage Antonidas: The Unabridged Autobiography,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+79092,Archmage Theocritus' Research Journal,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+79093,Rumi of Gnomeregan: The Collected Works,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+79094,The Lessons of Ta'zo,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+79095,The Apothecary's Metaphysical Primer,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+79096,Ataeric: On Arcane Curiosities,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+79097,Baxtan: On Destructive Magics,new,Horde/Alliance,1,20,sort -284,True,False,False,OOOU
+79098,Clear the Forest!,new,Horde,18,60,Ashenvale,True,True,False,OUOU
+79358,"Storm, Earth, and Fire",new,Horde/Alliance,30,38,sort -82,True,False,False,OOOU
+79360,Elemental Aid,new,Horde,30,33,sort -82,True,False,False,OEEU
+79361,"Storm, Earth, and Fire",new,Horde,30,38,sort -82,True,False,False,OEEU
+79364,Eyes on the Sky,new,Horde,30,33,sort -82,True,False,False,OEEU
+79365,With Wind Beneath Your Wings,new,Horde,30,40,sort -82,True,False,False,OEEU
+79366,Heed My Call,new,Horde,30,40,sort -82,True,False,False,OEEU
+79442,The Tempest's Weapons,new,Horde,30,40,sort -82,True,False,False,OEEU
+79482,Stolen Winter Veil Treats,new,Alliance,25,60,sort -22,True,False,False,OOOU
+79483,Stolen Winter Veil Treats,new,Horde,25,60,sort -22,True,False,False,OOOU
+79492,Metzen the Reindeer,new,Alliance,25,60,sort -22,True,False,False,OOOU
+79495,Metzen the Reindeer,new,Horde,25,60,sort -22,True,False,False,OOOU
+79535,Basilisks: Should Petrification be Feared?,new,Horde/Alliance,1,35,sort -284,True,False,False,OOOU
+79536,Greater Friend of the Library,new,Horde/Alliance,20,35,sort -284,True,False,False,OOOU
+79637,A Ticking Present,new,Horde/Alliance,20,40,sort -22,True,True,True,OUUU
+79678,Taste Testing,new,Horde/Alliance,26,40,Arathi Highlands,True,False,False,OOOU
+79731,The Troll Scroll,new,Horde/Alliance,1,35,sort -262,True,False,False,OEEU
+79939,The Broken Hammer,new,Alliance,35,40,sort -141,True,False,False,OOEU
+79940,A Lost Brother,new,Alliance,35,40,sort -141,True,False,False,OEEU
+79945,Orders from the Grand Crusader,new,Alliance,35,40,sort -141,True,True,False,OUEU
+79946,A Brother In Need,new,Alliance,35,40,sort -141,True,False,True,OEUU
+79947,Geomancy: The Stone-Cold Truth,new,Horde/Alliance,1,35,sort -284,True,False,False,OOOU
+79948,Defensive Magics 101,new,Horde/Alliance,1,35,sort -284,True,False,False,OOOU
+79949,A Web of Lies: Debunking Myths and Legends,new,Horde/Alliance,1,35,sort -284,True,False,False,OOOU
+79950,Demons and You,new,Horde/Alliance,1,35,sort -284,True,False,False,OOOU
+79951,Mummies: A Guide to the Unsavory Undead,new,Horde/Alliance,1,35,sort -284,True,False,False,OOOU
+79952,RwlRwlRwlRwl!,new,Horde/Alliance,1,35,sort -284,True,False,False,OOOU
+79953,A Ludite's Guide to Caring for Your Demonic Pet,new,Horde/Alliance,1,35,no zone,True,False,False,OOOU
+79963,By The Light's Grace,new,Alliance,35,40,sort -141,True,True,True,OUUU
+79970,Aeonas the Vindicated,new,Alliance,35,40,sort -141,True,True,True,OUUU
+80001,Rekindle,new,Horde/Alliance,1,40,Stonetalon Mountains,True,False,False,OOOU
+80325,The Mad King,new,Horde,40,40,Gnomeregan,True,True,False,OUEU
+80411,The Talisman of Kazdor,new,Horde/Alliance,45,50,sort -162,True,False,False,OEEU
+80526,Fool Me Twice,new,Horde/Alliance,45,50,sort -162,True,False,False,OEEU
+81570,Jarl Needs a Blade,new,Horde/Alliance,30,35,Dustwallow Marsh,True,False,False,OEEU
+81730,Duskwood Mission I: Defeat Worgen,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81731,Duskwood Mission II: Defeat Ogres,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81732,Duskwood Mission III: Defeat Dragonkin,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81733,Duskwood Mission IV: Ogre Intelligence,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81734,Duskwood Mission V: Worgen Intelligence,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81735,Duskwood Mission VI: Dragon Intelligence,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81736,Duskwood Mission VII: Recover Shadowscythe,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81737,Duskwood Mission VIII: Recover Ogre Magi text,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81738,Duskwood Mission IX: Recover Dragon Egg,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81739,Duskwood Mission X: Nightmare Moss,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81740,Duskwood Mission XI: Cold Iron Ore,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81741,Duskwood Mission XII: Dream-Touched Dragonscale,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81742,Duskwood Mission XIII: Defeat Ylanthrius,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81743,Duskwood Mission XIV: Defeat Vvarc'zul,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81744,Duskwood Mission XV: Defeat Amokarok,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81745,Duskwood Mission XVI: Rescue Kroll Mountainshade,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81746,Duskwood Mission XVII: Rescue Alara Grovemender,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81747,Duskwood Mission XVIII: Rescue Elenora Marshwalker,new,Horde/Alliance,23,27,Duskwood,True,False,False,OOOU
+81762,Some Good News,new,Alliance,45,50,sort -141,True,True,False,OUEU
+81764,The Mysterious Merchant,new,Alliance,45,50,sort -141,True,False,False,OEOU
+81765,"Elrick, Paladin of the Silver Hand",new,Alliance,45,50,sort -141,True,False,False,OOEU
+81766,The Bloody Missive,new,Alliance,45,50,sort -141,True,True,False,OUEU
+81790,Materials of Significance,new,Alliance,45,53,sort -141,True,False,False,OOOU
+81900,The Burning Beast,new,Horde/Alliance,45,54,Badlands,True,False,False,OOEU
+81917,Chains That Bind,new,Horde/Alliance,45,54,Blasted Lands,True,False,False,OEEU
+81919,Brought to Heel,new,Horde/Alliance,45,54,Blasted Lands,True,False,False,OEEU
+81924,Wisdom of the Guardians,new,Horde/Alliance,40,50,sort -263,True,False,False,OOOU
+81944,A Newly Discovered Purpose...,new,Alliance,45,53,sort -141,True,True,False,OUOU
+81947,Sanguine Sorcery,new,Horde/Alliance,1,45,sort -284,True,False,False,OOOU
+81949,Legends of the Tidesages,new,Horde/Alliance,1,45,sort -284,True,False,False,OOOU
+81951,The Liminal and the Arcane,new,Horde/Alliance,1,45,no zone,True,False,False,OOOU
+81952,Everyday Etiquette,new,Horde/Alliance,1,45,sort -284,True,False,False,OOOU
+81953,Stonewrought Design,new,Horde/Alliance,1,45,sort -284,True,False,False,OOOU
+81954,Venomous Journeys,new,Horde/Alliance,1,45,sort -284,True,False,False,OOOU
+81955,A Mind of Metal,new,Horde/Alliance,1,45,sort -284,True,False,False,OOOU
+81956,Conjurer's Codex,new,Horde/Alliance,1,45,sort -284,True,False,False,OOOU
+82084,A Lesson in Literacy,new,Horde/Alliance,42,45,sort -161,True,True,False,OUOU
+82208,Greater Friend of the Library,new,Horde/Alliance,35,45,sort -284,True,False,False,OOOU
+83934,Show Me the Money!,new,Horde/Alliance,55,60,Stranglethorn Vale,True,False,False,OOOU
+84147,An Earnest Proposition,new,Alliance,58,60,Ironforge,True,False,False,OOOU
+84148,An Earnest Proposition,new,Alliance,58,60,Ironforge,True,False,False,OOOU
+84149,An Earnest Proposition,new,Alliance,58,60,Ironforge,True,False,False,OOOU
+84150,An Earnest Proposition,new,Alliance,58,60,Ironforge,True,False,False,OOOU
+84154,An Earnest Proposition,new,Alliance,58,60,Ironforge,True,False,False,OOOU
+84155,An Earnest Proposition,new,Horde,58,60,Orgrimmar,True,False,False,OOOU
+84156,An Earnest Proposition,new,Horde,58,60,Orgrimmar,True,False,False,OOOU
+84157,An Earnest Proposition,new,Horde,58,60,Orgrimmar,True,False,False,OOOU
+84158,An Earnest Proposition,new,Horde,58,60,Orgrimmar,True,False,False,OOOU
+84159,An Earnest Proposition,new,Horde,58,60,Orgrimmar,True,False,False,OOOU
+84160,An Earnest Proposition,new,Horde,58,60,Orgrimmar,True,False,False,OOOU
+84161,An Earnest Proposition,new,Horde,58,60,Orgrimmar,True,False,False,OOOU
+84162,An Earnest Proposition,new,Horde,58,60,Orgrimmar,True,False,False,OOOU
+84318,Oi!,new,Horde/Alliance,54,57,sort -141,True,True,True,OUUU
+84330,A Wee Bit O' Necromancy,new,Alliance,54,59,sort -141,True,True,True,OUUU
+84395,Undead Potatoes,new,Horde/Alliance,1,60,sort -284,True,False,False,OEEU
+84396,Magma or Lava?,new,Horde/Alliance,1,60,sort -284,True,False,False,OEEU
+84397,Northern Kalimdor - A Comprehensive Guide,new,Horde/Alliance,1,60,sort -284,True,False,False,OEEU
+84398,A Study of the Light,new,Horde/Alliance,1,60,sort -284,True,False,False,OEEU
+84399,Ka-Boom!,new,Horde/Alliance,1,60,sort -284,True,False,False,OEEU
+84400,The Knight and the Lady,new,Horde/Alliance,1,60,sort -284,True,False,False,OEEU
+84401,Scourge: Undead Menace or Misunderstood?,new,Horde/Alliance,1,60,sort -284,True,False,False,OEEU
+84402,Necromancy 101,new,Horde/Alliance,1,60,sort -284,True,False,False,OEEU
+86611,Stag Lord's Bauble,new,Alliance,48,55,Felwood,True,True,True,OUUU
+86612,Stag Lord's Bauble,new,Horde,48,55,Felwood,True,True,True,OUUU
+86615,Treaty Obligations,new,Alliance,40,51,no zone,False,True,True,OUUO
+86616,Repurposed Totems,new,Alliance,45,48,The Hinterlands,True,True,True,OUUU
+87451,Memories of Rockard,new,Horde,45,55,Blasted Lands,True,True,True,OUUU
+87492,Uncanny Crystal,new,Horde/Alliance,50,55,Un Goro Crater,True,False,False,OEEU
+88758,Sentiments of the Lost,new,Alliance,28,33,Wetlands,True,False,False,OOEU
+88807,Slay the Spitelash,new,Alliance,45,48,Azshara,True,True,True,OUUU
+88809,Preserving Eldarath,new,Alliance,45,52,Azshara,True,True,True,OUUU
+88812,Reclaiming Ravencrest,new,Alliance,47,55,Azshara,True,True,True,OUUU
+88813,The Head of the Serpent,new,Alliance,47,55,Azshara,True,True,True,OUUU
+88821,Making Contact,new,Alliance,47,51,Azshara,True,True,True,OUUU
+88857,Saving a Sentinel,new,Alliance,45,47,Azshara,True,True,True,OUUU
+88884,Highborne Tablets,new,Alliance,47,52,Azshara,True,True,True,OUUU
+88917,Slithering Looters,new,Alliance,47,52,Azshara,True,True,True,OUUU
+89001,Home on the Range,new,Alliance,45,48,Azshara,True,True,True,OUUU
+89013,Gettin' Buzzed,new,Alliance,45,48,Azshara,True,True,True,OUUU
+89015,Deadliest Catch,new,Alliance,50,56,Azshara,True,True,True,OUUU
+89037,Murloc Thieves,new,Alliance,47,52,Azshara,True,True,True,OUUU
+89038,A Monumental Task,new,Alliance,47,55,Azshara,True,True,True,OUUU
+89053,Your Final Reward,new,Alliance,47,55,Azshara,True,True,True,OUUU
+89228,Winter Frontier Fishery,new,Alliance,45,48,Azshara,True,True,True,OUUU
+89470,Ill Tidings,new,Alliance,47,55,Azshara,True,True,True,OUUU
+90702,Disturbed Grave,new,Alliance,54,58,Mount Hyjal,True,True,True,OUUU
+90813,Pay Dirt!,new,Alliance,50,53,Azshara,True,True,True,OUUU
+91488,Home on the Range,new,Horde,45,48,Azshara,True,True,True,OUUU
+91497,Seals of the Sin'dorei,new,Horde,44,53,Azshara,True,True,True,OUUU
+91500,An Explosive Gambit,new,Horde,44,55,Azshara,True,True,True,OUUU
+91531,Revenge Exacted,new,Horde,44,55,Orgrimmar,True,True,True,OUUU
+91538,Sin'dorei Tome of Summoning,new,Horde,44,55,Azshara,True,True,True,OUUU
+91547,Sin'dorei Tome of Summoning,new,Horde,44,55,Azshara,True,True,True,OUUU
+91548,Vek'zol,new,Horde,44,55,Blasted Lands,True,True,True,OUUU
+91568,Long Walks on the Beach,new,Horde,45,51,Azshara,True,True,True,OUUU
+91569,Blue Gold,new,Horde,45,53,Azshara,True,True,True,OUUU
+91607,Pay Dirt!,new,Horde,50,53,Azshara,True,True,True,OUUU
+91608,Gettin' Buzzed,new,Horde,45,48,Azshara,True,True,True,OUUU
+91610,Winter Frontier Fishery,new,Horde,45,48,Azshara,True,True,True,OUUU
+91611,Deadliest Catch,new,Horde,50,56,Azshara,True,True,True,OUUU
+91685,Ley of the Land,new,Horde,45,54,Azshara,True,True,True,OUUU
+91688,To the Summit of Eternity,new,Alliance,54,59,Mount Hyjal,True,True,True,OUUU
+91734,Remote Contact,new,Horde,44,52,Azshara,True,True,True,OUUU
+91735,Remote Contact,new,Horde,44,52,Azshara,True,True,True,OUUU
+91736,Applejack Still,new,Alliance,1,1,Elwynn Forest,True,False,False,OOOU
+91737,Remote Contact,new,Horde,44,52,Azshara,True,True,True,OUUU
+91738,An Apple Treat,new,Alliance,7,10,Elwynn Forest,True,False,False,OEEU
+91794,Flags of Our Forebears,new,Horde,54,59,Mount Hyjal,True,True,True,OUUU
+91881,The Western Post,new,Alliance,54,57,Mount Hyjal,True,True,True,OUUU
+91899,A Sealed Crate,new,Horde/Alliance,1,60,no zone,True,False,False,OOOU
+91900,A Sealed Crate,new,Horde/Alliance,1,60,no zone,True,False,False,OOOU
+91901,A Sealed Crate,new,Horde/Alliance,,60,no zone,True,False,False,OOOU
+91904,A Sealed Crate,new,Horde/Alliance,,60,no zone,True,False,False,OOOU
+91905,A Sealed Crate,new,Horde/Alliance,,60,no zone,True,False,False,OOOU
+92014,Fox Hole,new,Alliance,54,57,Mount Hyjal,True,True,True,OUUU
+92015,Area Denial Skunks,new,Alliance,54,56,Mount Hyjal,True,True,True,OUUU
+92064,Tree Free,new,Alliance,54,56,Mount Hyjal,True,True,True,OUUU
+92101,Lifted by Legacy,new,Horde/Alliance,54,58,Mount Hyjal,True,True,True,OUUU
+92343,Get to the Roots of It,new,Horde,45,55,no zone,True,True,True,OUUU
+92344,Get to the Roots of It,new,Alliance,45,55,no zone,True,True,True,OUUU
+92345,Beneath Nordrassil,new,Alliance,45,55,Azshara,True,True,True,OUUU
+92346,Beneath Nordrassil,new,Horde,45,55,Azshara,True,True,True,OUUU
+92401,A Frightened Request,new,Horde,15,22,Ruins Of Lordaeron,True,False,False,OOOU
+92415,Remember That I Love You,new,Alliance,15,22,Ruins Of Lordaeron,True,False,False,OEEU
+92421,Light's Justice,new,Horde,15,22,Ruins Of Lordaeron,True,False,False,OOOU
+92422,The Wrath of Rath'mael,new,Horde,15,22,Ruins Of Lordaeron,True,False,False,OOOU
+92446,Head Scratcher,new,Horde,54,60,Mount Hyjal,True,True,True,OUUU
+92449,Blight No More,new,Alliance,54,58,Mount Hyjal,True,True,True,OUUU
+92456,A Green Sample,new,Alliance,24,33,City Of Dalaran,True,False,False,OEEU
+92457,Starving Arcane,new,Alliance,24,33,City Of Dalaran,True,False,False,OOOU
+92458,Heart of Disruption,new,Alliance,24,33,City Of Dalaran,True,False,False,OOOU
+92489,Power Overwhelming,new,Alliance,24,33,City Of Dalaran,True,False,False,OEEU
+92519,Ward Restocking,new,Horde,30,36,Arathi Highlands,True,False,False,OEEU
+92591,Final Death,new,Alliance,57,59,Mount Hyjal,True,True,True,OUUU
+92592,Final Death,new,Horde,57,59,Mount Hyjal,True,True,True,OUUU
+92593,Avalanche of Corruption,new,Alliance,54,59,Mount Hyjal,True,True,True,OUUU
+92609,Feathers in Flight,new,Horde,54,57,Mount Hyjal,True,True,True,OUUU
+92702,Branch Out,new,Alliance,54,56,Mount Hyjal,True,True,True,OUUU
+92707,The Giant in the Den,new,Horde,30,33,Arathi Highlands,True,True,True,OUUU
+92753,Destruction in Deadmines,new,Alliance,9,18,The Deadmines,True,False,False,OOOU
+92754,A New Need for Shadow Protection,new,Horde/Alliance,30,35,Desolace,True,True,True,OUUU
+92755,Mysterious Mysticism,new,Horde/Alliance,30,35,Desolace,False,True,True,OUUO
+92811,Economic Warfare,new,Horde/Alliance,1,60,Desolace,True,True,True,OUUU
+92812,Economic Warfare,new,Horde,1,60,Desolace,True,True,True,OUUU
+92814,I Need a Tailor,new,Horde/Alliance,30,35,Desolace,False,True,True,OUUO
+92817,Leather Technique,new,Horde/Alliance,30,35,Desolace,False,True,True,OUUO
+92818,"Big, No, MASSIVE Iron Axes",new,Horde/Alliance,30,35,Desolace,True,True,True,OUUU
+92841,Valley of Bones,new,Alliance,30,40,Shen Dralas,True,False,False,OEOU
+92844,Mountain of Bones,new,Alliance,30,42,Shen Dralas,True,False,False,OOOU
+92846,Outcast Necromancers,new,Alliance,30,40,Shen Dralas,True,False,True,OOUU
+92847,Corrupting Tears,new,Horde/Alliance,30,42,Shen Dralas,True,True,True,OUUU
+92858,WANTED: Ohk'zi,new,Alliance,39,43,Feralas,True,True,True,OUUU
+92867,Ground to Keep,new,Horde/Alliance,32,39,Arathi Highlands,False,True,True,OUUO
+92873,Proof of Concept,new,Horde/Alliance,30,41,Shen Dralas,True,True,True,OUUU
+92878,Lost for Words,new,Horde,36,43,Feralas,True,True,True,OUUU
+92893,No Mercy for the Weak,new,Horde/Alliance,30,42,Shen Dralas,True,True,True,OUUU
+92894,Bone Raising,new,Horde/Alliance,30,40,Shen Dralas,True,True,True,OUUU
+93030,The Knight of Mourning,new,Horde,50,58,Tirisfal Glades,True,True,True,OUUU
+93034,Valley of Bones,new,Horde/Alliance,30,38,Shen Dralas,True,False,False,OEOU
+93035,Ravaging Ravagers,new,Horde/Alliance,30,38,Shen Dralas,True,False,False,OOOU
+93037,Outing Outcasts,new,Horde/Alliance,30,40,Shen Dralas,True,False,False,OOOU
+93041,Facing the Truth,new,Horde/Alliance,30,38,Shen Dralas,True,False,False,OOEU
+93044,A Cleansing Cry,new,Horde,35,38,Desolace,True,False,False,OEEU
+93045,Test Your Theory,new,Horde/Alliance,30,38,Desolace,True,True,False,OUOU
+93058,Saving Our Own,new,Horde/Alliance,30,42,Shen Dralas,True,True,False,OUOU
+93062,Bone Burying,new,Horde/Alliance,30,42,Shen Dralas,True,True,False,OUOU
+93066,Bristleback Retreat,new,Horde/Alliance,30,43,Shen Dralas,True,True,False,OUOU
+93072,Long-Term Solutions,new,Horde/Alliance,30,43,Shen Dralas,True,True,True,OUUU
+93122,Checking Things Out,new,Horde,35,43,Shen Dralas,True,False,False,OOOU
+93125,Going Home,new,Horde/Alliance,30,43,Shen Dralas,True,True,True,OUUU
+93128,Khan Jehn,new,Horde,35,42,Desolace,True,False,False,OOEU
+93129,Threat of Starvation,new,Horde/Alliance,30,43,Shen Dralas,True,True,True,OUUU
+93188,Return to Orgrul,new,Horde/Alliance,30,43,Shen Dralas,True,True,True,OUUU
+93196,Khan Jehn,new,Horde/Alliance,35,42,Desolace,True,True,True,OUUU
+93226,Buying Friendship: Magram,new,Alliance,30,45,Desolace,False,True,True,OUUO
+93227,Buying Friendship: Gelkis,new,Alliance,30,45,Desolace,False,False,True,OEUO
+93383,Contents Under Pressure,new,Alliance,54,57,Mount Hyjal,True,True,True,OUUU
+93429,Blood of My Blood,new,Horde/Alliance,30,35,Swamp Of Sorrows,False,True,True,OUUO
+93430,Taking the Bait Back,new,Horde/Alliance,30,35,Swamp Of Sorrows,False,True,True,OUUO
+93443,Lost Shipping Crate,new,Alliance,36,36,Stranglethorn Vale,False,True,True,OUUO
+93459,More Al'Aketh Ears,new,Horde/Alliance,8,13,Zephras Isle,True,False,False,OOOU
+93464,The Visiting Mage,new,Horde/Alliance,30,38,Swamp Of Sorrows,False,True,True,OUUO
+93465,Notes on Draenethyst,new,Horde,30,40,Desolace,True,False,False,OEEU
+93510,Wake Memories,new,Horde/Alliance,54,58,Mount Hyjal,True,True,True,OUUU
+93585,This Light of Mine,new,Alliance,30,34,Swamp Of Sorrows,False,False,True,OOUO
+93663,Lost in Transit,new,Horde,30,35,Swamp Of Sorrows,True,False,False,OEEU
+93678,Abridged Notes on Draenethyst,new,Horde/Alliance,30,40,Desolace,True,True,True,OUUU
+93680,Key to the City,new,Horde,30,33,Alterac Mountains,True,False,False,OEEU
+93786,A Message in Blood,new,Horde,35,36,Riverglades,False,False,True,OOUO
+93862,Crate Return,new,Horde/Alliance,1,60,no zone,True,True,True,OUUU
+93971,Farholde Scouting Report,new,Horde,36,45,Riverglades,True,True,True,OUUU
+93976,The Goblin Trader,new,Horde,36,36,Riverglades,True,True,True,OUUU
+94004,Craftsman's Writ: Elixir of Ogre's Strength,new,Horde/Alliance,1,60,Crafting,True,False,False,OEOU
+94212,Craftsman's Writ: Elixir of Wisdom,new,Horde,1,60,Crafting,True,False,False,OEOU
+94213,Craftsman's Writ: Lesser Mana Potion,new,Horde,1,60,Crafting,True,False,False,OEOU
+94214,Craftsman's Writ: Shadow Protection Potion,new,Horde/Alliance,1,60,Crafting,True,False,False,OEEU
+94215,Craftsman's Writ: Free Action Potion,new,Horde/Alliance,1,60,Crafting,True,False,False,OEOU
+94216,Craftsman's Writ: Elixir of Lesser Agility,new,Horde,1,60,Crafting,True,False,False,OEEU
+94217,Craftsman's Writ: Lesser Troll's Blood Elixir,new,Horde/Alliance,1,60,Crafting,True,False,False,OEEU
+94218,Craftsman's Writ: Elixir of Defense,new,Horde/Alliance,1,60,Crafting,True,False,False,OEEU
+94219,Craftsman's Writ: Draught of Water Breathing,new,Horde/Alliance,1,60,Crafting,True,False,False,OEEU
+94220,Craftsman's Writ: Pearl-Handled Dagger,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94221,Craftsman's Writ: Golden Rod,new,Horde/Alliance,1,60,Crafting,True,False,False,OEOU
+94222,Craftsman's Writ: Iridescent Hammer,new,Horde/Alliance,1,60,Crafting,True,False,False,OEOU
+94223,Craftsman's Writ: Silver Skeleton Key,new,Horde/Alliance,1,60,Crafting,True,False,False,OEOU
+94224,Craftsman's Writ: Heavy Bronze Mace,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94225,Craftsman's Writ: Rough Bronze Leggings,new,Horde/Alliance,1,60,Crafting,True,False,False,OEEU
+94226,Craftsman's Writ: Green Iron Gauntlets,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94227,Craftsman's Writ: Big Bronze Knife,new,Horde/Alliance,1,60,Crafting,True,False,False,OEEU
+94228,Craftsman's Writ: Green Iron Boots,new,Horde/Alliance,1,60,Crafting,True,False,False,OEEU
+94229,Craftsman's Writ: Ornate Spyglass,new,Horde/Alliance,1,60,Crafting,True,False,False,OEOU
+94230,Craftsman's Writ: Explosive Sheep,new,Horde/Alliance,1,60,Crafting,True,False,False,OEOU
+94231,Craftsman's Writ: Moonsight Rifle,new,Horde/Alliance,1,60,Crafting,True,False,False,OEOU
+94232,Craftsman's Writ: Minor Recombobulator,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94233,Craftsman's Writ: Practice Lock,new,Alliance,1,60,Crafting,True,False,False,OEOU
+94234,Craftsman's Writ: Shadow Goggles,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94235,Craftsman's Writ: Gnomish Universal Remote,new,Horde/Alliance,1,60,Crafting,True,False,False,OEEU
+94236,Craftsman's Writ: Big Bronze Bomb,new,Horde/Alliance,1,60,Crafting,True,False,False,OEEU
+94237,Craftsman's Writ: Crafted Solid Shot,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94238,Craftsman's Writ: Heavy Leather Ball,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94239,Craftsman's Writ: Fine Leather Pants,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94240,Craftsman's Writ: Herbalist's Gloves,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94241,Craftsman's Writ: Dark Leather Tunic,new,Horde,1,60,Crafting,True,False,False,OEEU
+94242,Craftsman's Writ: Pilferer's Gloves,new,Horde/Alliance,1,60,Crafting,True,False,False,OEEU
+94243,Craftsman's Writ: Heavy Quiver,new,Horde/Alliance,1,60,Crafting,True,False,False,OEEU
+94244,Craftsman's Writ: Dark Leather Shoulders,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94245,Craftsman's Writ: Barbaric Gloves,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94246,Craftsman's Writ: Red Whelp Gloves,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94247,Craftsman's Writ: Lesser Wizard's Robe,new,Horde/Alliance,1,60,Crafting,True,False,False,OEOU
+94248,Craftsman's Writ: Blue Overalls,new,Horde/Alliance,1,60,Crafting,True,False,False,OEOU
+94249,Craftsman's Writ: Azure Silk Hood,new,Horde/Alliance,1,60,Crafting,True,False,False,OEOU
+94250,Craftsman's Writ: Small Silk Pack,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94251,Craftsman's Writ: Phoenix Pants,new,Horde,1,60,Crafting,True,False,False,OEEU
+94252,Craftsman's Writ: Red Woolen Boots,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94253,Craftsman's Writ: Colorful Kilt,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94254,Craftsman's Writ: Greater Adept's Robe,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94255,Craftsman's Writ: Spider Silk Slippers,new,Horde/Alliance,1,60,Crafting,True,False,False,OEEU
+94256,Craftsman's Writ: Frost Protection Potion,new,Horde/Alliance,1,60,Crafting,True,False,False,OEEU
+94257,Craftsman's Writ: Lesser Invisibility Potion,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94258,Craftsman's Writ: Lesser Stoneshield Potion,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94259,Craftsman's Writ: Nature Protection Potion,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94260,Craftsman's Writ: Catseye Draught,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94261,Craftsman's Writ: Great Rage Potion,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94262,Craftsman's Writ: Mana Potion,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94263,Craftsman's Writ: Fire Protection Potion,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94264,Craftsman's Writ: Shadow Oil,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94265,Craftsman's Writ: Goblin Rocket Fuel,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94266,Craftsman's Writ: Elixir of Agility,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94267,Craftsman's Writ: Wildvine Potion,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94268,Craftsman's Writ: Steel Plate Helm,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94269,Craftsman's Writ: Inlaid Mithril Cylinder,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94270,Craftsman's Writ: Steel Weapon Chain,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94271,Craftsman's Writ: Ornate Mithril Shoulders,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94272,Craftsman's Writ: Blue Glittering Axe,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94273,Craftsman's Writ: Moonsteel Broadsword,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94274,Craftsman's Writ: Golden Scale Coif,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94275,Craftsman's Writ: Solid Sharpening Stone,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94276,Craftsman's Writ: Wicked Mithril Blade,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94277,Craftsman's Writ: Truesilver Rod,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94278,Craftsman's Writ: Golden Scale Gauntlets,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94279,Craftsman's Writ: Heavy Mithril Axe,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94280,Craftsman's Writ: Mechanical Dragonling,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94281,Craftsman's Writ: Advanced Target Dummy,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94282,Craftsman's Writ: Craftsman's Monocle,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94283,Craftsman's Writ: Goblin Land Mine,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94284,Craftsman's Writ: Catseye Ultra Goggles,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94285,Craftsman's Writ: Unstable Trigger,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94286,Craftsman's Writ: Flash Bomb,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94287,Craftsman's Writ: Fire Goggles,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94288,Craftsman's Writ: Mithril Frag Bomb,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94289,Craftsman's Writ: Gyromatic Micro-Adjuster,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94290,Craftsman's Writ: Mechanical Repair Kit,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94291,Craftsman's Writ: Dark Iron Bomb,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94292,Craftsman's Writ: Comfortable Leather Hat,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94293,Craftsman's Writ: Guardian Cloak,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94294,Craftsman's Writ: Dusky Bracers,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94295,Craftsman's Writ: Wild Leather Helmet,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94296,Craftsman's Writ: Wild Leather Shoulders,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94297,Craftsman's Writ: Quickdraw Quiver,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94298,Craftsman's Writ: Swift Boots,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94299,Craftsman's Writ: Nightscape Shoulders,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94300,Craftsman's Writ: Big Voodoo Mask,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94301,Craftsman's Writ: Big Voodoo Robe,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94302,Craftsman's Writ: Turtle Scale Breastplate,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94303,Craftsman's Writ: Thick Leather Ammo Pouch,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94304,Craftsman's Writ: Mageweave Bag,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94305,Craftsman's Writ: Shadoweave Gloves,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94306,Craftsman's Writ: Crimson Silk Robe,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94307,Craftsman's Writ: Shadoweave Robe,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94308,Craftsman's Writ: Enchanted Mageweave Pouch,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94309,Craftsman's Writ: Star Belt,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94310,Craftsman's Writ: Black Mageweave Vest,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94311,Craftsman's Writ: Red Mageweave Pants,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94312,Craftsman's Writ: Orange Martial Shirt,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94313,Craftsman's Writ: White Bandit Mask,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94314,Craftsman's Writ: Cindercloth Robe,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94315,Craftsman's Writ: Earthen Silk Belt,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94316,Craftsman's Writ: Potion of Demonslaying,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94317,Craftsman's Writ: Dreamless Sleep Potion,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94318,Craftsman's Writ: Greater Fire Protection Potion,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94319,Craftsman's Writ: Draught of Detect Demon,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94320,Craftsman's Writ: Gift of Arthas,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94321,Craftsman's Writ: Flask of Chromatic Resistance,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94322,Craftsman's Writ: Limited Invulnerability Potion,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94323,Craftsman's Writ: Major Rejuvenation Potion,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94324,Craftsman's Writ: Distilled Firewater,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94325,Craftsman's Writ: Radiant Circlet,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94326,Craftsman's Writ: Radiant Belt,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94327,Craftsman's Writ: Orcish War Leggings,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94328,Craftsman's Writ: Mithril Spurs,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94329,Craftsman's Writ: Imperial Plate Chest,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94330,Craftsman's Writ: Darkrune Gauntlets,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94331,Craftsman's Writ: Huge Thorium Battleaxe,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94332,Craftsman's Writ: Arcanite Skeleton Key,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94333,Craftsman's Writ: Ebon Shiv,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94334,Craftsman's Writ: Masterwork Target Dummy,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94335,Craftsman's Writ: Green Lens,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94336,Craftsman's Writ: Lifelike Mechanical Toad,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94337,Craftsman's Writ: Gnomish Alarm-O-Bot,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94338,Craftsman's Writ: Goblin Jumper Cables XL,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94339,Craftsman's Writ: Field Repair Bot 74A,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94340,Craftsman's Writ: Truesilver Transformer,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94341,Craftsman's Writ: Sniper Scope,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94342,Craftsman's Writ: Tranquil Mechanical Yeti,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94343,Craftsman's Writ: Wicked Leather Pants,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94344,Craftsman's Writ: Gordok Ogre Suit,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94345,Craftsman's Writ: Volcanic Breastplate,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94346,Craftsman's Writ: Runic Leather Headband,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94347,Craftsman's Writ: Wicked Leather Bracers,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94348,Craftsman's Writ: Chimeric Vest,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94349,Craftsman's Writ: Heavy Scorpid Helm,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94350,Craftsman's Writ: Runic Leather Bracers,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94351,Craftsman's Writ: Frostsaber Boots,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94352,Craftsman's Writ: Wizardweave Turban,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94353,Craftsman's Writ: Runecloth Bag,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94354,Craftsman's Writ: Runecloth Boots,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94355,Craftsman's Writ: Tuxedo Jacket,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94356,Craftsman's Writ: Felcloth Boots,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94357,Craftsman's Writ: Cenarion Herb Bag,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94358,Craftsman's Writ: Shadoweave Mask,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94359,Craftsman's Writ: Ghostweave Vest,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94360,Craftsman's Writ: Soul Pouch,new,Horde/Alliance,1,60,Crafting,True,False,True,OEUU
+94399,Ravasaur Provisions,new,Horde,58,60,Un Goro Crater,True,True,True,OUUU
+94472,Earth Sapta,new,Alliance,4,4,sort -82,True,False,False,OOOU
+94473,Fire Sapta,new,Alliance,10,13,sort -82,True,False,False,OOOU
+94480,A Gift From Our Enemies,new,Horde,36,36,Riverglades,False,True,True,OUUO
+94481,A Serving of Strength,new,Horde,36,38,Riverglades,False,True,True,OUUO
+94532,Gnoll Infestation,new,Horde,36,38,Riverglades,True,True,True,OUUU
+94533,Snargl's Snout,new,Horde,36,40,Riverglades,True,True,True,OUUU
+94535,Bristle Hills Bandits,new,Horde,36,38,Riverglades,True,True,False,OUOU
+94556,Jom-jom's Escape,new,Horde,36,42,Riverglades,True,True,True,OUUU
+94613,My Kingdom for a Horse,new,Alliance,36,38,Riverglades,False,True,False,OUOO
+94615,Foal Play,new,Alliance,36,38,Riverglades,False,True,False,OUOO
+94616,Water Sapta,new,Alliance,20,20,sort -82,True,False,False,OOOU
+94618,Wheeler's Fleeing Steeds,new,Alliance,36,38,Riverglades,False,False,True,OOUO
+94668,Bloodmaster's Ring,new,Horde,36,41,Riverglades,True,True,True,OUUU
+94669,Pay to Play,new,Horde,36,41,Riverglades,True,True,True,OUUU
+94670,Bloodmaster's Ring,new,Horde,36,41,Riverglades,True,True,True,OUUU
+94672,Encroaching Twilight,new,Horde,36,41,Riverglades,True,True,True,OUUU
+94678,Gnoll Infestation,new,Alliance,36,38,Riverglades,False,True,True,OUUO
+94679,Snargl's Snout,new,Alliance,36,40,Riverglades,False,True,True,OUUO
+94680,Twilight Missives,new,Horde,36,41,Riverglades,True,True,True,OUUU
+94727,Digging for Answers,new,Horde,36,40,Riverglades,True,True,True,OUUU
+94733,Our Ogre Friend,new,Horde,36,41,Riverglades,True,True,True,OUUU
+94734,A Boar's Delight,new,Horde,36,41,Riverglades,False,True,True,OUUO
+94737,A Treat for a Friend,new,Horde,36,41,Riverglades,False,True,True,OUUO
+94739,Bloodmaster's Ring,new,Horde,36,42,Riverglades,True,True,True,OUUU
+94744,The Wayward Warrior,new,Horde,38,43,Riverglades,False,True,True,OUUO
+94745,Carving a Path,new,Horde,38,44,Riverglades,False,True,True,OUUO
+94748,Break Their Chains,new,Horde,38,44,Riverglades,False,True,True,OUUO
+94768,Bring Me His Head,new,Horde,38,46,Riverglades,True,True,True,OUUU
+94773,Divine Grace,new,Alliance,10,10,sort -262,True,False,False,OEEU
+94778,Divine Grace,new,Alliance,10,10,sort -262,True,True,True,OUUU
+94779,Divine Grace,new,Alliance,10,10,sort -262,True,True,True,OUUU
+94782,The Western Post,new,Horde,54,57,Mount Hyjal,True,True,True,OUUU
+94817,Confounding Flash,new,Alliance,10,10,sort -262,True,False,False,OOOU
+94818,Contingency Plan,new,Alliance,20,20,sort -262,True,True,True,OUUU
+94820,Contingency Plan,new,Alliance,20,20,sort -262,False,False,True,OEUO
+94823,Confounding Flash,new,Alliance,10,10,sort -262,False,True,False,OUOO
+94825,Confounding Flash,new,Alliance,10,10,sort -262,True,True,True,OUUU
+94826,Confounding Flash,new,Alliance,10,10,sort -262,True,True,True,OUUU
+94829,What We Lost,new,Alliance,36,40,Riverglades,True,True,True,OUUU
+94832,Belle's Ring,new,Alliance,54,58,Riverglades,True,True,True,OUUU
+94841,Lost Shipping Crate,new,Alliance,36,38,Desolace,False,True,True,OUUO
+94857,"If a Tree Falls, and No One Hears...",new,Alliance,36,39,Riverglades,False,True,True,OUUO
+94858,All That's Left,new,Alliance,36,40,Riverglades,True,True,True,OUUU
+94861,Helping Hands,new,Alliance,36,39,Riverglades,False,True,True,OUUO
+94872,Buying Friendship: Magram,new,Horde,30,45,Desolace,True,False,False,OEOU
+94873,Buying Friendship: Gelkis,new,Horde,30,45,Desolace,False,False,True,OEUO
+94877,Saving Sunnyglade,new,Alliance,36,40,Riverglades,False,True,True,OUUO
+94879,Scraps of Knowledge,new,Alliance,36,40,Riverglades,False,False,True,OOUO
+94881,Curious Trinkets,new,Alliance,36,38,Riverglades,False,False,True,OOUO
+94884,An Unsettling Discovery,new,Alliance,36,41,Riverglades,True,False,False,OOOU
+94885,Field Marshal's Log,new,Alliance,36,40,Riverglades,False,False,True,OEUO
+94886,The Western Front,new,Alliance,38,44,Riverglades,False,True,True,OUUO
+94887,Saving Marshal Ryan,new,Alliance,36,47,Riverglades,False,True,True,OUUO
+94888,No Soldier Left Behind,new,Alliance,38,44,Riverglades,True,True,True,OUUU
+94889,Carving a Path,new,Alliance,38,44,Riverglades,True,True,True,OUUU
+94890,Bring Me His Head,new,Alliance,38,46,Riverglades,True,True,True,OUUU
+94891,News to Farholde,new,Alliance,38,46,Riverglades,True,True,True,OUUU
+94892,Dying Wish,new,Alliance,36,47,Riverglades,True,True,True,OUUU
+94893,Delivering Closure,new,Alliance,36,47,Riverglades,True,True,True,OUUU
+94894,The Twilight Threat,new,Alliance,38,45,Riverglades,True,True,True,OUUU
+94895,Lost Shipping Crate,new,Horde,36,38,Desolace,True,True,False,OUOU
+94907,A Small Favor,new,Alliance,36,44,Riverglades,False,True,True,OUUO
+94923,Hats Off,new,Alliance,36,38,Riverglades,False,True,True,OUUO
+94924,Hunting the Hunters,new,Alliance,36,39,Riverglades,False,True,True,OUUO
+94925,A Fur Trade,new,Alliance,36,39,Riverglades,False,True,True,OUUO
+94926,Drop the Hammer,new,Alliance,38,45,Riverglades,True,True,True,OUUU
+94927,Dunston Checks Out,new,Alliance,38,44,Riverglades,True,True,True,OUUU
+94928,A Few Furs for Friz,new,Alliance,36,39,Riverglades,False,True,True,OUUO
+94929,Deliver the Second Shipment,new,Alliance,36,38,Swamp Of Sorrows,True,False,False,OEOU
+94930,Lost Shipping Crate,new,Horde,36,38,Thousand Needles,True,True,True,OUUU
+94962,Bloodmaster's Ring,new,Horde,36,42,Riverglades,True,True,True,OUUU
+94963,Biting the Hand,new,Horde/Alliance,36,40,Riverglades,False,False,True,OOUO
+94964,Bloodmaster's Ring,new,Horde,36,43,Riverglades,True,True,True,OUUU
+94965,Bloodmaster's Ring,new,Horde,36,44,Riverglades,False,True,True,OUUO
+94968,Eye of Mugg,new,Horde,40,45,no zone,True,False,False,OOOU
+94969,Krol'dok No More!,new,Alliance,40,42,no zone,True,True,True,OUUU
+94971,A Paladin's Steed,new,Horde,40,40,sort -141,True,False,False,OOOU
+94972,Tome of Twilight,new,Horde,39,44,no zone,True,False,False,OOOU
+94973,Krol'dok Moulding,new,Horde,38,41,no zone,True,True,True,OUUU
+94974,Key Ingredients,new,Horde,38,41,no zone,True,True,True,OUUU
+94975,A Token of Vengeance,new,Horde,38,42,no zone,True,True,True,OUUU
+94980,Krol'dok Moulding,new,Alliance,38,41,no zone,True,False,True,OEUU
+94981,Key Ingredients,new,Alliance,38,41,no zone,True,True,True,OUUU
+94982,Eye of Mugg,new,Alliance,40,45,no zone,True,True,True,OUUU
+94983,Twilight Mementos,new,Alliance,38,42,no zone,True,True,True,OUUU
+94984,Tome of Twilight,new,Alliance,39,44,no zone,True,True,True,OUUU
+94992,Rescue Roundup,new,Alliance,36,38,Riverglades,False,True,True,OUUO
+94997,Lingering Essence,new,Alliance,38,42,no zone,True,True,True,OUUU
+94998,Curios of Curiosity,new,Alliance,38,42,no zone,True,True,True,OUUU
+94999,Eyes for the Watchman,new,Alliance,36,36,Riverglades,False,True,True,OUUO
+95026,Blight No More,new,Horde,54,58,Mount Hyjal,True,True,True,OUUU
+95027,Feathers in Flight,new,Alliance,54,57,Mount Hyjal,True,True,True,OUUU
+95033,On the Other Side,new,Horde,40,41,Riverglades,True,True,True,OUUU
+95036,A Moon-Kissed Blade,new,Horde,20,25,sort -141,True,False,False,OOOU
+95059,Frazzlespark's Crate,new,Alliance,36,36,Riverglades,True,False,False,OOOU
+95062,Frazzlespark's Crate,new,Horde,36,36,Riverglades,True,False,True,OOUU
+95063,Bloodmaster's Ring,new,Horde,36,45,Riverglades,False,True,True,OUUO
+95064,Preventative Measures,new,Alliance,36,39,Riverglades,False,True,True,OUUO
+95066,The Rog'mar Situation,new,Alliance,36,39,Riverglades,True,True,True,OUUU
+95118,Saltwater Savages,new,Horde/Alliance,36,41,Riverglades,True,False,True,OOUU
+95121,A Taste of the Sea,new,Horde/Alliance,36,40,Riverglades,True,False,False,OOOU
+95143,Finding Tan'jani,new,Horde,36,38,Arathi Highlands,False,False,True,OEUO
+95144,Overseas Delivery,new,Alliance,36,38,Tanaris,False,False,True,OEUO
+95147,The Lost Scout,new,Alliance,36,37,Riverglades,False,True,True,OUUO
+95148,Southern Watch Gnoll Report,new,Alliance,36,37,Riverglades,False,True,True,OUUO
+95156,Stuff 'Em and Stick 'Em,new,Alliance,36,37,Riverglades,False,True,False,OUOO
+95162,Paletusk Harvesting,new,Horde,38,41,Riverglades,False,True,True,OUUO
+95163,Drive Them Back,new,Horde,38,40,Riverglades,True,True,True,OUUU
+95165,"See Ya, Scallywags!",new,Horde/Alliance,38,44,Riverglades,True,False,False,OOOU
+95181,Twilight Scouting Report,new,Horde,36,42,Riverglades,True,True,True,OUUU
+95183,Step One: Rock,new,Horde,38,41,Riverglades,True,True,True,OUUU
+95184,The Sharpest of Blades,new,Alliance,36,38,Riverglades,False,True,True,OUUO
+95189,Crest of Lordaeron,new,Alliance,15,22,Ruins Of Lordaeron,True,False,True,OEUU
+95194,Our Man in Theramore,new,Alliance,48,53,Dustwallow Marsh,True,True,True,OUUU
+95195,Bloodied Insignia,new,Alliance,15,22,Ruins Of Lordaeron,True,False,False,OEEU
+95196,Watch Yer Back,new,Alliance,48,53,Dustwallow Marsh,True,True,True,OUUU
+95198,The Return of the King?,new,Alliance,48,53,Dustwallow Marsh,True,True,True,OUUU
+95204,Crest of Lordaeron,new,Horde,15,22,Ruins Of Lordaeron,True,False,False,OEEU
+95216,The New Plague,new,Horde,15,22,Ruins Of Lordaeron,True,False,False,OEEU
+95218,More of the Same,new,Alliance,54,56,Mount Hyjal,True,True,True,OUUU
+95219,From Port to Port,new,Alliance,40,41,Riverglades,True,False,True,OOUU
+95248,To the Summit of Eternity,new,Horde,54,59,Mount Hyjal,True,True,True,OUUU
+95250,Abominable Creatures,new,Alliance,15,21,Ruins Of Lordaeron,True,True,True,OUUU
+95254,WANTED: Trapclaw,new,Horde/Alliance,36,42,Riverglades,False,True,False,OUOO
+95262,The Secret Prison,new,Alliance,48,53,no zone,True,True,True,OUUU
+95263,Somber News,new,Alliance,48,53,no zone,True,True,True,OUUU
+95264,Shaw Needs To Know,new,Alliance,48,53,Stormwind City,True,True,True,OUUU
+95267,The Monster Surfaces,new,Horde/Alliance,38,42,Riverglades,True,False,False,OOOU
+95278,"It Is Time, Brother...",new,Horde,38,45,Riverglades,True,True,True,OUUU
+95283,The Missing Kor'kron,new,Horde,48,53,Dustwallow Marsh,True,True,True,OUUU
+95284,The Elite of the Elite,new,Horde,48,53,Dustwallow Marsh,True,True,True,OUUU
+95285,"Right Place, Wrong Time",new,Horde,48,53,Dustwallow Marsh,True,True,True,OUUU
+95293,Smuggler's Special,new,Horde/Alliance,38,42,Riverglades,False,False,True,OOUO
+95295,I Know a Guy,new,Horde/Alliance,36,40,Riverglades,True,True,False,OUEU
+95309,No Orc Left Behind,new,Horde,48,53,no zone,True,True,True,OUUU
+95315,The Riverglades Report,new,Alliance,36,38,Arathi Highlands,False,False,True,OEUO
+95329,Out in the Field,new,Alliance,36,38,Riverglades,False,True,True,OUUO
+95330,Love Thy Neighbor,new,Alliance,36,37,Riverglades,False,True,False,OUOO
+95384,Partial Mystical Notes,new,Horde/Alliance,32,40,Stranglethorn Vale,False,True,True,OUUO
+95417,The Purple Ones,new,Horde,36,40,Riverglades,True,True,True,OUUU
+95418,Spread the Word,new,Horde,36,40,Riverglades,True,True,True,OUUU
+95420,Land of Giants,new,Horde,36,40,Riverglades,True,True,True,OUUU
+95424,Might Makes Right,new,Horde,36,41,Riverglades,True,True,True,OUUU
+95425,Unworthy Champion,new,Horde,36,42,Riverglades,True,True,True,OUUU
+95426,Rog'mar Supplies,new,Alliance,36,39,Riverglades,False,True,True,OUUO
+95427,Twilight No More!,new,Horde,36,41,Riverglades,True,True,True,OUUU
+95428,Clugfist's Decree,new,Horde,36,41,Riverglades,True,False,False,OOOU
+95431,Rumblings of Discontent,new,Horde,38,41,Riverglades,False,True,True,OUUO
+95432,Rise Up!,new,Horde,36,43,Riverglades,True,True,True,OUUU
+95433,Death to the Executioner,new,Horde,36,46,Riverglades,True,True,True,OUUU
+95454,The Honor of the Kor'kron,new,Horde,48,53,no zone,True,True,True,OUUU
+95483,Thrall Needs to Know,new,Horde,48,53,no zone,True,True,True,OUUU
+95511,Your First Feline Friend,new,Alliance,40,40,Darnassus,True,True,True,OUUU
+95561,Apple of My Eye,new,Alliance,36,38,Riverglades,False,False,True,OOUO
+95562,Cut Off the Heads,new,Alliance,36,41,Riverglades,True,True,False,OUOU
+95601,The Purple Ones,new,Horde,36,40,Riverglades,True,True,True,OUUU
+95602,Sickening Lights,new,Horde,36,40,Riverglades,True,True,True,OUUU
+95615,In Memoriam,new,Alliance,36,38,Riverglades,False,True,True,OUUO
+95642,Abominable Magics,new,Alliance,36,40,Riverglades,True,False,False,OOOU
+95643,Indiscriminate Purge,new,Alliance,36,40,Riverglades,True,False,False,OOOU
+95646,Horrors in the Highland,new,Alliance,24,31,Excavation Site Wetlands,True,False,False,OEEU
+95647,Lost in the Thicket Things,new,Alliance,24,31,Excavation Site Wetlands,True,False,True,OEUU
+95663,Dragonmaw Rumors,new,Horde,24,31,Excavation Site Wetlands,True,False,True,OEUU
+95664,Elder Knowledge,new,Horde,24,31,Excavation Site Wetlands,True,False,False,OEEU
+95682,Open the Maw,new,Horde,24,31,Excavation Site Wetlands,True,True,True,OUUU
+95697,Changing Tastes,new,Horde,24,31,Excavation Site Wetlands,True,False,False,OEEU
+95772,Songblade Search,new,Alliance,24,31,Excavation Site Wetlands,True,False,True,OEUU
+95775,The Drowned City,new,Horde,30,40,no zone,True,False,False,OEEU
+95776,The Only Good Brinescale...,new,Horde,30,38,no zone,True,False,False,OEEU
+95786,An Acquaintance in Southshore,new,Alliance,30,40,Stranglethorn Vale,False,True,True,OUUO
+95787,Take Two With Water,new,Alliance,30,40,no zone,True,True,True,OUUU
+95788,Magics of the Drowned City,new,Alliance,30,40,no zone,True,True,True,OUUU
+95789,Shady Saltseers,new,Horde/Alliance,34,40,no zone,True,False,True,OEUU
+95790,Digestible Research,new,Alliance,55,60,The Shapers Terrace Forever,True,True,True,OUUU
+95791,The Saltseer Captain,new,Horde/Alliance,34,40,no zone,True,False,False,OEEU
+95795,Fallen in the Fen,new,Alliance,24,31,Excavation Site Wetlands,True,True,False,OUEU
+95798,The Web of Magic,new,Alliance,30,40,Alterac Mountains,True,True,True,OUUU
+95799,Findings for the Explorer's League,new,Alliance,30,40,Ironforge,True,True,True,OUUU
+95809,Heartwoven,new,Alliance,24,31,Excavation Site Wetlands,True,True,False,OUEU
+95816,Sign Me Up!,new,Alliance,1,60,Redridge Mountains,True,False,False,OEOU
+95817,Rotgath Stonebeard,new,Alliance,1,60,Ironforge,True,True,True,OUUU
+95819,Sign Me Up!,new,Horde,1,60,The Barrens,True,False,False,OEOU
+95912,WANTED: Blademaster Kaijo,new,Alliance,38,42,Riverglades,False,True,True,OUUO
+95913,Fit for a Princess,new,Alliance,36,38,Riverglades,False,True,True,OUUO
+95924,Panic at the Digsite,new,Alliance,55,60,The Shapers Terrace Forever,True,True,True,OUUU
+95925,Mapping the Way Forward,new,Alliance,55,60,The Shapers Terrace Forever,True,True,True,OUUU
+95926,The Dark Crystal,new,Horde,55,60,The Shapers Terrace Forever,True,True,True,OUUU
+95928,Crystalline Elements,new,Horde,55,60,The Shapers Terrace Forever,True,True,True,OUUU
+95935,Hail the Dragonslayer,new,Alliance,36,43,Riverglades,True,True,True,OUUU
+95936,Hail the Dragonslayer,new,Horde,36,43,Riverglades,True,True,True,OUUU
+95943,Foreman's Plight,new,Alliance,36,38,Riverglades,False,True,False,OUOO
+95951,Fetch 'n' Fletch,new,Horde,36,38,Riverglades,False,False,True,OOUO
+95955,Stick 'Em,new,Horde,36,39,Riverglades,True,False,False,OOOU
+95957,Drink Up!,new,Alliance,36,38,Riverglades,True,True,True,OUUU
+95961,Stepped Out,new,Alliance,36,38,Riverglades,True,True,True,OUUU
+95975,Her World,new,Alliance,36,41,Riverglades,True,True,True,OUUU
+95982,Not My Circus,new,Horde/Alliance,36,38,Riverglades,True,False,True,OOUU
+95983,A Feast for Buzzards,new,Alliance,36,38,Riverglades,True,True,True,OUUU
+95984,Song of the Strider,new,Alliance,36,39,Riverglades,True,True,True,OUUU
+95986,King of the Wild Plains,new,Alliance,36,41,Riverglades,True,True,True,OUUU
+95988,Goes Down Smooth,new,Alliance,36,38,Riverglades,True,True,True,OUUU
+95991,WANTED: Ghostmaw,new,Alliance,38,42,Riverglades,False,True,False,OUOO
+95992,WANTED: Ghostmaw,new,Horde,38,42,Riverglades,True,True,True,OUUU
+96009,High Stakes,new,Alliance,36,38,Riverglades,True,True,False,OUOU
+96015,A Miner Problem,new,Alliance,38,43,Riverglades,True,True,True,OUUU
+96016,The Tempest's Weapons,new,Alliance,30,40,sort -82,True,False,False,OOEU
+96026,Step Two: More Rock,new,Horde,38,41,Riverglades,False,True,True,OUUO
+96077,Belle's Ring,new,Alliance,54,58,Mount Hyjal,True,True,True,OUUU
+96078,A Tale Spun Around the Fire,new,Horde,30,40,Stranglethorn Vale,False,True,False,OUEO
+96082,Doctor's Orderly,new,Alliance,36,40,Riverglades,True,True,True,OUUU
+96083,Clerical Quarantine,new,Alliance,36,40,Riverglades,True,True,True,OUUU
+96084,Something's in the Water,new,Alliance,36,40,Riverglades,True,True,True,OUUU
+96085,Upstream Contamination,new,Alliance,36,42,Riverglades,True,True,True,OUUU
+96103,A Feast for Buzzards,new,Horde,36,38,Riverglades,False,True,True,OUUO
+96104,Song of the Strider,new,Horde,36,39,Riverglades,False,True,True,OUUO
+96105,King of the Wild Plains,new,Horde,36,41,Riverglades,True,True,True,OUUU
+96108,Poison Tips,new,Horde,36,40,Riverglades,False,True,False,OUOO
+96109,A Hunter's Quiver,new,Horde,36,40,Riverglades,True,True,True,OUUU
+96126,An Ogre's Captive,new,Alliance,38,44,Riverglades,True,True,True,OUUU
+96135,Heed My Call,new,Alliance,30,40,sort -82,True,False,False,OOOU
+96136,Call of Air,new,Horde,30,35,sort -82,True,True,True,OUUU
+96264,Elemental Aid,new,Alliance,30,33,sort -82,True,False,False,OOOU
+96332,A Little Payback,new,Horde,48,53,no zone,True,True,True,OUUU
+96334,Blood Red Bandanas,new,Horde,48,53,no zone,True,True,True,OUUU
+96339,Legacy Reward: Replica Ironforge Air Rifle,new,Horde/Alliance,,60,The Barrens,True,False,False,OEEU
+96369,Bad News for Folkar,new,Horde,48,53,no zone,True,True,True,OUUU
+96376,State Secrets,new,Horde,48,53,no zone,True,True,True,OUUU
+96377,State Secrets,new,Alliance,48,53,no zone,True,True,True,OUUU
+96381,A Bit of Wet Work,new,Alliance,48,53,no zone,True,True,True,OUUU
+96383,Legacy Reward: Spectral Bear Cub,new,Horde/Alliance,,60,The Barrens,True,False,False,OEEU
+96393,Old Ironforge Incursion,new,Alliance,9,16,The Hall Of Thanes,True,False,False,OOEU
+96394,The Restless Dead,new,Alliance,10,15,The Hall Of Thanes,True,False,False,OOOU
+96395,An Ancient Grudge,new,Alliance,,15,no zone,True,True,True,OUUU
+96403,Important Heirlooms,new,Alliance,10,15,The Hall Of Thanes,True,False,False,OOOU
+96438,Battle at the Mannoroc Coven,new,Alliance,35,40,sort -141,True,True,True,OUUU
+96449,Aeonas's Secret Refuge,new,Alliance,35,40,sort -141,True,True,True,OUUU
+96476,In Search of Aeonas,new,Alliance,45,53,sort -141,True,True,True,OUUU
+96494,Gathering Storm,new,Alliance,54,59,Mount Hyjal,True,True,True,OUUU
+96529,A Shaw Deal,new,Alliance,54,59,Mount Hyjal,True,True,True,OUUU
+96559,Supply Drop,new,Alliance,54,57,Mount Hyjal,True,True,True,OUUU
+96603,Unstable Magic,new,Alliance,48,60,City Of Dalaran 16560,True,True,True,OUUU
+96609,A Taste of Home,new,Alliance,44,52,City Of Dalaran 16560,True,True,True,OUUU
+96616,Herbs for the Bruised and Weary,new,Horde,54,57,Mount Hyjal,True,True,True,OUUU
+96622,A Rest Without Pain,new,Horde,54,57,Elderwild,True,True,True,OUUU
+96674,Ewe Wandered Off,new,Alliance,54,56,Elderwild,True,True,True,OUUU
+96676,Unsealing Blackthorne Pact,new,Alliance,54,59,Mount Hyjal,True,True,True,OUUU
+96770,The Witch Doctor's Head,new,Alliance,39,46,Zul Farrak,True,True,True,OUUU
+96771,Vengeance of the Highborne,new,Alliance,37,45,no zone,True,True,True,OUUU
+96772,The Dragon's Journal,new,Alliance,46,53,no zone,True,False,True,OOUU
+96773,The Coldbringer's Eye,new,Alliance,34,41,Razorfen Downs,True,False,True,OOUU
+96774,Ancient Gurubashi Idol,new,Horde,30,40,no zone,True,False,False,OOOU
+96775,Zum'rah's Head,new,Horde,42,46,Zul Farrak,True,True,True,OUUU
+96776,An'she's Radiance,new,Horde,43,51,Maraudon,True,False,True,OOUU
+96782,Covert Extraction,new,Alliance,24,36,sort -162,True,True,False,OUEU
+96784,Master of Disguise,new,Horde/Alliance,24,36,sort -162,True,False,True,OOUU
+96785,Ain't No Telling,new,Horde/Alliance,24,36,sort -162,True,True,True,OUUU
+96786,The Syndicate Sting,new,Horde/Alliance,24,34,sort -162,True,True,False,OUEU
+96797,The Orphan,new,Alliance,45,54,Blasted Lands,True,True,True,OUUU
+96798,Into the Darkness,new,Alliance,45,54,Blasted Lands,True,True,True,OUUU
+96799,A Heavy Responsibility,new,Alliance,45,54,Blasted Lands,True,True,True,OUUU
+96800,Past Due,new,Alliance,30,38,Scarlet Monastery,True,False,False,OOOU
+96811,Escaping the Shadows,new,Alliance,45,54,Blasted Lands,True,True,True,OUUU
+96812,Thicker Than Water,new,Alliance,45,54,City Of Dalaran 16560,True,True,True,OUUU
+96982,Your First Riding Kodo,new,Horde,40,40,Mulgore,True,True,True,OUUU
+96984,Heart of Disruption,new,Horde,24,33,City Of Dalaran,True,False,False,OOEU
+96986,The Grave Knight,new,Horde,24,33,City Of Dalaran,True,False,False,OEEU
+96987,Opportunistic Education,new,Horde,24,33,City Of Dalaran,True,True,True,OUUU
+96988,Source of Power,new,Horde,24,33,City Of Dalaran,True,False,False,OEEU
+96989,Your First Riding Raptor,new,Horde,40,40,Durotar,True,True,True,OUUU
+96992,Resupply,new,Alliance,54,57,Mount Hyjal,True,True,True,OUUU
+96994,Your First Riding Wolf,new,Horde,40,40,Orgrimmar,True,True,True,OUUU
+96996,Your First Riding Galestrider,new,Horde/Alliance,40,40,Zephras Isle,True,True,True,OUUU
+96997,A Steed in Death as They Were in Life,new,Horde,40,40,Tirisfal Glades,True,True,True,OUUU
+96998,Tribal Colors,new,Horde,54,58,Mount Hyjal,True,True,True,OUUU
+96999,Wrap Return,new,Horde,54,58,Mount Hyjal,True,True,True,OUUU
+97000,Grain of Memory,new,Horde,54,57,Mount Hyjal,True,True,True,OUUU
+97001,Sawyer's Legacy,new,Horde,54,57,Mount Hyjal,True,True,True,OUUU
+97003,Chol'aruk the Ravener,new,Horde,15,21,The Barrens,True,False,False,OOOU
+97005,Chol'aruk the Ravener,new,Alliance,15,21,The Barrens,True,False,False,OOOU
+97006,Notarized Claim,new,Horde,54,60,Mount Hyjal,True,True,True,OUUU
+97007,Wood Remains,new,Horde,54,57,Mount Hyjal,True,True,True,OUUU
+97017,Your First Riding Ram,new,Alliance,40,40,Dun Morogh,True,True,True,OUUU
+97018,Learning to Ride,new,Alliance,40,40,Dun Morogh,True,True,True,OUUU
+97022,Report to Danitha,new,Horde,40,40,sort -141,True,False,False,OOOU
+97045,Your First Horse,new,Alliance,40,40,Elwynn Forest,True,True,True,OUUU
+97046,Your First Mechanostrider,new,Alliance,40,40,Dun Morogh,True,True,True,OUUU
+97048,Returning to Port,new,Horde/Alliance,30,38,Stranglethorn Vale,False,True,True,OUUO
+97049,Essence of Seeping Slimes,new,Horde,55,60,The Shapers Terrace Forever,True,True,True,OUUU
+97065,Tip the Scales - Keefer's Angelfish,new,Horde/Alliance,,60,sort -101,True,False,False,OOOU
+97066,Tip the Scales - Brownell's Blue Striped Racer,new,Horde/Alliance,,60,sort -101,True,False,False,OOOU
+97067,Tip the Scales - Dezian Queenfish,new,Horde/Alliance,,60,sort -101,True,False,False,OOOU
+97074,Learning to Ride,new,Alliance,40,40,Darnassus,True,True,True,OUUU
+97119,Now We're Cooking,new,Horde,54,57,Mount Hyjal,True,True,True,OUUU
+97130,Ancient Gurubashi Secrets,new,Alliance,34,40,no zone,True,False,True,OOUU
+97168,Material Assistance,new,Alliance,58,60,sort -82,True,True,True,OUUU
+97170,Learning to Ride,new,Alliance,40,40,Elwynn Forest,True,True,True,OUUU
+97171,Your First Horse,new,Alliance,40,40,Wetlands,True,True,True,OUUU
+97173,Blackmaw Magic,new,Alliance,52,59,no zone,True,True,True,OUUU
+97174,A Worthy Endeavor,new,Horde,60,60,sort -141,True,True,True,OUUU
+97175,Due Sacrifice,new,Horde,60,60,sort -141,True,True,True,OUUU
+97177,Acts of Mercy,new,Horde,60,60,sort -141,True,True,True,OUUU
+97179,Collection of Goods,new,Horde,60,60,sort -141,True,True,True,OUUU
+97188,Learning to Ride,new,Alliance,40,40,Dun Morogh,True,False,False,OEEU
+97194,Learning to Ride,new,Horde,40,40,Orgrimmar,True,True,True,OUUU
+97196,The Coldbringer's Eye,new,Horde,34,41,Razorfen Downs,True,False,False,OOOU
+97197,Fragment of the Firelands,new,Horde,46,55,Blackrock Depths,True,True,True,OUUU
+97198,Blackmaw Magic,new,Horde,52,59,no zone,True,True,True,OUUU
+97200,Learning to Ride,new,Horde,40,40,Orgrimmar,True,True,True,OUUU
+97203,Learning to Ride,new,Horde,40,40,Tirisfal Glades,True,True,True,OUUU
+97204,Learning to Ride,new,Horde,40,40,Mulgore,True,True,True,OUUU
+97205,Learning to Ride,new,Horde/Alliance,40,40,Zephras Isle,True,True,True,OUUU
+97264,Shardtooth Pulling,new,Horde,55,58,Winterspring,True,True,True,OUUU
+97265,Hate the Hatefury,new,Horde,28,33,Desolace,False,False,True,OOUO
+97284,Vahlarriel's Vengeance,new,Alliance,30,33,Desolace,False,True,True,OUUO
+97286,Research Access,new,Horde/Alliance,1,20,sort -161,True,False,False,OOOU
+97288,Unending Torment,new,Horde,15,21,Ruins Of Lordaeron,True,False,False,OEEU
+97319,A Cousin Abroad,new,Horde,55,55,Western Plaguelands,True,True,True,OUUU
+97331,Zimmix's Great Escape,new,Horde/Alliance,30,35,Stranglethorn Vale,False,True,True,OUUO
+97332,Twice Misplaced Trust,new,Horde/Alliance,36,41,Stranglethorn Vale,False,False,True,OEUO
+97386,The Offense of Grom'gol,new,Horde,38,44,Stranglethorn Vale,False,False,True,OEUO
+97403,Two-Headed Ravagers,new,Horde,55,59,Winterspring,True,True,True,OUUU
+97404,Too Bad to Bear,new,Horde,55,59,Winterspring,True,True,True,OUUU
+97405,Noise Complaints,new,Alliance,38,44,Stranglethorn Vale,True,True,True,OUUU
+97411,An Earnest Proposition,new,Horde,58,60,Orgrimmar,True,True,True,OUUU
+97420,"Reduce, Reuse, Reconcile",new,Alliance,31,36,Stranglethorn Vale,True,True,True,OUUU
+97446,Your First Riding Kodo,new,Horde,40,40,Stonetalon Mountains,True,True,True,OUUU
+97447,An Earnest Proposition,new,Alliance,58,60,Ironforge,True,True,True,OUUU
+97453,Weed Whacked,new,Horde,33,38,Stranglethorn Vale,False,True,False,OUEO
+97530,Dunemaul Dues,new,Horde/Alliance,40,47,Tanaris,True,False,False,OEEU
+97534,Gritty Business,new,Horde,40,45,Tanaris,True,True,True,OUUU
+97536,Gnomish Garbage,new,Alliance,40,45,Tanaris,True,True,True,OUUU
+97617,Safety Checks,new,Alliance,35,40,Badlands,True,True,True,OUUU
+97884,Armory of Sunnyglade,new,Horde,36,40,Riverglades,False,True,False,OUEO
+97987,Stormwind's High Order,new,Alliance,53,57,Eastern Plaguelands,True,True,True,OUUU
+97988,Orgrimmar's Windshapers,new,Horde,53,57,Eastern Plaguelands,True,True,True,OUUU
+98093,Field to Clear,new,Horde,18,23,The Barrens,False,True,True,OUUO
+98156,Packaged Pristine Pelts,new,Alliance,24,29,Thousand Needles,True,False,False,OEEU
+98166,Your First Horse,new,Alliance,40,40,Wetlands,True,True,True,OUUU
+98192,"Skin Careful, Skin Sharp",new,Horde,38,43,Dustwallow Marsh,False,False,True,OEUO
+98203,Witch Doctor Ti'ik,new,Horde,45,49,The Hinterlands,True,True,True,OUUU
+98233,Sword in the Slime,new,Alliance,36,42,Dustwallow Marsh,True,False,True,OOUU
+98287,Camping 101: Engineering,new,Alliance,4,6,sort -666,True,True,True,OUUU
+98313,For Further Study,new,Alliance,24,32,Ironforge,True,False,False,OEEU
+98325,Blood and Thunder,new,Horde,55,60,Blackrock Spire,True,True,True,OUUU
+98338,REUSE ME,new,Horde/Alliance,30,33,no zone,True,True,True,OUUU
+98372,An Unfortunate End,new,Horde/Alliance,1,60,no zone,True,True,False,OUOU
+98423,The Treaty of Understanding,new,Alliance,9,16,Dun Morogh,True,False,False,OEEU
+98471,Message from the Supreme Magister,new,Alliance,30,35,sort -368,True,True,True,OUUU
+98477,Unstable Magic,new,Horde,48,60,Mulgore,True,True,True,OUUU
+98823,Earthen Echo,new,Horde,24,31,Excavation Site Wetlands,True,False,False,OEOU
+98824,Prehistoric Prism,new,Alliance,24,31,Excavation Site Wetlands,True,False,False,OEEU
+98888,Conflict at Darkspear Islands,new,Horde,30,39,Darkspear Islands,True,False,False,OOOU
+98889,Conflict at Darkspear Islands,new,Horde,40,49,Darkspear Islands,True,True,True,OUUU
+98891,Conflict at Darkspear Islands,new,Horde,50,59,Darkspear Islands,True,True,True,OUUU
+98893,Conflict at Darkspear Islands,new,Horde,60,60,Darkspear Islands,True,True,True,OUUU
+98896,Darkspear Islands Clash,new,Alliance,30,39,Darkspear Islands,True,False,False,OOOU
+98897,Darkspear Islands Clash,new,Alliance,40,49,Darkspear Islands,True,True,True,OUUU
+98899,Darkspear Islands Clash,new,Alliance,50,59,Darkspear Islands,True,True,True,OUUU
+98901,Darkspear Islands Clash,new,Alliance,60,60,Darkspear Islands,True,True,True,OUUU
+98903,The Battle for Darkspear Islands!,new,Alliance,30,39,Darkspear Islands,False,True,True,OUUO
+98904,The Battle for Darkspear Islands!,new,Alliance,40,49,Darkspear Islands,True,True,True,OUUU
+98905,The Battle for Darkspear Islands!,new,Alliance,50,60,Darkspear Islands,True,True,True,OUUU
+98906,The Battle for Darkspear Islands!,new,Horde,30,39,Darkspear Islands,True,False,False,OOOU
+98907,The Battle for Darkspear Islands!,new,Horde,40,49,Darkspear Islands,True,True,True,OUUU
+98908,The Battle for Darkspear Islands!,new,Horde,50,60,Darkspear Islands,True,True,True,OUUU
+98910,Darkspear's Basic Care Package,new,Horde/Alliance,30,39,Darkspear Islands,True,True,True,OUUU
+98913,Theramore Basic Care Package,new,Horde/Alliance,30,39,Darkspear Islands,True,True,True,OUUU
+98977,Mossheart the Elder,new,Horde/Alliance,1,60,sort -366,True,True,True,OUUU
+98983,Frostleaf the Elder,new,Horde/Alliance,1,60,sort -366,True,True,True,OUUU
+99187,The Reliquary of Tyr,new,Horde,50,58,sort -141,True,True,True,OUUU
+99191,A Donation of Wool,new,Alliance,12,60,Alterac Mountains,True,False,False,OOOU
+99192,A Donation of Silk,new,Alliance,26,60,Alterac Mountains,True,False,False,OOOU
+99193,A Donation of Mageweave,new,Alliance,40,60,Alterac Mountains,True,True,False,OUOU
+99194,A Donation of Runecloth,new,Alliance,50,60,no zone,True,False,False,OOOU
+99195,Additional Runecloth,new,Alliance,50,60,no zone,True,False,False,OOOU
+99196,A Donation of Wool,new,Horde,12,60,Mulgore,True,False,False,OOOU
+99197,A Donation of Silk,new,Horde,26,60,Mulgore,True,False,True,OOUU
+99198,A Donation of Mageweave,new,Horde,40,60,Mulgore,True,False,False,OOOU
+99199,A Donation of Runecloth,new,Alliance,50,60,Mulgore,True,False,False,OOOU
+99200,Additional Runecloth,new,Alliance,50,60,no zone,True,False,False,OOOU
+99205,Swift as the Wind,new,Alliance,60,60,Darnassus,True,True,True,OUUU
+99207,Swift as the Wind,new,Alliance,60,60,Dun Morogh,True,True,True,OUUU
+99208,Swift as the Wind,new,Horde,60,60,Tirisfal Glades,True,True,True,OUUU
+99209,Swift as the Wind,new,Alliance,60,60,Dun Morogh,True,True,True,OUUU
+99267,An Unfortunate End,new,Alliance,1,60,no zone,True,False,False,OOOU
+99326,Your First Horse,new,Alliance,40,40,Hillsbrad Foothills,True,True,True,OUUU
+16,Give Gerard a Drink,classic,Alliance,1,1,Elwynn Forest,True,False,False,EEEU
+117,Thunderbrew,classic,Alliance,10,15,Westfall,True,False,False,EEEU
+172,Children's Week,classic,Horde,10,60,sort -284,True,False,False,EEEU
+254,Digging Through the Dirt,classic,Alliance,20,35,Duskwood,True,False,False,EEEU
+308,Distracting Jarven,classic,Alliance,1,7,Dun Morogh,True,False,False,EEEU
+349,Stranglethorn Fever,classic,Horde/Alliance,32,45,Stranglethorn Vale,True,False,False,EEEU
+403,Guarded Thunderbrew Barrel,classic,Alliance,1,1,Dun Morogh,True,False,False,EEEU
+410,The Dormant Shade,classic,Horde,5,10,Tirisfal Glades,True,False,False,EEEU
+428,Lost Deathstalkers,classic,Horde,10,12,Silverpine Forest,True,False,False,EEEU
+431,Candles of Beckoning,classic,Horde,5,10,Tirisfal Glades,True,False,False,EEEU
+579,Stormwind Library,classic,Alliance,1,1,Stormwind City,True,False,False,EEEU
+593,Filling the Soul Gem,classic,Horde,1,46,Stranglethorn Vale,True,False,False,EEEU
+614,The Captain's Chest,classic,Alliance,35,51,Stranglethorn Vale,False,True,True,EUUE
+615,The Captain's Cutlass,classic,Horde/Alliance,35,51,Stranglethorn Vale,False,True,True,EUUE
+618,Facing Negolash,classic,Horde/Alliance,40,50,Stranglethorn Vale,False,True,True,EUUE
+619,Enticing Negolash,classic,Horde/Alliance,35,52,Stranglethorn Vale,True,False,False,EEEU
+636,Legends of the Earth,classic,Horde/Alliance,30,35,Arathi Highlands,False,True,True,EUUE
+657,Hints of a New Plague?,classic,Alliance,30,36,Hillsbrad Foothills,True,False,False,EEEU
+734,This Is Going to Be Hard,classic,Horde/Alliance,35,42,Badlands,True,False,False,EEEU
+777,This Is Going to Be Hard,classic,Horde/Alliance,35,42,Badlands,True,False,False,EEEU
+779,Seal of the Earth,classic,Alliance,40,50,Badlands,True,False,False,EEEU
+795,Seal of the Earth,classic,Horde,40,55,Badlands,True,False,False,EEEU
+813,Finding the Antidote,classic,Horde,7,9,Durotar,True,False,False,EEEU
+841,Another Power Source?,classic,Horde,38,46,Tanaris,True,False,False,EEEU
+889,Spirit of the Wind,classic,Horde,14,20,The Barrens,True,False,False,EEEU
+926,Flawed Power Stone,classic,Horde,1,14,Durotar,True,False,False,EEEU
+934,Crown of the Earth,classic,Alliance,1,11,Teldrassil,False,True,True,EUUE
+961,Onu is meditating,classic,Alliance,1,1,Darkshore,True,False,False,EEEU
+972,Water Sapta,classic,Horde,20,20,sort -82,True,False,False,EEEU
+975,Cache of Mau'ari,classic,Horde/Alliance,55,60,Winterspring,True,False,False,EEEU
+1103,Call of Water,classic,Horde,20,23,sort -82,True,False,False,EEEU
+1130,Melor Sends Word,classic,Horde,20,30,Thunder Bluff,True,False,False,EEEU
+1191,Zamek's Distraction,classic,Horde/Alliance,29,41,Thousand Needles,True,False,False,EEEU
+1192,Indurium Ore,classic,Horde/Alliance,29,42,Thousand Needles,True,False,False,EEEU
+1193,A Broken Trap,classic,Horde/Alliance,56,60,Dire Maul,True,False,False,EEEU
+1271,Feast at the Blue Recluse,classic,Alliance,30,37,Dustwallow Marsh,True,False,False,EEEU
+1318,Unfinished Gordok Business,classic,Horde/Alliance,56,60,Dire Maul,False,True,True,EUUE
+1422,Threat From the Sea,classic,Horde,35,45,Swamp Of Sorrows,True,False,False,EEEU
+1462,Earth Sapta,classic,Horde,4,4,sort -82,True,False,False,EEEU
+1463,Earth Sapta,classic,Horde,4,4,sort -82,True,False,False,EEEU
+1464,Fire Sapta,classic,Horde,10,13,sort -82,True,False,False,EEEU
+1468,Children's Week,classic,Alliance,10,60,sort -284,True,False,False,EEEU
+1498,Path of Defense,classic,Horde,10,10,sort -81,True,False,False,EEEU
+1559,Flash Bomb Recipe,classic,Horde/Alliance,30,37,sort -201,True,False,False,EEEU
+1641,The Tome of Divinity,classic,Alliance,12,12,sort -141,True,False,False,EEEU
+1645,The Tome of Divinity,classic,Alliance,12,12,sort -141,True,False,False,EEEU
+1661,The Tome of Nobility,classic,Alliance,40,40,sort -141,True,False,False,EEEU
+1714,Essence of the Exile,classic,Horde/Alliance,30,37,sort -81,True,False,False,EEEU
+1779,The Tome of Divinity,classic,Alliance,12,13,sort -141,True,False,False,EEEU
+1781,The Tome of Divinity,classic,Alliance,12,13,sort -141,True,False,False,EEEU
+1789,The Symbol of Life,classic,Alliance,12,12,sort -141,True,False,False,EEEU
+1790,The Symbol of Life,classic,Alliance,12,12,sort -141,True,False,False,EEEU
+1793,The Tome of Valor,classic,Alliance,20,20,sort -141,True,False,False,EEEU
+1794,The Tome of Valor,classic,Alliance,20,20,sort -141,True,False,False,EEEU
+2379,Zando'zan,classic,Horde,16,16,sort -162,True,False,False,EEEU
+2582,Rage of Ages,classic,Horde/Alliance,45,50,Blasted Lands,True,False,False,EEEU
+2584,Spirit of the Boar,classic,Horde/Alliance,45,50,Blasted Lands,True,False,False,EEEU
+2586,Salt of the Scorpok,classic,Horde/Alliance,45,50,Blasted Lands,True,False,False,EEEU
+2602,Infallible Mind,classic,Horde/Alliance,45,50,Blasted Lands,True,False,False,EEEU
+2604,Spiritual Domination,classic,Horde/Alliance,45,50,Blasted Lands,True,False,False,EEEU
+2607,The Touch of Zanzil,classic,Alliance,20,20,sort -162,True,False,False,EEEU
+2662,Noggenfogger Elixir,classic,Horde/Alliance,44,49,Tanaris,True,False,False,EEEU
+2747,An Extraordinary Egg,classic,Horde/Alliance,42,60,Tanaris,True,False,False,EEEU
+2748,A Fine Egg,classic,Horde/Alliance,42,60,Tanaris,True,False,False,EEEU
+2749,An Ordinary Egg,classic,Horde/Alliance,42,60,Tanaris,True,False,False,EEEU
+2750,A Bad Egg,classic,Horde/Alliance,42,47,Tanaris,True,False,False,EEEU
+2843,Gnomer-gooooone!,classic,Horde,20,35,New Tinkertown Old,True,False,False,EEEU
+2882,Cuergo's Gold,classic,Horde/Alliance,40,45,Tanaris,True,False,False,EEEU
+2951,The Sparklematic 5200!,classic,Horde/Alliance,25,30,New Tinkertown Old,True,False,False,EEEU
+2953,More Sparklematic Action,classic,Horde/Alliance,25,30,New Tinkertown Old,True,False,False,EEEU
+3375,Replacement Phial,classic,Alliance,37,42,area 1517,True,False,False,EEEU
+3421,Return Trip,classic,Horde/Alliance,45,55,Azshara,True,False,False,EEEU
+3450,An Easy Pickup,classic,Alliance,45,52,Ironforge,True,False,False,EEEU
+3451,Signal for Pickup,classic,Alliance,45,52,Ironforge,True,False,False,EEEU
+3483,Signal for Pickup,classic,Alliance,45,52,Ironforge,True,False,False,EEEU
+3502,One Draenei's Junk...,classic,Horde/Alliance,45,55,Blasted Lands,True,False,False,EEEU
+3503,Meeting with the Master,classic,Horde/Alliance,45,55,Azshara,True,False,False,EEEU
+3567,To the Top,classic,Horde/Alliance,25,25,Feralas,True,False,False,EEEU
+3631,Summon Felsteed,classic,Horde,40,40,sort -61,True,False,False,EEEU
+3644,Membership Card Renewal,classic,Horde/Alliance,30,47,sort -201,True,False,False,EEEU
+3645,Membership Card Renewal,classic,Horde/Alliance,30,47,sort -201,True,False,False,EEEU
+3646,Membership Card Renewal,classic,Horde/Alliance,30,47,sort -201,True,False,False,EEEU
+3647,Membership Card Renewal,classic,Alliance,30,47,sort -201,True,False,False,EEEU
+3861,CLUCK!,classic,Alliance,1,1,sort -284,True,False,False,EEEU
+4002,The Eastern Kingdom,classic,Horde,48,54,Blackrock Depths,True,False,False,EEEU
+4041,The Videre Elixir,classic,Horde/Alliance,47,52,Feralas,True,False,False,EEEU
+4108,Salve via Hunting,classic,Horde,48,55,Felwood,True,False,False,EEEU
+4109,Salve via Mining,classic,Horde,48,55,Felwood,True,False,False,EEEU
+4110,Salve via Gathering,classic,Horde,48,55,Felwood,True,False,False,EEEU
+4111,Salve via Skinning,classic,Horde,48,55,Felwood,True,False,False,EEEU
+4112,Salve via Disenchanting,classic,Horde,48,55,Felwood,True,False,False,EEEU
+4295,Rocknot's Ale,classic,Horde/Alliance,42,1,Blackrock Depths,True,False,False,EEEU
+4381,Crystal Restore,classic,Horde/Alliance,47,53,Un Goro Crater,True,False,False,EEEU
+4382,Crystal Force,classic,Horde/Alliance,47,53,Un Goro Crater,True,False,False,EEEU
+4383,Crystal Ward,classic,Horde/Alliance,47,53,Un Goro Crater,True,False,False,EEEU
+4384,Crystal Yield,classic,Horde/Alliance,47,53,Un Goro Crater,True,False,False,EEEU
+4385,Crystal Charge,classic,Horde/Alliance,47,53,Un Goro Crater,True,False,False,EEEU
+4386,Crystal Spire,classic,Horde/Alliance,47,53,Un Goro Crater,True,False,False,EEEU
+4463,Libram of Rumination,classic,Horde/Alliance,50,55,Burning Steppes,True,False,False,EEEU
+4481,Libram of Constitution,classic,Horde/Alliance,50,55,Burning Steppes,True,False,False,EEEU
+4482,Libram of Tenacity,classic,Horde/Alliance,50,55,Burning Steppes,True,False,False,EEEU
+4483,Libram of Resilience,classic,Horde/Alliance,50,55,Burning Steppes,True,False,False,EEEU
+4484,Libram of Voracity,classic,Horde/Alliance,50,55,Burning Steppes,True,False,False,EEEU
+4487,Summon Felsteed,classic,Alliance,40,40,sort -61,True,False,False,EEEU
+4488,Summon Felsteed,classic,Alliance,40,40,sort -61,True,False,False,EEEU
+4489,Summon Felsteed,classic,Horde,40,40,sort -61,True,False,False,EEEU
+4561,Testing for Impurities - Un'Goro Crater,classic,Horde,48,52,Undercity,True,False,False,EEEU
+4601,The Sparklematic 5200!,classic,Horde/Alliance,25,30,New Tinkertown Old,True,False,False,EEEU
+4602,The Sparklematic 5200!,classic,Horde/Alliance,25,30,New Tinkertown Old,True,False,False,EEEU
+4603,More Sparklematic Action,classic,Horde/Alliance,25,30,New Tinkertown Old,True,False,False,EEEU
+4604,More Sparklematic Action,classic,Horde/Alliance,25,30,New Tinkertown Old,True,False,False,EEEU
+4606,The Sparklematic 5200!,classic,Horde/Alliance,25,30,New Tinkertown Old,True,False,False,EEEU
+4661,Testing for Corruption - Felwood,classic,Horde,48,52,Undercity,True,False,False,EEEU
+4785,Fine Gold Thread,classic,Horde/Alliance,31,37,sort -61,True,False,False,EEEU
+4801,Frostsaber E'ko,classic,Horde/Alliance,55,60,Winterspring,True,False,False,EEEU
+4802,Winterfall E'ko,classic,Horde/Alliance,55,60,Winterspring,True,False,False,EEEU
+4803,Shardtooth E'ko,classic,Horde/Alliance,55,60,Winterspring,True,False,False,EEEU
+4804,Chillwind E'ko,classic,Horde/Alliance,55,60,Winterspring,True,False,False,EEEU
+4805,Ice Thistle E'ko,classic,Horde/Alliance,55,60,Winterspring,True,False,False,EEEU
+4806,Frostmaul E'ko,classic,Horde/Alliance,55,60,Winterspring,True,False,False,EEEU
+4807,Wildkin E'ko,classic,Horde/Alliance,55,60,Winterspring,True,False,False,EEEU
+4970,Frostsaber Provisions,classic,Alliance,58,60,Winterspring,True,False,False,EEEU
+5042,Agamaggan's Strength,classic,Horde,14,20,The Barrens,True,False,False,EEEU
+5043,Agamaggan's Agility,classic,Horde,14,20,The Barrens,True,False,False,EEEU
+5044,Wisdom of Agamaggan,classic,Horde,14,20,The Barrens,True,False,False,EEEU
+5045,Rising Spirit,classic,Horde,14,20,The Barrens,True,False,False,EEEU
+5046,Razorhide,classic,Horde,14,20,The Barrens,True,False,False,EEEU
+5058,Mrs. Dalson's Diary,classic,Horde/Alliance,52,55,Western Plaguelands,True,False,False,EEEU
+5059,Locked Away,classic,Horde/Alliance,52,55,Western Plaguelands,True,False,False,EEEU
+5063,Cap of the Scarlet Savant,classic,Horde/Alliance,57,60,Winterspring,True,False,False,EEEU
+5067,Leggings of Arcana,classic,Horde/Alliance,57,60,Winterspring,True,False,False,EEEU
+5068,Breastplate of Bloodthirst,classic,Horde/Alliance,57,60,Winterspring,True,False,False,EEEU
+5122,The Medallion of Faith,classic,Horde/Alliance,55,60,Stratholme,True,False,False,EEEU
+5150,Dadanga is Hungry!,classic,Horde/Alliance,47,55,Un Goro Crater,True,False,False,EEEU
+5201,Winterfall Intrusion,classic,Alliance,58,60,Winterspring,True,False,False,EEEU
+5421,Fish in a Bucket,classic,Horde,25,25,Desolace,True,False,False,EEEU
+5519,The Gordok Ogre Suit,classic,Horde/Alliance,56,60,Dire Maul,True,False,False,EEEU
+5528,The Gordok Taste Test,classic,Horde/Alliance,57,60,Dire Maul,True,False,False,EEEU
+5582,Healthy Dragon Scale,classic,Horde/Alliance,55,58,Scholomance,True,False,False,EEEU
+5627,Stars of Elune,classic,Alliance,10,10,sort -262,True,False,False,EEEU
+5634,Desperate Prayer,classic,Alliance,10,10,sort -262,True,False,False,OEEU
+5638,Desperate Prayer,classic,Alliance,10,10,sort -262,True,False,False,OEEU
+5641,A Lack of Fear,classic,Alliance,20,20,sort -262,True,False,False,EEEU
+5652,Hex of Weakness,classic,Horde,10,10,sort -262,True,False,False,EEEU
+5658,Touch of Weakness,classic,Horde,10,10,sort -262,True,False,False,EEEU
+5672,Elune's Grace,classic,Alliance,20,20,sort -262,True,False,False,EEEU
+5679,Dark Sacrifice,classic,Horde,20,20,sort -262,True,False,False,OEEU
+5680,Shadowguard,classic,Horde,20,20,sort -262,True,False,False,EEEU
+5805,Welcome!,classic,Alliance,1,1,area 24,True,False,False,EEEU
+5841,Welcome!,classic,Alliance,1,1,area 132,True,False,False,EEEU
+5842,Welcome!,classic,Alliance,1,1,area 188,True,False,False,EEEU
+5843,Welcome!,classic,Horde,1,1,area 363,True,False,False,EEEU
+5844,Welcome!,classic,Horde,1,1,area 221,True,False,False,EEEU
+5847,Welcome!,classic,Horde,1,1,area 154,True,False,False,EEEU
+5887,Salve via Hunting,classic,Horde,48,55,Felwood,True,False,False,EEEU
+5888,Salve via Mining,classic,Horde,48,55,Felwood,True,False,False,EEEU
+5889,Salve via Gathering,classic,Horde,48,55,Felwood,True,False,False,EEEU
+5890,Salve via Skinning,classic,Horde,48,55,Felwood,True,False,False,EEEU
+5891,Salve via Disenchanting,classic,Horde,48,55,Felwood,True,False,False,EEEU
+5892,Irondeep Supplies,classic,Alliance,51,55,Alterac Valley,True,False,False,EEEU
+5893,Coldtooth Supplies,classic,Horde,51,55,Alterac Valley,True,False,False,EEEU
+5981,Rampaging Giants,classic,Alliance,58,60,Winterspring,True,False,False,EEEU
+6383,The Ashenvale Hunt,classic,Horde,20,20,Ashenvale,True,False,False,EEEU
+6545,Warsong Runner Update,classic,Horde,17,19,Ashenvale,True,False,False,EEEU
+6546,Warsong Outrider Update,classic,Horde,17,25,Ashenvale,True,False,False,EEEU
+6547,Warsong Scout Update,classic,Horde,17,21,Ashenvale,True,False,False,EEEU
+6581,Warsong Saw Blades,classic,Horde,22,27,Ashenvale,True,False,False,EEEU
+6642,"Favor Amongst the Brotherhood, Dark Iron Ore",classic,Horde/Alliance,60,60,Molten Core,True,False,False,EEEU
+6643,"Favor Amongst the Brotherhood, Fiery Core",classic,Horde/Alliance,60,60,Molten Core,True,False,False,EEEU
+6644,"Favor Amongst the Brotherhood, Lava Core",classic,Horde/Alliance,60,60,Molten Core,True,False,False,EEEU
+6645,"Favor Amongst the Brotherhood, Core Leather",classic,Horde/Alliance,60,60,Molten Core,True,False,False,EEEU
+6646,"Favor Amongst the Brotherhood, Blood of the Mountain",classic,Horde/Alliance,60,60,Molten Core,True,False,False,EEEU
+6701,Syndicate Emblems,classic,Horde/Alliance,24,60,sort -162,True,False,False,EEEU
+6741,More Booty!,classic,Horde,51,60,Alterac Valley,True,False,False,EEEU
+6781,More Armor Scraps,classic,Alliance,51,60,Alterac Valley,True,False,False,EEEU
+6801,Lokholar the Ice Lord,classic,Horde,51,60,Alterac Valley,True,False,False,EEEU
+6825,Call of Air - Guse's Fleet,classic,Horde,51,60,Alterac Valley,True,False,False,EEEU
+6826,Call of Air - Jeztor's Fleet,classic,Horde,51,60,Alterac Valley,True,False,False,EEEU
+6827,Call of Air - Mulverick's Fleet,classic,Horde,51,60,Alterac Valley,True,False,False,EEEU
+6846,Begin the Attack!,classic,Alliance,51,60,Alterac Valley,True,False,False,EEEU
+6847,Master Ryson's All Seeing Eye,classic,Horde,51,60,Alterac Valley,True,False,False,EEEU
+6848,Master Ryson's All Seeing Eye,classic,Alliance,51,60,Alterac Valley,True,False,False,EEEU
+6861,Zinfizzlex's Portable Shredder Unit,classic,Horde,51,60,Alterac Valley,True,True,True,EUUU
+6862,Zinfizzlex's Portable Shredder Unit,classic,Alliance,51,60,Alterac Valley,True,True,True,EUUU
+6881,Ivus the Forest Lord,classic,Alliance,51,60,Alterac Valley,True,False,False,EEEU
+6901,Launch the Attack!,classic,Horde,1,60,Alterac Valley,True,True,True,EUUU
+6941,Call of Air - Vipore's Fleet,classic,Alliance,51,60,Alterac Valley,True,False,False,EEEU
+6942,Call of Air - Slidore's Fleet,classic,Alliance,51,60,Alterac Valley,True,False,False,EEEU
+6943,Call of Air - Ichman's Fleet,classic,Alliance,51,60,Alterac Valley,True,False,False,EEEU
+6982,Coldtooth Supplies,classic,Alliance,51,55,Alterac Valley,True,False,False,EEEU
+6985,Irondeep Supplies,classic,Horde,51,55,Alterac Valley,True,False,False,EEEU
+7001,Empty Stables,classic,Horde,51,60,Alterac Valley,True,False,False,EEEU
+7002,Ram Hide Harnesses,classic,Horde,51,60,Alterac Valley,True,False,False,EEEU
+7026,Ram Riding Harnesses,classic,Alliance,51,60,Alterac Valley,True,False,False,EEEU
+7027,Empty Stables,classic,Alliance,51,60,Alterac Valley,True,False,False,EEEU
+7181,The Legend of Korrak,classic,Horde,51,60,Alterac Valley,False,True,False,EUEE
+7202,Korrak the Bloodrager,classic,Alliance,51,60,Alterac Valley,False,True,False,EUEE
+7221,Speak with Prospector Stonehewer,classic,Alliance,51,60,Alterac Valley,False,True,False,EUEE
+7222,Speak with Voggah Deathgrip,classic,Horde,51,60,Alterac Valley,False,True,False,EUEE
+7341,A Fair Trade,classic,Horde,52,60,Orgrimmar,True,False,False,EEEU
+7342,Arrows Are For Sissies,classic,Alliance,52,60,Ironforge,True,False,False,EEEU
+7361,Favor Amongst the Darkspear,classic,Horde,51,60,Alterac Valley,False,True,True,EUUE
+7362,Ally of the Tauren,classic,Horde,51,60,Alterac Valley,False,True,True,EUUE
+7363,The Human Condition,classic,Horde,51,60,Alterac Valley,False,True,True,EUUE
+7364,Gnomeregan Bounty,classic,Alliance,51,60,Alterac Valley,False,True,True,EUUE
+7365,Staghelm's Requiem,classic,Alliance,51,60,Alterac Valley,False,True,True,EUUE
+7366,The Archbishop's Mercy,classic,Alliance,51,60,Alterac Valley,False,True,True,EUUE
+7367,Defusing the Threat,classic,Alliance,51,60,Alterac Valley,False,True,True,EUUE
+7368,Defusing the Threat,classic,Horde,51,60,Alterac Valley,False,True,True,EUUE
+7381,The Return of Korrak,classic,Horde,51,60,Alterac Valley,True,True,False,EUEU
+7382,Korrak the Everliving,classic,Alliance,51,60,Alterac Valley,True,True,False,EUEU
+7385,A Gallon of Blood,classic,Horde,51,60,Alterac Valley,True,False,False,EEEU
+7386,Crystal Cluster,classic,Alliance,51,60,Alterac Valley,True,False,False,EEEU
+7401,Wanted: DWARVES!,classic,Horde,51,60,Alterac Valley,False,False,True,EEUE
+7402,Wanted: ORCS!,classic,Horde/Alliance,51,60,Alterac Valley,False,False,True,EOUE
+7421,Darkspear Defense,classic,Horde,55,60,Alterac Valley,True,True,True,EUUU
+7422,Tuft it Out,classic,Horde,55,60,Alterac Valley,True,True,True,EUUU
+7423,I've Got A Fever For More Bone Chips,classic,Horde,55,60,Alterac Valley,True,True,True,EUUU
+7424,What the Hoof?,classic,Alliance,55,60,Alterac Valley,True,True,True,EUUU
+7425,Staghelm's Mojo Jamboree,classic,Alliance,55,60,Alterac Valley,True,True,True,EUUU
+7426,One Man's Love,classic,Alliance,55,60,Alterac Valley,True,True,True,EUUU
+7427,Wanted: MORE DWARVES!,classic,Horde,55,60,Alterac Valley,True,True,True,EUUU
+7428,Wanted: MORE ORCS!,classic,Alliance,55,60,Alterac Valley,True,True,True,EUUU
+7429,Free Knot!,classic,Horde/Alliance,57,60,Dire Maul,True,False,False,EEEU
+7483,Libram of Rapidity,classic,Horde/Alliance,58,60,Dire Maul,True,False,False,EEEU
+7484,Libram of Focus,classic,Horde/Alliance,58,60,Dire Maul,True,False,False,EEEU
+7485,Libram of Protection,classic,Horde/Alliance,58,60,Dire Maul,True,False,False,EEEU
+7493,The Journey Has Just Begun,classic,Horde,60,60,Orgrimmar,True,False,False,EEEU
+7497,The Journey Has Just Begun,classic,Alliance,60,60,Stormwind City,True,False,False,EEEU
+7601,What Niby Commands,classic,Horde/Alliance,50,50,sort -61,True,False,False,EEEU
+7604,A Binding Contract,classic,Horde/Alliance,60,60,Blackrock Depths,True,False,False,EEEU
+7621,A Warning,classic,Horde/Alliance,60,60,sort -262,True,False,False,EEEU
+7633,An Introduction,classic,Horde/Alliance,60,60,sort -261,True,False,False,EEEU
+7644,Blessed Arcanite Barding,classic,Alliance,60,60,sort -141,True,False,False,EEEU
+7652,A Blue Light Bargain,classic,Horde/Alliance,50,60,sort -121,True,False,False,EEEU
+7653,Imperial Plate Belt,classic,Horde/Alliance,50,60,sort -121,True,False,False,EEEU
+7654,Imperial Plate Boots,classic,Horde/Alliance,50,60,sort -121,True,False,False,EEEU
+7655,Imperial Plate Bracer,classic,Horde/Alliance,50,60,sort -121,True,False,False,EEEU
+7656,Imperial Plate Chest,classic,Horde/Alliance,50,60,sort -121,True,False,False,EEEU
+7657,Imperial Plate Helm,classic,Horde/Alliance,50,60,sort -121,True,False,False,EEEU
+7658,Imperial Plate Leggings,classic,Horde/Alliance,50,60,sort -121,True,False,False,EEEU
+7659,Imperial Plate Shoulders,classic,Horde/Alliance,50,60,sort -121,True,False,False,EEEU
+7660,Wolf Swapping - Arctic Wolf,classic,Horde,60,1,Orgrimmar,True,False,False,EEEU
+7661,Wolf Swapping - Red Wolf,classic,Horde,60,1,Orgrimmar,True,False,False,EEEU
+7662,New Kodo - Teal,classic,Horde,60,1,Thunder Bluff,True,False,False,EEEU
+7663,New Kodo - Green,classic,Horde,60,1,Thunder Bluff,True,False,False,EEEU
+7664,Ivory Raptor Replacement,classic,Horde,60,1,Durotar,True,False,False,EEEU
+7665,Red Raptor Replacement,classic,Horde,60,1,Durotar,True,False,False,EEEU
+7666,Again Into the Great Ossuary,classic,Alliance,60,60,sort -141,True,False,False,EEEU
+7671,Frostsaber Replacement,classic,Alliance,60,1,Darnassus,True,False,False,EEEU
+7672,Nightsaber Replacement,classic,Alliance,60,1,Darnassus,True,False,False,EEEU
+7673,Frost Ram Exchange,classic,Alliance,60,1,Dun Morogh,True,False,False,EEEU
+7674,Black Ram Exchange,classic,Alliance,60,1,Dun Morogh,True,False,False,EEEU
+7675,Icy Blue Mechanostrider Replacement,classic,Alliance,60,1,Dun Morogh,True,False,False,EEEU
+7676,White Mechanostrider Replacement,classic,Alliance,60,1,Dun Morogh,True,False,False,EEEU
+7677,White Stallion Exchange,classic,Alliance,60,1,Elwynn Forest,True,False,False,EEEU
+7678,Palomino Exchange,classic,Alliance,60,1,Elwynn Forest,True,False,False,EEEU
+7736,Restoring Fiery Flux Supplies via Kingsblood,classic,Horde/Alliance,45,60,Searing Gorge,True,False,False,EEEU
+7737,Gaining Acceptance,classic,Horde/Alliance,45,60,Searing Gorge,True,False,False,EEEU
+7785,Examine the Vessel,classic,Horde/Alliance,60,60,sort -344,True,False,False,EEEU
+7788,Vanquish the Invaders!,classic,Alliance,20,25,Warsong Gulch,False,True,True,EUUE
+7789,Quell the Silverwing Usurpers,classic,Horde,20,25,Warsong Gulch,False,True,True,EUUE
+7796,Additional Runecloth,classic,Alliance,50,60,Stormwind City,True,False,False,EEEU
+7801,Additional Runecloth,classic,Alliance,50,60,Darnassus,True,False,False,EEEU
+7806,Additional Runecloth,classic,Alliance,50,60,Ironforge,True,False,False,EEEU
+7812,Additional Runecloth,classic,Alliance,50,60,Ironforge,True,False,False,EEEU
+7819,Additional Runecloth,classic,Horde,50,60,Undercity,True,False,False,EEEU
+7825,Additional Runecloth,classic,Horde,50,60,Thunder Bluff,True,False,False,EEEU
+7832,Additional Runecloth,classic,Horde,50,60,Orgrimmar,True,False,False,EEEU
+7837,Additional Runecloth,classic,Horde,50,60,Orgrimmar,True,False,False,EEEU
+7838,Arena Grandmaster,classic,Horde/Alliance,1,55,Stranglethorn Vale,True,False,False,EEEU
+7871,Vanquish the Invaders!,classic,Alliance,30,35,Warsong Gulch,False,True,True,EUUE
+7872,Vanquish the Invaders!,classic,Alliance,40,45,Warsong Gulch,False,True,True,EUUE
+7873,Vanquish the Invaders!,classic,Alliance,50,55,Warsong Gulch,False,True,True,EUUE
+7874,Quell the Silverwing Usurpers,classic,Horde,30,35,Warsong Gulch,False,True,True,EUUE
+7875,Quell the Silverwing Usurpers,classic,Horde,40,45,Warsong Gulch,False,True,True,EUUE
+7876,Quell the Silverwing Usurpers,classic,Horde,50,55,Warsong Gulch,False,True,True,EUUE
+7881,Carnival Boots,classic,Horde/Alliance,1,60,sort -364,True,False,False,EEEU
+7882,Carnival Jerkins,classic,Horde/Alliance,10,60,sort -364,True,False,False,EEEU
+7883,The World's Largest Gnome!,classic,Horde/Alliance,20,60,sort -364,True,False,False,EEEU
+7884,Crocolisk Boy and the Bearded Murloc,classic,Horde/Alliance,30,60,sort -364,True,False,False,EEEU
+7885,Armor Kits,classic,Horde/Alliance,40,60,sort -364,True,False,False,EEEU
+7886,Talismans of Merit,classic,Alliance,50,55,Warsong Gulch,True,False,False,EEEU
+7887,Talismans of Merit,classic,Alliance,30,35,Warsong Gulch,True,False,False,EEEU
+7888,Talismans of Merit,classic,Alliance,40,45,Warsong Gulch,True,False,False,EEEU
+7889,Coarse Weightstone,classic,Horde/Alliance,1,60,sort -364,True,False,False,EEEU
+7890,Heavy Grinding Stone,classic,Horde/Alliance,10,60,sort -364,True,False,False,EEEU
+7891,Green Iron Bracers,classic,Horde/Alliance,20,60,sort -364,True,False,False,EEEU
+7892,Big Black Mace,classic,Horde/Alliance,30,60,sort -364,True,False,False,EEEU
+7893,Rituals of Strength,classic,Horde/Alliance,40,60,sort -364,True,False,False,EEEU
+7894,Copper Modulator,classic,Horde/Alliance,1,60,sort -364,True,False,False,EEEU
+7895,Whirring Bronze Gizmo,classic,Horde/Alliance,10,60,sort -364,True,False,False,EEEU
+7896,Green Fireworks,classic,Horde/Alliance,20,60,sort -364,True,False,False,EEEU
+7897,Mechanical Repair Kits,classic,Horde/Alliance,30,60,sort -364,True,False,False,EEEU
+7898,Thorium Widget,classic,Horde/Alliance,40,60,sort -364,True,False,False,EEEU
+7899,Small Furry Paws,classic,Horde/Alliance,1,60,sort -364,True,False,False,EEEU
+7900,Torn Bear Pelts,classic,Horde/Alliance,10,60,sort -364,True,False,False,EEEU
+7901,Soft Bushy Tails,classic,Horde/Alliance,20,60,sort -364,True,False,False,EEEU
+7902,Vibrant Plumes,classic,Horde/Alliance,30,60,sort -364,True,False,False,EEEU
+7903,Evil Bat Eyes,classic,Horde/Alliance,40,60,sort -364,True,False,False,EEEU
+7921,Talismans of Merit,classic,Alliance,20,25,Warsong Gulch,True,False,False,EEEU
+7922,Mark of Honor,classic,Horde,50,55,Warsong Gulch,True,True,True,EUUU
+7923,Mark of Honor,classic,Horde,40,45,Warsong Gulch,True,True,True,EUUU
+7924,Mark of Honor,classic,Horde,30,35,Warsong Gulch,True,True,True,EUUU
+7925,Mark of Honor,classic,Horde,20,25,Warsong Gulch,True,True,True,EUUU
+7930,5 Tickets - Darkmoon Flower,classic,Horde/Alliance,6,60,sort -364,True,False,False,EEEU
+7931,5 Tickets - Minor Darkmoon Prize,classic,Horde/Alliance,15,60,sort -364,True,False,False,EEEU
+7932,12 Tickets - Lesser Darkmoon Prize,classic,Horde/Alliance,30,60,sort -364,True,False,False,EEEU
+7933,40 Tickets - Greater Darkmoon Prize,classic,Horde/Alliance,45,60,sort -364,True,False,False,EEEU
+7934,50 Tickets - Darkmoon Storage Box,classic,Horde/Alliance,6,60,sort -364,True,False,False,EEEU
+7935,10 Tickets - Last Month's Mutton,classic,Horde/Alliance,25,60,sort -364,True,False,False,EEEU
+7936,50 Tickets - Last Year's Mutton,classic,Horde/Alliance,45,60,sort -364,True,False,False,EEEU
+7939,More Dense Grinding Stones,classic,Horde/Alliance,40,60,sort -364,True,False,False,EEEU
+7940,1200 Tickets - Orb of the Darkmoon,classic,Horde/Alliance,55,60,sort -364,True,False,False,EEEU
+7941,More Armor Kits,classic,Horde/Alliance,40,60,sort -364,True,False,False,EEEU
+7942,More Thorium Widgets,classic,Horde/Alliance,40,60,sort -364,True,False,False,EEEU
+7943,More Bat Eyes,classic,Horde/Alliance,40,60,sort -364,True,False,False,EEEU
+7946,Spawn of Jubjub,classic,Horde/Alliance,1,60,sort -364,True,False,False,EEEU
+7981,1200 Tickets - Amulet of the Darkmoon,classic,Horde/Alliance,55,60,sort -364,True,False,False,EEEU
+8080,Arathi Basin Resources!,classic,Alliance,50,55,Arathi Basin,False,True,True,EUUE
+8081,More Resource Crates,classic,Alliance,50,55,Arathi Basin,True,True,True,EUUU
+8123,Cut Arathor Supply Lines,classic,Horde,50,55,Arathi Basin,False,True,True,EUUE
+8124,More Resource Crates,classic,Horde,50,55,Arathi Basin,True,True,True,EUUU
+8154,Arathi Basin Resources!,classic,Alliance,40,45,Arathi Basin,False,True,True,EUUE
+8155,Arathi Basin Resources!,classic,Alliance,20,25,Arathi Basin,False,True,True,EUUE
+8156,Arathi Basin Resources!,classic,Alliance,30,35,Arathi Basin,False,True,True,EUUE
+8157,More Resource Crates,classic,Alliance,40,45,Arathi Basin,True,True,True,EUUU
+8158,More Resource Crates,classic,Alliance,20,25,Arathi Basin,True,True,True,EUUU
+8159,More Resource Crates,classic,Alliance,30,35,Arathi Basin,True,True,True,EUUU
+8160,Cut Arathor Supply Lines,classic,Horde,40,45,Arathi Basin,False,True,True,EUUE
+8161,Cut Arathor Supply Lines,classic,Horde,30,35,Arathi Basin,False,True,True,EUUE
+8162,Cut Arathor Supply Lines,classic,Horde,20,25,Arathi Basin,False,True,True,EUUE
+8163,More Resource Crates,classic,Horde,40,45,Arathi Basin,True,True,True,EUUU
+8164,More Resource Crates,classic,Horde,30,35,Arathi Basin,True,True,True,EUUU
+8165,More Resource Crates,classic,Horde,20,25,Arathi Basin,True,True,True,EUUU
+8184,Presence of Might,classic,Horde/Alliance,58,60,Zul Gurub,True,False,False,EEEU
+8185,Syncretist's Sigil,classic,Alliance,58,60,Zul Gurub,True,False,False,EEEU
+8186,Death's Embrace,classic,Horde/Alliance,58,60,Zul Gurub,True,False,False,EEEU
+8187,Falcon's Call,classic,Horde/Alliance,58,60,Zul Gurub,True,False,False,EEEU
+8188,Vodouisant's Vigilant Embrace,classic,Horde,58,60,Zul Gurub,True,False,False,EEEU
+8189,Presence of Sight,classic,Horde/Alliance,58,60,Zul Gurub,True,False,False,EEEU
+8190,Hoodoo Hex,classic,Horde/Alliance,58,60,Zul Gurub,True,False,False,EEEU
+8191,Prophetic Aura,classic,Horde/Alliance,58,60,Zul Gurub,True,False,False,EEEU
+8192,Animist's Caress,classic,Horde/Alliance,58,60,Zul Gurub,True,False,False,EEEU
+8193,Master Angler,classic,Horde/Alliance,1,60,sort -101,True,False,False,EEEU
+8195,"Zulian, Razzashi, and Hakkari Coins",classic,Horde/Alliance,58,60,Zul Gurub,True,False,False,EEEU
+8196,Essence Mangoes,classic,Horde/Alliance,58,60,Zul Gurub,True,False,False,EEEU
+8221,Rare Fish - Keefer's Angelfish,classic,Horde/Alliance,1,60,sort -101,True,False,False,EEEU
+8222,Glowing Scorpid Blood,classic,Horde/Alliance,40,60,sort -364,True,False,False,EEEU
+8223,More Glowing Scorpid Blood,classic,Horde/Alliance,40,60,sort -364,True,False,False,EEEU
+8224,Rare Fish - Dezian Queenfish,classic,Horde/Alliance,1,60,sort -101,True,False,False,EEEU
+8225,Rare Fish - Brownell's Blue Striped Racer,classic,Horde/Alliance,1,60,sort -101,True,False,False,EEEU
+8228,Could I get a Fishing Flier?,classic,Horde,35,60,sort -101,True,False,False,EEEU
+8229,Could I get a Fishing Flier?,classic,Alliance,35,60,sort -101,True,False,False,EEEU
+8238,"Gurubashi, Vilebranch, and Witherbark Coins",classic,Horde/Alliance,58,60,Zul Gurub,True,False,False,EEEU
+8239,"Sandfury, Skullsplitter, and Bloodscalp Coins",classic,Horde/Alliance,58,60,Zul Gurub,True,False,False,EEEU
+8241,Restoring Fiery Flux Supplies via Iron,classic,Horde/Alliance,45,60,Searing Gorge,True,False,False,EEEU
+8242,Restoring Fiery Flux Supplies via Heavy Leather,classic,Horde/Alliance,45,60,Searing Gorge,True,False,False,EEEU
+8243,Zanza's Potent Potables,classic,Horde/Alliance,58,60,Zul Gurub,True,False,False,EEEU
+8246,Signets of the Zandalar,classic,Horde/Alliance,58,60,Zul Gurub,True,False,False,EEEU
+8249,Junkboxes Needed,classic,Horde/Alliance,50,60,sort -162,True,False,False,EEEU
+8266,Ribbons of Sacrifice,classic,Horde,10,39,Warsong Gulch,False,True,True,EUUE
+8267,Ribbons of Sacrifice,classic,Horde,40,60,Warsong Gulch,True,True,True,EUUU
+8268,Ribbons of Sacrifice,classic,Alliance,10,39,Warsong Gulch,False,True,True,EUUE
+8269,Ribbons of Sacrifice,classic,Alliance,40,60,Warsong Gulch,True,True,True,EUUU
+8289,Talismans of Merit,classic,Alliance,10,15,Warsong Gulch,True,False,False,EEEU
+8290,Vanquish the Invaders,classic,Alliance,10,15,Warsong Gulch,False,True,True,EUUE
+8291,Vanquish the Invaders!,classic,Alliance,60,60,Warsong Gulch,False,True,True,EUUE
+8292,Talismans of Merit,classic,Alliance,60,60,Warsong Gulch,True,True,True,EUUU
+8293,Mark of Honor,classic,Horde,60,60,Warsong Gulch,True,True,True,EUUU
+8294,Quell the Silverwing Usurpers,classic,Horde,60,60,Warsong Gulch,False,True,True,EUUE
+8295,Quell the Silverwing Usurpers,classic,Horde,10,15,Warsong Gulch,False,True,True,EUUE
+8296,Mark of Honor,classic,Horde,10,15,Warsong Gulch,True,True,True,EUUU
+8297,Arathi Basin Resources!,classic,Alliance,60,60,Arathi Basin,False,True,True,EUUE
+8298,More Resource Crates,classic,Alliance,60,60,Arathi Basin,True,True,True,EUUU
+8299,Cut Arathor Supply Lines,classic,Horde,60,60,Arathi Basin,False,True,True,EUUE
+8300,More Resource Crates,classic,Horde,60,60,Arathi Basin,True,True,True,EUUU
+8303,Anachronos,classic,Horde/Alliance,60,60,Silithus,True,False,False,EEEU
+8319,Encrypted Twilight Texts,classic,Horde/Alliance,57,60,Silithus,True,False,False,EEEU
+8324,Still Believing,classic,Horde/Alliance,54,59,Silithus,True,False,False,EEEU
+8342,Twilight Ring of Lordship,classic,Horde/Alliance,60,60,Silithus,True,False,False,EEEU
+8353,Chicken Clucking for a Mint,classic,Alliance,10,60,sort -22,True,False,False,EEEU
+8354,Chicken Clucking for a Mint,classic,Horde,10,60,sort -22,True,False,False,EEEU
+8355,Incoming Gumdrop,classic,Alliance,10,60,sort -22,True,False,False,EEEU
+8356,Flexing for Nougat,classic,Alliance,10,60,sort -22,True,False,False,EEEU
+8357,Dancing for Marzipan,classic,Alliance,10,60,sort -22,True,False,False,EEEU
+8358,Incoming Gumdrop,classic,Horde,10,60,sort -22,True,False,False,EEEU
+8359,Flexing for Nougat,classic,Horde,10,60,sort -22,True,False,False,EEEU
+8360,Dancing for Marzipan,classic,Horde,10,60,sort -22,True,False,False,EEEU
+8362,Abyssal Crests,classic,Horde/Alliance,60,60,Silithus,True,False,False,EEEU
+8363,Abyssal Signets,classic,Horde/Alliance,60,60,Silithus,True,False,False,EEEU
+8383,Remember Alterac Valley!,classic,Alliance,51,60,Alterac Valley,True,False,False,EOOU
+8387,Invaders of Alterac Valley,classic,Horde,51,60,Alterac Valley,True,False,False,EOOU
+8388,For Great Honor,classic,Horde,51,60,Orgrimmar,True,False,False,EOOU
+8447,Waking Legends,classic,Horde/Alliance,60,60,sort -1,True,False,False,EEEU
+8492,The Alliance Needs Copper Bars!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8493,The Alliance Needs More Copper Bars!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8494,The Alliance Needs Iron Bars!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8495,The Alliance Needs More Iron Bars!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8499,The Alliance Needs Thorium Bars!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8500,The Alliance Needs More Thorium Bars!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8503,The Alliance Needs Stranglekelp!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8504,The Alliance Needs More Stranglekelp!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8505,The Alliance Needs Purple Lotus!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8506,The Alliance Needs More Purple Lotus!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8507,Field Duty,classic,Alliance,60,60,Silithus,True,False,False,EEEU
+8508,Field Duty Papers,classic,Alliance,60,60,Silithus,True,False,False,EEEU
+8509,The Alliance Needs Arthas' Tears!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8510,The Alliance Needs More Arthas' Tears!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8511,The Alliance Needs Light Leather!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8512,The Alliance Needs Light Leather!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8513,The Alliance Needs Medium Leather!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8514,The Alliance Needs More Medium Leather!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8515,The Alliance Needs Thick Leather!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8516,The Alliance Needs More Thick Leather!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8517,The Alliance Needs Linen Bandages!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8518,The Alliance Needs More Linen Bandages!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8520,The Alliance Needs Silk Bandages!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8521,The Alliance Needs More Silk Bandages!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8522,The Alliance Needs Runecloth Bandages!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8523,The Alliance Needs More Runecloth Bandages!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8524,The Alliance Needs Rainbow Fin Albacore!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8525,The Alliance Needs More Rainbow Fin Albacore!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8526,The Alliance Needs Roast Raptor!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8527,The Alliance Needs More Roast Raptor!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8528,The Alliance Needs Spotted Yellowtail!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8529,The Alliance Needs More Spotted Yellowtail!,classic,Alliance,1,60,sort -365,True,False,False,EEEU
+8532,The Horde Needs Copper Bars!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8533,The Horde Needs More Copper Bars!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8542,The Horde Needs Tin Bars!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8543,The Horde Needs More Tin Bars!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8545,The Horde Needs Mithril Bars!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8546,The Horde Needs More Mithril Bars!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8549,The Horde Needs Peacebloom!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8550,The Horde Needs Peacebloom!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8565,Past Victories in Arathi,classic,Alliance,1,1,Arathi Basin,True,True,True,EUUU
+8566,Past Victories in Arathi,classic,Horde,1,1,Arathi Basin,True,True,True,EUUU
+8567,Past Victories in Warsong Gulch,classic,Alliance,1,1,Warsong Gulch,True,True,True,EUUU
+8568,Past Victories in Warsong Gulch,classic,Horde,1,1,Warsong Gulch,True,True,True,EUUU
+8569,Past Efforts in Warsong Gulch,classic,Alliance,1,1,Warsong Gulch,True,True,True,EUUU
+8570,Past Efforts in Warsong Gulch,classic,Horde,1,1,Warsong Gulch,True,True,True,EUUU
+8580,The Horde Needs Firebloom!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8581,The Horde Needs More Firebloom!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8582,The Horde Needs Purple Lotus!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8583,The Horde Needs More Purple Lotus!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8588,The Horde Needs Heavy Leather!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8589,The Horde Needs More Heavy Leather!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8590,The Horde Needs Thick Leather!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8591,The Horde Needs More Thick Leather!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8595,Mortal Champions,classic,Horde/Alliance,60,60,Ahn Qiraj,True,False,False,EEEU
+8600,The Horde Needs Rugged Leather!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8601,The Horde Needs More Rugged Leather!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8604,The Horde Needs Wool Bandages!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8605,The Horde Needs More Wool Bandages!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8607,The Horde Needs Mageweave Bandages!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8608,The Horde Needs More Mageweave Bandages!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8609,The Horde Needs Runecloth Bandages!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8610,The Horde Needs More Runecloth Bandages!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8611,The Horde Needs Lean Wolf Steaks!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8612,The Horde Needs More Lean Wolf Steaks!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8613,The Horde Needs Spotted Yellowtail!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8614,The Horde Needs More Spotted Yellowtail!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8615,The Horde Needs Baked Salmon!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8616,The Horde Needs More Baked Salmon!,classic,Horde,1,60,sort -365,True,False,False,EEEU
+8619,Morndeep the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8635,Splitrock the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8636,Rumblerock the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8642,Silvervein the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8643,Highpeak the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8644,Stonefort the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8645,Obsidian the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8646,Hammershout the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8647,Bellowrage the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8648,Darkcore the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8649,Stormbrow the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8650,Snowcrown the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8651,Ironband the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8652,Graveborn the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8653,Goldwell the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8654,Primestone the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8670,Runetotem the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8671,Ragetotem the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8672,Stonespire the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8673,Bloodhoof the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8674,Winterhoof the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8675,Skychaser the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8676,Wildmane the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8677,Darkhorn the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8678,Proudhorn the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8679,Grimtotem the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8680,Windtotem the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8681,Thunderhorn the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8682,Skyseer the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8683,Dawnstrider the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8684,Dreamseer the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8685,Mistwalker the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8686,High Mountain the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8688,Windrun the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8713,Starsong the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8714,Moonstrike the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8715,Bladeleaf the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8716,Starglade the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8717,Moonwarden the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8718,Bladeswift the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8719,Bladesing the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8720,Skygleam the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8721,Starweave the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8722,Meadowrun the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8723,Nightwind the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8724,Morningdew the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8725,Riversong the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8726,Brightspear the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8727,Farwhisper the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8731,Field Duty,classic,Horde,60,60,Silithus,True,False,False,EEEU
+8732,Field Duty Papers,classic,Horde,60,60,Silithus,True,False,False,EEEU
+8743,Bang a Gong!,classic,Horde/Alliance,60,60,Silithus,True,False,False,EEEU
+8744,A Carefully Wrapped Present,classic,Horde/Alliance,1,1,sort -22,True,False,False,EEEU
+8763,The Hero of the Day,classic,Alliance,40,60,sort -22,True,False,False,EEEU
+8764,The Changing of Paths - Protector No More,classic,Horde/Alliance,60,60,Tanaris,True,False,False,EEEU
+8765,The Changing of Paths - Invoker No More,classic,Horde/Alliance,60,60,Tanaris,True,False,False,EEEU
+8766,The Changing of Paths - Conqueror No More,classic,Horde/Alliance,60,60,Tanaris,True,False,False,EEEU
+8767,A Gently Shaken Gift,classic,Horde/Alliance,1,1,sort -22,True,False,False,EEEU
+8768,A Gaily Wrapped Present,classic,Horde/Alliance,20,20,sort -22,True,False,False,EEEU
+8769,A Ticking Present,classic,Horde/Alliance,40,40,sort -22,True,False,False,EEEU
+8784,Secrets of the Qiraji,classic,Horde/Alliance,60,60,Ahn Qiraj,True,False,False,EEEU
+8788,A Gently Shaken Gift,classic,Horde/Alliance,1,1,sort -22,True,False,False,EEEU
+8789,Imperial Qiraji Armaments,classic,Horde/Alliance,60,60,Ahn Qiraj,True,False,False,EEEU
+8790,Imperial Qiraji Regalia,classic,Horde/Alliance,60,60,Ahn Qiraj,True,False,False,EEEU
+8798,A Yeti of Your Own,classic,Horde/Alliance,55,60,Winterspring,True,False,False,EEEU
+8799,The Hero of the Day,classic,Horde,40,60,sort -22,True,False,False,EEEU
+8803,A Festive Gift,classic,Horde/Alliance,10,10,sort -22,True,False,False,EEEU
+8811,One Commendation Signet,classic,Alliance,1,60,sort -367,True,False,False,EEEU
+8812,One Commendation Signet,classic,Alliance,1,60,sort -367,True,False,False,EEEU
+8813,One Commendation Signet,classic,Alliance,1,60,sort -367,True,False,False,EEEU
+8814,One Commendation Signet,classic,Alliance,1,60,sort -367,True,False,False,EEEU
+8815,One Commendation Signet,classic,Horde,1,60,sort -367,True,False,False,EEEU
+8816,One Commendation Signet,classic,Horde,1,60,sort -367,True,False,False,EEEU
+8817,One Commendation Signet,classic,Horde,1,60,sort -367,True,False,False,EEEU
+8818,One Commendation Signet,classic,Horde,1,60,sort -367,True,False,False,EEEU
+8819,Ten Commendation Signets,classic,Alliance,1,60,sort -367,True,False,False,EEEU
+8820,Ten Commendation Signets,classic,Alliance,1,60,sort -367,True,False,False,EEEU
+8821,Ten Commendation Signets,classic,Alliance,1,60,sort -367,True,False,False,EEEU
+8822,Ten Commendation Signets,classic,Alliance,1,60,sort -367,True,False,False,EEEU
+8823,Ten Commendation Signets,classic,Horde,1,60,sort -367,True,False,False,EEEU
+8824,Ten Commendation Signets,classic,Horde,1,60,sort -367,True,False,False,EEEU
+8825,Ten Commendation Signets,classic,Horde,1,60,sort -367,True,False,False,EEEU
+8826,Ten Commendation Signets,classic,Horde,1,60,sort -367,True,False,False,EEEU
+8830,One Commendation Signet,classic,Alliance,1,60,sort -367,True,False,False,EEEU
+8831,Ten Commendation Signets,classic,Alliance,1,60,sort -367,True,False,False,EEEU
+8832,One Commendation Signet,classic,Horde,1,60,sort -367,True,False,False,EEEU
+8833,Ten Commendation Signets,classic,Horde,1,60,sort -367,True,False,False,EEEU
+8834,One Commendation Signet,classic,Alliance,1,60,sort -367,True,False,False,EEEU
+8835,Ten Commendation Signets,classic,Alliance,1,60,sort -367,True,False,False,EEEU
+8836,One Commendation Signet,classic,Alliance,1,60,sort -367,True,False,False,EEEU
+8837,Ten Commendation Signets,classic,Alliance,1,60,sort -367,True,False,False,EEEU
+8838,One Commendation Signet,classic,Alliance,1,60,sort -367,True,False,False,EEEU
+8839,Ten Commendation Signets,classic,Alliance,1,60,sort -367,True,False,False,EEEU
+8840,One Commendation Signet,classic,Horde,1,60,sort -367,True,False,False,EEEU
+8841,Ten Commendation Signets,classic,Horde,1,60,sort -367,True,False,False,EEEU
+8842,One Commendation Signet,classic,Horde,1,60,sort -367,True,False,False,EEEU
+8843,Ten Commendation Signets,classic,Horde,1,60,sort -367,True,False,False,EEEU
+8844,One Commendation Signet,classic,Horde,1,60,sort -367,True,False,False,EEEU
+8845,Ten Commendation Signets,classic,Horde,1,60,sort -367,True,False,False,EEEU
+8846,Five Signets for War Supplies,classic,Alliance,10,19,sort -365,True,False,False,EEEU
+8847,Ten Signets for War Supplies,classic,Alliance,20,29,sort -365,True,False,False,EEEU
+8848,Fifteen Signets for War Supplies,classic,Alliance,30,39,sort -365,True,False,False,EEEU
+8849,Twenty Signets for War Supplies,classic,Alliance,40,49,sort -365,True,False,False,EEEU
+8850,Thirty Signets for War Supplies,classic,Alliance,50,60,sort -365,True,False,False,EEEU
+8851,Five Signets for War Supplies,classic,Horde,10,19,sort -365,True,False,False,EEEU
+8852,Ten Signets for War Supplies,classic,Horde,20,29,sort -365,True,False,False,EEEU
+8853,Fifteen Signets for War Supplies,classic,Horde,30,39,sort -365,True,False,False,EEEU
+8854,Twenty Signets for War Supplies,classic,Horde,40,49,sort -365,True,False,False,EEEU
+8855,Thirty Signets for War Supplies,classic,Horde,50,60,sort -365,True,False,False,EEEU
+8856,Desert Survival Kits,classic,Horde/Alliance,60,0,Silithus,False,True,True,EUUE
+8860,New Year Celebrations!,classic,Alliance,1,60,sort -22,True,False,False,EEEU
+8861,New Year Celebrations!,classic,Horde,1,60,sort -22,True,False,False,EEEU
+8862,Elune's Candle,classic,Horde/Alliance,10,60,sort -366,True,False,False,EEEU
+8863,Festival Dumplings,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8864,Festive Lunar Dresses,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8865,Festive Lunar Pant Suits,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8866,Bronzebeard the Elder,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8867,Lunar Fireworks,classic,Horde/Alliance,1,60,sort -366,True,False,False,EEEU
+8869,Sweet Serenity,classic,Horde/Alliance,50,60,sort -121,False,True,True,EUUE
+8870,The Lunar Festival,classic,Alliance,1,60,sort -366,True,False,False,EEEU
+8871,The Lunar Festival,classic,Alliance,1,60,sort -366,True,True,False,EUEU
+8872,The Lunar Festival,classic,Alliance,1,60,sort -366,True,True,False,EUEU
+8873,The Lunar Festival,classic,Horde,1,60,sort -366,True,False,False,EEEU
+8874,The Lunar Festival,classic,Horde,1,60,sort -366,True,True,False,EUEU
+8875,The Lunar Festival,classic,Horde,1,60,sort -366,True,True,False,EUEU
+8876,Small Rockets,classic,Horde/Alliance,25,60,sort -366,True,False,False,EEEU
+8877,Firework Launcher,classic,Horde/Alliance,45,60,sort -366,True,False,False,EEEU
+8878,Festive Recipes,classic,Horde/Alliance,50,60,sort -366,True,False,False,EEEU
+8879,Large Rockets,classic,Horde/Alliance,35,60,sort -366,True,False,False,EEEU
+8880,Cluster Rockets,classic,Horde/Alliance,45,60,sort -366,True,False,False,EEEU
+8881,Large Cluster Rockets,classic,Horde/Alliance,55,60,sort -366,True,False,False,EEEU
+8882,Cluster Launcher,classic,Horde/Alliance,55,60,sort -366,True,False,False,EEEU
+8893,The Super Egg-O-Matic,classic,Horde/Alliance,42,47,Tanaris,True,False,False,EEEU
+8897,"Dearest Colara,",classic,Alliance,1,60,sort -22,True,False,False,EEEU
+8898,"Dearest Colara,",classic,Alliance,1,60,sort -22,True,False,False,EEEU
+8899,"Dearest Colara,",classic,Alliance,1,60,sort -22,True,False,False,EEEU
+8900,"Dearest Elenia,",classic,Horde,1,60,sort -22,True,False,False,EEEU
+8901,"Dearest Elenia,",classic,Horde,1,60,sort -22,True,False,False,EEEU
+8902,"Dearest Elenia,",classic,Horde,1,60,sort -22,True,False,False,EEEU
+8903,Dangerous Love,classic,Alliance,1,60,sort -22,True,False,False,EEEU
+8904,Dangerous Love,classic,Horde,1,60,sort -22,True,False,False,EEEU
+8979,Fenstad's Hunch,classic,Horde,1,60,sort -22,True,False,False,EEEU
+8980,Zinge's Assessment,classic,Horde,1,60,sort -22,True,False,False,EEEU
+8981,Gift Giving,classic,Horde,1,60,sort -22,True,False,False,EEEU
+8982,Tracing the Source,classic,Horde,1,60,sort -22,True,False,False,EEEU
+8983,Tracing the Source,classic,Horde,1,60,sort -22,True,False,False,EEEU
+8984,The Source Revealed,classic,Horde,1,60,sort -22,True,False,False,EEEU
+8993,Gift Giving,classic,Alliance,1,60,sort -22,True,False,False,EEEU
+9024,Aristan's Hunch,classic,Alliance,1,60,sort -22,True,False,False,EEEU
+9025,Morgan's Discovery,classic,Alliance,1,60,sort -22,True,False,False,EEEU
+9026,Tracing the Source,classic,Alliance,1,60,sort -22,True,False,False,EEEU
+9027,Tracing the Source,classic,Alliance,1,60,sort -22,True,False,False,EEEU
+9028,The Source Revealed,classic,Alliance,1,60,sort -22,True,False,False,EEEU
+9029,A Bubbling Cauldron,classic,Horde/Alliance,1,60,sort -22,True,False,False,EEEU
+9034,Dreadnaught Breastplate,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9036,Dreadnaught Legplates,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9037,Dreadnaught Helmet,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9038,Dreadnaught Pauldrons,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9039,Dreadnaught Sabatons,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9040,Dreadnaught Gauntlets,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9041,Dreadnaught Waistguard,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9042,Dreadnaught Bracers,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9043,Redemption Tunic,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9044,Redemption Legguards,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9045,Redemption Headpiece,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9046,Redemption Spaulders,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9047,Redemption Boots,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9048,Redemption Handguards,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9049,Redemption Girdle,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9050,Redemption Wristguards,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9054,Cryptstalker Tunic,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9055,Cryptstalker Legguards,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9056,Cryptstalker Headpiece,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9057,Cryptstalker Spaulders,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9058,Cryptstalker Boots,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9059,Cryptstalker Handguards,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9060,Cryptstalker Girdle,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9061,Cryptstalker Wristguards,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9068,Earthshatter Tunic,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9069,Earthshatter Legguards,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9070,Earthshatter Headpiece,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9071,Earthshatter Spaulders,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9072,Earthshatter Boots,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9073,Earthshatter Handguards,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9074,Earthshatter Girdle,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9075,Earthshatter Wristguards,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9077,Bonescythe Breastplate,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9078,Bonescythe Legplates,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9079,Bonescythe Helmet,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9080,Bonescythe Pauldrons,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9081,Bonescythe Sabatons,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9082,Bonescythe Gauntlets,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9083,Bonescythe Waistguard,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9084,Bonescythe Bracers,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9085,Shadows of Doom,classic,Horde/Alliance,50,60,sort -368,True,False,False,EEEU
+9086,Dreamwalker Tunic,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9087,Dreamwalker Legguards,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9088,Dreamwalker Headpiece,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9089,Dreamwalker Spaulders,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9090,Dreamwalker Boots,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9091,Dreamwalker Handguards,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9092,Dreamwalker Girdle,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9093,Dreamwalker Wristguards,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9094,Argent Dawn Gloves,classic,Alliance,50,60,sort -368,True,False,False,EEEU
+9095,Frostfire Robe,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9096,Frostfire Leggings,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9097,Frostfire Circlet,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9098,Frostfire Shoulderpads,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9099,Frostfire Sandals,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9100,Frostfire Gloves,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9101,Frostfire Belt,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9102,Frostfire Bindings,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9103,Plagueheart Robe,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9104,Plagueheart Leggings,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9105,Plagueheart Circlet,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9106,Plagueheart Shoulderpads,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9107,Plagueheart Sandals,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9108,Plagueheart Gloves,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9109,Plagueheart Belt,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9110,Plagueheart Bindings,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9111,Robe of Faith,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9112,Leggings of Faith,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9113,Circlet of Faith,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9114,Shoulderpads of Faith,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9115,Sandals of Faith,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9116,Gloves of Faith,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9117,Belt of Faith,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9118,Bindings of Faith,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9121,The Dread Citadel - Naxxramas,classic,Horde/Alliance,60,60,Eastern Plaguelands,True,False,False,EEEU
+9122,The Dread Citadel - Naxxramas,classic,Horde/Alliance,60,60,Eastern Plaguelands,True,False,False,EEEU
+9123,The Dread Citadel - Naxxramas,classic,Horde/Alliance,60,60,Eastern Plaguelands,True,False,False,EEEU
+9125,Crypt Fiend Parts,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9127,Bone Fragments,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9129,Core of Elements,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9132,Dark Iron Scraps,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9137,Savage Fronds,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9142,Craftsman's Writ,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9153,Under the Shadow,classic,Horde/Alliance,50,60,sort -368,True,False,False,EEEU
+9154,Light's Hope Chapel,classic,Horde/Alliance,50,60,sort -368,True,False,False,EEEU
+9165,Writ of Safe Passage,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9178,Craftsman's Writ - Dense Weightstone,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9179,Craftsman's Writ - Imperial Plate Chest,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9181,Craftsman's Writ - Volcanic Hammer,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9182,Craftsman's Writ - Huge Thorium Battleaxe,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9183,Craftsman's Writ - Radiant Circlet,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9184,Craftsman's Writ - Wicked Leather Headband,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9185,Craftsman's Writ - Rugged Armor Kit,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9186,Craftsman's Writ - Wicked Leather Belt,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9187,Craftsman's Writ - Runic Leather Pants,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9188,Craftsman's Writ - Brightcloth Pants,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9190,Craftsman's Writ - Runecloth Boots,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9191,Craftsman's Writ - Runecloth Bag,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9194,Craftsman's Writ - Runecloth Robe,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9195,Craftsman's Writ - Goblin Sapper Charge,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9196,Craftsman's Writ - Thorium Grenade,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9197,Craftsman's Writ - Gnomish Battle Chicken,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9198,Craftsman's Writ - Thorium Tube,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9200,Craftsman's Writ - Major Mana Potion,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9201,Craftsman's Writ - Greater Arcane Protection Potion,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9202,Craftsman's Writ - Major Healing Potion,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9203,Craftsman's Writ - Flask of Petrification,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9204,Craftsman's Writ - Stonescale Eel,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9205,Craftsman's Writ - Plated Armorfish,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9206,Craftsman's Writ - Lightning Eel,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9208,The Savage Guard - Arcanum of Protection,classic,Horde/Alliance,60,60,Zul Gurub,True,False,False,EEEU
+9209,The Savage Guard - Arcanum of Rapidity,classic,Horde/Alliance,60,60,Zul Gurub,True,False,False,EEEU
+9210,The Savage Guard - Arcanum of Focus,classic,Horde/Alliance,60,60,Zul Gurub,True,False,False,EEEU
+9211,The Ice Guard,classic,Horde/Alliance,60,60,Eastern Plaguelands,True,False,False,EEEU
+9213,The Shadow Guard,classic,Horde/Alliance,60,60,Eastern Plaguelands,True,False,False,EEEU
+9221,Superior Armaments of Battle - Friend of the Dawn,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9222,Epic Armaments of Battle - Friend of the Dawn,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9223,Superior Armaments of Battle - Honored Amongst the Dawn,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9224,Epic Armaments of Battle - Honored Amongst the Dawn,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9225,Epic Armaments of Battle - Revered Amongst the Dawn,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9226,Superior Armaments of Battle - Revered Amongst the Dawn,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9227,Superior Armaments of Battle - Exalted Amongst the Dawn,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9228,Epic Armaments of Battle - Exalted Amongst the Dawn,classic,Horde/Alliance,55,60,Eastern Plaguelands,True,False,False,EEEU
+9229,The Fate of Ramaladni,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9230,Ramaladni's Icy Grasp,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9232,The Only Song I Know...,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9233,Omarion's Handbook,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9234,Icebane Gauntlets,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9235,Icebane Bracers,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9236,Icebane Breastplate,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9237,Glacial Cloak,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9238,Glacial Wrists,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9239,Glacial Gloves,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9240,Glacial Vest,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9241,Polar Bracers,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9242,Polar Gloves,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9243,Polar Tunic,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9244,Icy Scale Bracers,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9245,Icy Scale Gauntlets,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9246,Icy Scale Breastplate,classic,Horde/Alliance,60,60,Naxxramas,True,False,False,EEEU
+9247,The Keeper's Call,classic,Horde/Alliance,1,60,sort -368,True,False,False,EEEU
+9248,A Humble Offering,classic,Horde/Alliance,58,60,Silithus,True,False,False,EEEU
+9259,Traitor to the Bloodsail,classic,Horde/Alliance,30,60,Stranglethorn Vale,True,False,False,EEEU
+9266,Making Amends,classic,Horde/Alliance,40,60,Winterspring,True,False,False,EEEU
+9267,Mending Old Wounds,classic,Horde/Alliance,15,60,The Barrens,True,False,False,EEEU
+9268,War at Sea,classic,Horde/Alliance,40,60,Tanaris,True,False,False,EEEU
+9272,Dressing the Part,classic,Horde/Alliance,49,55,Stranglethorn Vale,True,False,False,EEEU
+9292,Cracked Necrotic Crystal,classic,Alliance,1,60,sort -368,True,True,False,EUEU
+9295,Letter from the Front,classic,Horde/Alliance,45,60,sort -368,True,False,False,EEEU
+9299,Note from the Front,classic,Horde/Alliance,45,60,sort -368,True,False,False,EEEU
+9300,Page from the Front,classic,Horde/Alliance,45,60,sort -368,True,False,False,EEEU
+9301,Envelope from the Front,classic,Horde/Alliance,45,60,sort -368,True,False,False,EEEU
+9302,Missive from the Front,classic,Horde/Alliance,45,60,sort -368,True,False,False,EEEU
+9304,Document from the Front,classic,Horde/Alliance,45,60,sort -368,True,False,False,EEEU
+9310,Faint Necrotic Crystal,classic,Horde,1,60,sort -368,True,True,False,EUEU
+9317,Consecrated Sharpening Stones,classic,Alliance,50,60,sort -368,True,False,False,EEEU
+9318,Blessed Wizard Oil,classic,Alliance,50,60,sort -368,True,False,False,EEEU
+9319,A Light in Dark Places,classic,Horde/Alliance,50,60,sort -369,True,False,False,EEEU
+9320,Major Mana Potion,classic,Horde,50,60,sort -368,True,False,False,EEEU
+9321,Major Healing Potion,classic,Alliance,50,60,sort -368,True,False,False,EEEU
+9322,Wild Fires in Kalimdor,classic,Horde/Alliance,1,60,sort -369,True,False,False,EEEU
+9323,Wild Fires in the Eastern Kingdoms,classic,Horde/Alliance,1,60,sort -369,True,False,False,EEEU
+9333,Argent Dawn Gloves,classic,Horde,50,60,sort -368,True,False,False,EEEU
+9334,Blessed Wizard Oil,classic,Horde,50,60,sort -368,True,False,False,EEEU
+9335,Consecrated Sharpening Stones,classic,Horde,50,60,sort -368,True,False,False,EEEU
+9336,Major Healing Potion,classic,Horde,50,60,sort -368,True,False,False,EEEU
+9337,Major Mana Potion,classic,Alliance,50,60,sort -368,True,False,False,EEEU
+9338,Allegiance to Cenarion Circle,classic,Horde/Alliance,60,60,Silithus,True,False,False,EEEU
+9339,A Thief's Reward,classic,Horde,50,60,sort -369,True,False,False,EEEU
+9341,Tabard of the Argent Dawn,classic,Alliance,50,60,sort -368,True,False,False,EEEU
+9343,Tabard of the Argent Dawn,classic,Horde,50,60,sort -368,True,False,False,EEEU
+9364,Fragmented Magic,classic,Horde/Alliance,60,60,sort -161,True,False,False,EEEU
+9365,A Thief's Reward,classic,Alliance,50,60,sort -369,True,False,False,EEEU
+9368,The Festival of Fire,classic,Horde,1,60,sort -369,True,False,False,EEEU
+9378,DND FLAG The Dread Citadel - Naxxramas,classic,Horde/Alliance,60,60,Eastern Plaguelands,True,True,True,EUUU
+9386,A Light in Dark Places,classic,Horde/Alliance,50,60,sort -369,True,False,False,EEEU
+9415,Report to Marshal Bluewall,classic,Alliance,1,60,Silithus,True,False,False,EEEU
+9416,Report to General Kirika,classic,Horde,1,60,Silithus,True,False,False,EEEU
