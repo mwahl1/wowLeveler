@@ -236,6 +236,22 @@ end
 
 function T.skip(reason) error(setmetatable({ skip = true, msg = reason or "skipped" }, { __index = SKIP }), 0) end
 
+-- Timing: median ms per call of fn over `batches` batches of `per` calls, after one warm-up call
+function T.bench(fn, batches, per)
+  batches, per = batches or 7, per or 20
+  fn()
+  local samples = {}
+  for b = 1, batches do
+    local t0 = os.clock()
+    for _ = 1, per do fn() end
+    samples[b] = (os.clock() - t0) * 1000 / per
+  end
+  table.sort(samples)
+  local n = #samples
+  local median = n % 2 == 1 and samples[(n + 1) / 2] or (samples[n / 2] + samples[n / 2 + 1]) / 2
+  return median, samples[1], samples[n]
+end
+
 -- Runner ----------------------------------------------------------------------------------
 local tests = {}
 local loadErrors = 0

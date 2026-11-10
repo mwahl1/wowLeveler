@@ -52,6 +52,9 @@ end
 
 function G.Get(id) return registry[id] end
 
+-- Number of registered route definitions (0 = no route files: the guide stays inert)
+function G.Count() return #registryOrder end
+
 local function contains(list, v)
   if list == nil then return true end -- nil = no restriction
   if type(list) ~= "table" then return list == v end

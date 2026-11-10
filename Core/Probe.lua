@@ -183,6 +183,28 @@ local CHECKS = {
       if meta then detail = detail .. ", QuestieDB " .. tostring(meta.questiedbCommit):sub(1, 10) end
       return "pass", detail
     end },
+  { "Guide engine", function()
+      local G, GS = ns.Guides, ns.GuideState
+      if not (G and G.Count and GS) then return "missing", "guide modules not loaded" end
+      local n = G.Count()
+      if n == 0 then return "partial", "no route files registered (guide inactive)" end
+      local route = GS.route
+      if not route then return "partial", n .. " route definitions, not compiled yet" end
+      local errors, warnings = 0, 0
+      for _, p in ipairs(GS.problems or {}) do
+        if p.severity == "error" then errors = errors + 1 else warnings = warnings + 1 end
+      end
+      local detail = string.format("%d defs, %d segments, %d steps, %d errors, %d warnings",
+        n, #route.order, #route.steps, errors, warnings)
+      if GS.active then
+        detail = detail .. string.format(", segment %s, %d evaluations", tostring(GS.memory and GS.memory.segment), GS.evaluations)
+        if GS.lastMs then detail = detail .. string.format(", last %.1f ms", GS.lastMs) end
+      else
+        detail = detail .. ", inactive"
+      end
+      if errors > 0 or not GS.active then return "partial", detail end
+      return "pass", detail
+    end },
   { "Other addons", function()
       local found = {}
       for _, a in ipairs({ "Questie", "QuestieDB", "TomTom", "RXPGuides" }) do

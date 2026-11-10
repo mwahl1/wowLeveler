@@ -217,7 +217,7 @@ Because steps are derived from state, the pointer is a result, not an input. The
 
 ### 6.2 Out-of-order completion
 
-Covered by "implied done" plus derivation: if 790 is turned in before 788 was accepted, the 790 steps are `DONE` and 788's steps stay `ACTIVE` where they are in the route. Nothing is repeated.
+Covered by "implied done" plus derivation: if 790 is turned in before 788 was accepted, the 790 steps are `DONE` and nothing is repeated. 788 stays where it is while the pointer hasn't passed it; once the pointer moves past it (8a Engine decision 1), it is returned as a backlog step just before its first dependent (e.g. 789), or skipped if nothing depends on it.
 
 ### 6.3 Mid-route join / unexpected levels
 
@@ -364,6 +364,41 @@ local segId, suggestion = ns.GuideSelector.Choose(route, state, memory)
 ```
 Rules: if `memory.segment` is set, its `entry` still holds and `state.level <= levels[2] + 2` → keep it (no suggestion). Otherwise candidates = segments whose `entry` holds and `levels[1] - 1 <= state.level <= levels[2] + 2`; score = sum of quest XP (data XP, any label) of quest steps whose quest is AVAILABLE or ACTIVE per `ns.Availability`, ties → lower `levels[1]`, then `order`. First choice with no `memory.segment` → return the best directly. When keeping is not possible but a better segment exists and auto-switch is off, return the current segment plus a suggestion (if the current one is unusable: return the best). The start segment wins while its exit condition doesn't hold and level ≤ its `levels[2] + 2`.
 
+**Engine** (`Guide/Engine.lua`, pure Lua):
+```lua
+local view, events = ns.GuideEngine.Evaluate(route, state, memory)
+-- route  = output of ns.Guides.Compile
+-- state  = CharacterState (3.1, plus settings)
+-- memory = persisted table, created by ns.GuideEngine.NewMemory(); Evaluate updates it in place:
+--   { version = 1, segment = segId|nil, autoSwitch = false,
+--     skips = { [stepId] = true }, confirms = { [stepId] = true },
+--     done = { [stepId] = true },          -- last evaluation's DONE set (to emit transitions only)
+--     activeSince = { [stepId] = t },      -- when a step became ACTIVE (for durations)
+--     facts = { knownNodes = {}, ... }, lastIndex = n }
+-- view   = GuideView (7.2)
+-- events = { { kind = "STEP_DONE", stepId, segment, t, level, xp, map, x, y, seconds }, ... }  -- transitions since last call
+ns.GuideEngine.Skip(memory, stepId);  ns.GuideEngine.Confirm(memory, stepId)
+ns.GuideEngine.NewMemory();  ns.GuideEngine.Sanitize(memory)   -- repairs/ignores old or corrupt saved data
+```
+Scope: evaluation window = active segment (from `ns.GuideSelector.Choose`) plus the next segment in `order`. Quest state (5.1) from `state.completed`/`state.log` + `ns.Availability`. Step statuses (5.2) for all section-4 types; types whose state fields are absent → `manualConfirm` (5.3). Recovery 6.1-6.6 (implied done, current + concurrent by shared target within 60 yd or open objectives, skips/backlog using M3 prerequisite links of later route quests, abandon, zone focus). Targets resolved from M3 (nearest spawn to the player on the same map, else first spawn) with `label`, `name`, and `distance` in yards when both points are on one map that has `ns.DataMeta.zoneBounds` (else nil). XP falloff is not applied in P2. No WoW API, no frames.
+
+**Engine decisions (2026-11-10, from implementation; authoritative):**
+1. Pointer = furthest DONE step in the active segment with at least as many done as pending non-transitional steps before it; next-segment steps never move it. Passed steps: quest open in log → never skipped; transitional → DONE; optional/DEATHSKIP/`recover="skip"`/non-quest → SKIPPED; quest steps with a dependent after the pointer → backlog, returned just before the first dependent (`recover="return"`: stay in place); no dependent → SKIPPED "passed".
+2. Dependency = later window quest referencing q via PRE_ALL (±q), PRE_ANY, AVAILABLE_WITH, PARENT, or q itself.
+3. WAITING if a missing prerequisite is in the log or its ACCEPT is pending in the window, or level too low ("level"); else BLOCKED.
+4. `when` false → internal `NA` (hidden, excluded from progress); `when` unknown → UNKNOWN "condition"; DEATHSKIP without `settings.deathSkips` → NA.
+5. `memory.confirms` completes only manual-confirm steps; never overrides quest state; NOTE always manual.
+6. Step fields: GRIND `target={level,fraction}`; GOTO `target{map,x,y}`, `radius` (20 yd; 1 map-% without bounds); ZONE/TRANSPORT `target.map`; FLY on-taxi seen then off taxi on target map (`memory.facts.taxi`); HEARTH_USE target map within `radius` (100 yd) after activation; HEARTH_SET `step.bind` vs `state.bindLocation`; FP_LEARN `step.node` in known nodes; TRAIN `step.spells`; BUY `step.item={id,count}`; DEATHSKIP death seen then alive on target map; ABANDON done when previously accepted and now neither in log nor completed. Missing state → ACTIVE + manualConfirm.
+7. KILL without quest objective → UNKNOWN "kill_without_objective".
+8. Transitional/DEATHSKIP implied-done only when the next applicable step is DONE.
+9. **STEP_DONE events are not emitted on the first evaluation of a fresh memory**: it seeds `memory.done` as the baseline (avoids flooding timing data on first login / mid-route joins). Later transitions emit events.
+10. Segment advance: when the active segment's `exit` holds → first existing `next`, else next in order, unless its entry is false.
+11. Concurrent ≤ 5 (open-objective steps of logged quests, or ACTIVE within 60 yd); upcoming ≤ 5; no ACTIVE → first WAITING/BLOCKED/UNKNOWN shown as current with `why`. Zone focus within the segment only; cross-segment map matching (6.6, second half) is deferred.
+12. Authored target defaults to label E. OBJECTIVE/KILL use M3 `OBJ[step.objective]`, **assuming Questie's objective order equals the in-game log order (unverified; check during P0)**.
+13. Progress = active segment, (DONE+SKIPPED)/non-NA. Warnings from quest LABELS (U start/finish) and UNKNOWN step count.
+14. Death-skip suggestion only when a DEATHSKIP step is current and `est.saves` exists.
+Extra API: `Unskip`, `ApplySuggestion(memory, s)`, `ResolveTarget`, `QuestState`, `Yards`; `Evaluate` also returns the (possibly replaced) memory as a third value.
+
 **Test harness** (`tools/run_tests.lua`, owned by QA): discovers `tests/*_test.lua`; provides `T.addon(faction, class)` → namespace with `Core/Data.lua`, `Data/*.lua` and `Guide/*.lua` loaded (cached per faction/class), `T.state{...}` → CharacterState with defaults, `T.inject(ns, questID, fields)` → adds a synthetic quest record using schema field names, and assertions `T.eq`, `T.ok`, `T.contains`. Exit code 0 only if all tests pass.
 
 ## 9. Route efficiency: measurement before content
@@ -405,7 +440,7 @@ Pure engine modules run under Lua 5.1 (`~/wow-tools/lua-5.1.5/src/lua tools/run_
 | Missing data | U locations, missing prerequisites, negative PRE_ANY → UNKNOWN with reason, nothing auto-done |
 | Availability | exclusiveTo, nextQuestInChain, breadcrumbs, negative PRE_ALL semantics |
 | Persistence | save memory → reload → identical view; corrupted/old saved data is ignored safely |
-| Performance | evaluation of a 300-step window under a set budget (measured offline, re-measured in game) |
+| Performance | 300-step window: **median** of repeated evaluations ≤ 5 ms hard limit, 2 ms target reported as INFO (offline; re-measured in game). Evaluation runs ≤ 2 Hz, debounced. |
 
 Test status will always be reported as **offline-tested** until run in WoW Forever.
 

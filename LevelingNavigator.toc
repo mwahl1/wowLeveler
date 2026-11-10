@@ -22,6 +22,8 @@ Guide\Availability.lua
 Guide\Conditions.lua
 Guide\Compiler.lua
 Guide\Selector.lua
+Guide\Engine.lua
+Core\GuideState.lua
 
 UI\Theme.lua
 UI\Widgets.lua
