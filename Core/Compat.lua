@@ -264,3 +264,97 @@ function C.GetItemCount(itemID)
   if not ok or C.IsSecret(v) or type(v) ~= "number" then return nil end
   return v
 end
+
+function C.GetPlayerGUID()
+  return plain(C.Call(UnitGUID, "player"))
+end
+
+-- C_QuestLog.GetMaxNumQuestsCanAccept(), or nil if unavailable
+function C.GetMaxQuestsCanAccept()
+  if not (C_QuestLog and type(C_QuestLog.GetMaxNumQuestsCanAccept) == "function") then return nil end
+  local n = plain(C.Call(C_QuestLog.GetMaxNumQuestsCanAccept))
+  if type(n) ~= "number" or n <= 0 then return nil end
+  return n
+end
+
+-- Native waypoint ------------------------------------------------------------------
+-- We never replace or clear a waypoint the player placed. The waypoint we set is
+-- remembered in LevelingNavigatorCharDB.waypoint (map, x, y in 0-100) so it can still be
+-- recognised and cleared after a /reload.
+
+local function ours()
+  local w = ns.char and ns.char.waypoint
+  if type(w) == "table" and type(w.map) == "number" and type(w.x) == "number" and type(w.y) == "number" then
+    return w
+  end
+  return nil
+end
+
+local function setOurs(w)
+  if ns.char then ns.char.waypoint = w end
+end
+
+-- The current user waypoint as map, x, y (0-100); nil if none or unreadable.
+-- Second return false when the API to read it is missing.
+local function currentWaypoint()
+  if not (C_Map and type(C_Map.GetUserWaypoint) == "function") then return nil, false end
+  if type(C_Map.HasUserWaypoint) == "function" and not C.Call(C_Map.HasUserWaypoint) then return nil, true end
+  local cur = C.Call(C_Map.GetUserWaypoint)
+  if type(cur) ~= "table" then return nil, true end
+  local pos = cur.position
+  local cx, cy
+  if pos and type(pos.GetXY) == "function" then cx, cy = C.Call(pos.GetXY, pos) end
+  local map = cur.uiMapID
+  if map == nil or cx == nil or cy == nil or C.IsSecret(map) or C.IsSecret(cx) or C.IsSecret(cy) then
+    return "unreadable", true
+  end
+  return { map = map, x = cx * 100, y = cy * 100 }, true
+end
+
+local function same(a, b)
+  return type(a) == "table" and type(b) == "table" and a.map == b.map
+    and math.abs(a.x - b.x) <= 0.05 and math.abs(a.y - b.y) <= 0.05
+end
+
+function C.CanSetWaypoint(uiMapID)
+  if not (uiMapID and C_Map and type(C_Map.SetUserWaypoint) == "function") then return false end
+  if type(C_Map.CanSetUserWaypointOnMap) ~= "function" then return false end
+  return C.Call(C_Map.CanSetUserWaypointOnMap, uiMapID) == true
+end
+
+-- x/y in 0-100 map percent. Returns true when the waypoint was set. Refuses (false) when a
+-- waypoint that isn't ours exists, or when existing waypoints can't be inspected.
+function C.SetWaypoint(uiMapID, x, y)
+  if not (x and y) or not C.CanSetWaypoint(uiMapID) then return false end
+  if not (UiMapPoint and type(UiMapPoint.CreateFromCoordinates) == "function") then return false end
+  local cur, readableApi = currentWaypoint()
+  if not readableApi then return false end
+  if cur ~= nil and not same(cur, ours()) then return false end -- the player's own (or unreadable)
+  local point = C.Call(UiMapPoint.CreateFromCoordinates, uiMapID, x / 100, y / 100)
+  if not point then return false end
+  if not pcall(C_Map.SetUserWaypoint, point) then return false end
+  setOurs({ map = uiMapID, x = x, y = y })
+  if C_SuperTrack and type(C_SuperTrack.SetSuperTrackedUserWaypoint) == "function" then
+    pcall(C_SuperTrack.SetSuperTrackedUserWaypoint, true)
+  end
+  return true
+end
+
+-- Clears the user waypoint only if it is still the one we set. Returns true when cleared.
+function C.ClearWaypoint()
+  local mine = ours()
+  if not mine then return false end
+  if not (C_Map and type(C_Map.ClearUserWaypoint) == "function") then return false end
+  local cur, readableApi = currentWaypoint()
+  if not readableApi then return false end -- can't verify: leave it alone (and remember it)
+  if cur == nil then setOurs(nil); return false end -- already gone
+  if cur == "unreadable" then return false end -- can't verify: leave it alone
+  if not same(cur, mine) then setOurs(nil); return false end -- the player replaced it
+  if not pcall(C_Map.ClearUserWaypoint) then return false end
+  setOurs(nil)
+  return true
+end
+
+function C.HasOurWaypoint()
+  return ours() ~= nil
+end

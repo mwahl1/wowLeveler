@@ -40,7 +40,7 @@ local function Create()
   close:SetPoint("RIGHT", -6, 0)
   local rerun = W.TextButton(header, "Run again", function() ns.Probe.Run() end)
   rerun:SetWidth(80)
-  rerun.text:SetFont(T.font.body, T.size.small, "")
+  W.SetFont(rerun.text, T.font.body, T.size.small)
   rerun:SetPoint("RIGHT", close, "LEFT", -8, 0)
 
   frame.meta = W.Text(frame, { size = T.size.small, color = T.color.muted })

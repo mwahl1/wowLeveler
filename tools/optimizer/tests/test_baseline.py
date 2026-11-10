@@ -123,7 +123,7 @@ class BaselineTests(unittest.TestCase):
             res = run(race)
             self.assertNotIn("gap", res, race)
             self.assertGreater(res["summary"]["quests"], 0, race)
-            self.assertEqual(res["route"]["source"], "optimizer@" + M.OPTIMIZER_VERSION)
+            self.assertEqual(res["route"]["source"], "optimizer@baseline-" + M.OPTIMIZER_VERSION)
 
     def test_skyborne_horde_gap_reported(self):
         res = run(96)
@@ -191,7 +191,13 @@ class BaselineTests(unittest.TestCase):
             if s.get("quest"):
                 classes = quests[s["quest"]][1].get("CLASSES") or 0
                 restricted = classes and classes & M.ALL_CLASSES_MASK != M.ALL_CLASSES_MASK
-                self.assertEqual(s.get("when"), {"classes": ["WARRIOR"]} if restricted else None, s["id"])
+                inherited = len(res["applicability"][s["quest"]][0]) < len(M.CLASSES)
+                self.assertEqual(s.get("when"), {"classes": ["WARRIOR"]} if restricted or inherited else None,
+                                 s["id"])
+                if restricted:
+                    self.assertTrue(inherited)
+        # 794 follows 792 (all classes but Warlock), so it inherits the restriction
+        self.assertNotIn("WARLOCK", res["applicability"][794][0])
 
     def test_no_grind_mode(self):
         for race in PLAYABLE:
@@ -271,3 +277,43 @@ class BaselineTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class GuideFileTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.text = B.render_guides(world())
+
+    def test_file_is_regenerated_identically(self):
+        with open(B.GUIDES_FILE, encoding="utf-8") as f:
+            on_disk = f.read()
+        self.assertEqual(self.text, on_disk, "run: python3 -B tools/optimizer/baseline.py --write-guides")
+        self.assertEqual(B.render_guides(M.World()), self.text)
+
+    def test_header_and_starts(self):
+        self.assertIn("naive level-ordered baseline, NOT optimized; labels E/U", self.text)
+        self.assertIn("local _, ns = ...", self.text)
+        self.assertEqual(self.text.count("ns.Guides.Register({"), len(B.GUIDE_STARTS))
+        covered = sorted(r for g in B.GUIDE_STARTS for r in g)
+        self.assertEqual(covered, sorted(PLAYABLE))
+        self.assertIn("races = {2,8}", self.text)
+        self.assertIn("races = {3,7}", self.text)
+        self.assertIn("Skipped raceID 96", self.text)
+        self.assertIn(f'source = "optimizer@baseline-{M.OPTIMIZER_VERSION}"', self.text)
+        self.assertNotIn('"V"', self.text)
+
+    def test_all_class_mode(self):
+        res = dict(B.guide_results(world()))[(2, 8)]
+        steps = {s["id"]: s for s in res["route"]["steps"]}
+        when = steps["baseline.start.1411.a792"].get("when")
+        self.assertEqual(when, {"classes": sorted(set(M.CLASSES) - {"WARLOCK"})})
+        self.assertEqual(steps["baseline.start.1411.a794"].get("when"), when)  # inherited via prereq
+        self.assertNotIn(792, res["route"]["exit"]["completed"])
+        self.assertIn(788, res["route"]["exit"]["completed"])
+
+    def test_compiles_in_lua(self):
+        luac = os.path.expanduser("~/wow-tools/lua-5.1.5/src/luac")
+        if not os.path.exists(luac):
+            self.skipTest("luac 5.1 not installed")
+        out = subprocess.run([luac, "-p", B.GUIDES_FILE], capture_output=True, text=True, timeout=60)
+        self.assertEqual(out.returncode, 0, out.stderr)

@@ -251,7 +251,9 @@ return function(T)
     local view = G.Evaluate(route, orc{ level = 2, completed = done(4641) }, mem)
     T.eq(view.current[1].id, "vot.a788", "ACCEPT is current again")
     T.eq(view.current[1].status, "ACTIVE", "ACCEPT ACTIVE")
-    T.ok(not mem.done["vot.a788"], "accept no longer done")
+    T.ok(mem.done["vot.a788"], "hysteresis: still in memory.done after one not-done evaluation")
+    G.Evaluate(route, orc{ level = 2, completed = done(4641) }, mem)
+    T.ok(not mem.done["vot.a788"], "accept leaves memory.done after two not-done evaluations")
   end)
 
   T.test("planned ABANDON step -> DONE once the quest leaves the log", function()
@@ -591,6 +593,99 @@ return function(T)
     T.ok(type(c.target) == "table" and c.target.map == 1411, "target on Durotar")
     T.ok(#view.upcoming <= 5, "upcoming 3-5 compact entries")
     T.ok(type(view.backlog) == "table" and type(view.suggestions) == "table" and type(view.warnings) == "table", "lists")
+  end)
+
+  -- Batch 4 interfaces (spec 8a) ---------------------------------------------------------------
+
+  T.test("step count: OBJECTIVE done at fulfilled >= count, progress max = count", function()
+    local ns, route = setup(function(ns)
+      seg(ns, "eng.count", {
+        { id = "c.a788", type = "ACCEPT", quest = 788 },
+        { id = "c.o788", type = "OBJECTIVE", quest = 788, objective = 1, count = 5 },
+        { id = "c.t788", type = "TURNIN", quest = 788 },
+      })
+    end)
+    local G = ns.GuideEngine
+    local mem = G.NewMemory()
+    local view = G.Evaluate(route, orc{ level = 2, completed = done(4641), log = { [788] = active(4, 10) } }, mem)
+    T.eq(view.current[1].id, "c.o788", "objective current at 4")
+    T.eq(view.current[1].progress, { cur = 4, max = 5 }, "progress uses count")
+    view = G.Evaluate(route, orc{ level = 2, completed = done(4641), log = { [788] = active(5, 10) } }, mem)
+    T.ok(mem.done["c.o788"], "done at fulfilled = count although the objective isn't finished")
+    T.eq(view.current[1].id, "c.t788", "moves on (turn-in waits for the quest)")
+    view = G.Evaluate(route, orc{ level = 2, completed = done(4641),
+      log = { [788] = { complete = false, objectives = { { required = 10, finished = false } } } } }, G.NewMemory())
+    local o = find(view, "c.o788")
+    T.ok(o ~= nil and o.manualConfirm == true, "count without readable fulfilled -> manual confirm")
+  end)
+
+  T.test("DONE hysteresis: a one-evaluation flicker neither clears done nor re-emits STEP_DONE", function()
+    local ns, route = setup(F.registerHorde)
+    local G = ns.GuideEngine
+    local mem = G.NewMemory()
+    local base = done(4641)
+    G.Evaluate(route, orc{ level = 2, time = 1, completed = base }, mem) -- seed
+    local _, ev = G.Evaluate(route, orc{ level = 2, time = 2, completed = base, log = { [788] = active(0, 10) } }, mem)
+    T.eq(eventsFor(ev, "vot.a788"), 1, "accept emitted")
+    _, ev = G.Evaluate(route, orc{ level = 2, time = 3, completed = base }, mem) -- flicker: log empty once
+    T.ok(mem.done["vot.a788"], "still done after one not-done evaluation")
+    T.eq(#ev, 0, "nothing emitted during the flicker")
+    _, ev = G.Evaluate(route, orc{ level = 2, time = 4, completed = base, log = { [788] = active(0, 10) } }, mem)
+    T.eq(eventsFor(ev, "vot.a788"), 0, "not re-emitted when it comes back")
+    -- two consecutive not-done evaluations: it leaves done, and a later accept emits again
+    G.Evaluate(route, orc{ level = 2, time = 5, completed = base }, mem)
+    G.Evaluate(route, orc{ level = 2, time = 6, completed = base }, mem)
+    T.ok(not mem.done["vot.a788"], "left done after 2 not-done evaluations")
+    _, ev = G.Evaluate(route, orc{ level = 2, time = 7, completed = base, log = { [788] = active(0, 10) } }, mem)
+    T.eq(eventsFor(ev, "vot.a788"), 1, "real re-accept emitted")
+  end)
+
+  T.test("GUID stamp: Sanitize resets manual data for another character, keeps it for the same one", function()
+    local ns, route = setup(F.registerHorde)
+    local G = ns.GuideEngine
+    local function filled(guid)
+      local m = G.NewMemory()
+      G.Evaluate(route, orc{ level = 3, guid = guid, completed = done(4641, 788) }, m)
+      G.Skip(m, "vot.a790"); G.Confirm(m, "ewl.imp"); m.facts.knownNodes.razor = true
+      return m
+    end
+    local m = filled("Player-1-AAA")
+    T.eq(m.guid, "Player-1-AAA", "stamped by Evaluate")
+    local segBefore = m.segment
+    G.Sanitize(m, "Player-1-AAA")
+    T.ok(m.skips["vot.a790"] and m.confirms["ewl.imp"] and m.facts.knownNodes.razor, "same GUID keeps manual data")
+    G.Sanitize(m, "Player-1-BBB")
+    T.eq(m.guid, "Player-1-BBB", "restamped")
+    T.eq(m.skips, {}, "skips reset"); T.eq(m.confirms, {}, "confirms reset")
+    T.eq(m.done, {}, "done reset"); T.eq(m.facts.knownNodes, {}, "facts reset")
+    T.eq(m.segment, segBefore, "quest-derived segment kept")
+    local _, ev = G.Evaluate(route, orc{ level = 3, guid = "Player-1-BBB", completed = done(4641, 788) }, m)
+    T.eq(#ev, 0, "re-seeded silently (no STEP_DONE flood)")
+    -- unstamped memory gets stamped, nothing reset
+    local u = filled(nil)
+    T.eq(u.guid, nil, "unstamped")
+    G.Sanitize(u, "Player-1-CCC")
+    T.eq(u.guid, "Player-1-CCC", "stamped on first sight")
+    T.ok(u.skips["vot.a790"], "unstamped memory keeps its data")
+  end)
+
+  T.test("quest log capacity: warning only when the current ACCEPT would exceed logMax", function()
+    local ns, route = setup(F.registerHorde)
+    local G = ns.GuideEngine
+    local function warned(view)
+      for _, w in ipairs(view.warnings) do if w:find("Quest log full", 1, true) then return w end end
+    end
+    local view = G.Evaluate(route, orc{ level = 1, logCount = 25, logMax = 25 }, G.NewMemory())
+    T.eq(view.current[1].type, "ACCEPT", "premise: current is an ACCEPT")
+    T.eq(warned(view), "Quest log full (25/25)", "warning text")
+    view = G.Evaluate(route, orc{ level = 1, logCount = 24, logMax = 25 }, G.NewMemory())
+    T.eq(warned(view), nil, "room for one more")
+    view = G.Evaluate(route, orc{ level = 1, logCount = 25 }, G.NewMemory())
+    T.eq(warned(view), nil, "no logMax -> no warning (never guessed)")
+    view = G.Evaluate(route, orc{ level = 2, completed = done(4641), log = { [788] = active(1, 10) }, logCount = 25, logMax = 25 },
+      G.NewMemory())
+    T.eq(view.current[1].type, "OBJECTIVE", "premise: current is not an ACCEPT")
+    T.eq(warned(view), nil, "full log doesn't warn when nothing is to be accepted")
   end)
 
   -- Performance ---------------------------------------------------------------------------------

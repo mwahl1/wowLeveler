@@ -15,7 +15,12 @@ local DEFAULTS = {
     shown = true,
     probeShown = false,
     cardExpanded = false,
+    waypoint = true, -- native map waypoint for the current step's target
+    combatAlpha = 0.6,
+    locked = false,
+    fontScale = 1,
   },
+  guideEnabled = true, -- /ln guide on|off
   autoAccept = false, -- not implemented yet; reserved, off by default
   autoTurnIn = false,
 }
@@ -83,10 +88,14 @@ local refreshQueued = false
 function ns.RequestRefresh()
   if refreshQueued then return end
   refreshQueued = true
-  C_Timer.After(0.1, function()
+  local ok = C_Timer and type(C_Timer.After) == "function" and pcall(C_Timer.After, 0.1, function()
     refreshQueued = false
     ns.Send("REFRESH")
   end)
+  if not ok then -- no timer: refresh now rather than never
+    refreshQueued = false
+    ns.Send("REFRESH")
+  end
 end
 
 function ns.Print(msg)
@@ -139,6 +148,19 @@ SlashCmdList.LEVELINGNAVIGATOR = function(input)
   elseif cmd == "alpha" and tonumber(arg) then
     ns.db.ui.alpha = math.max(0.3, math.min(1, tonumber(arg)))
     ns.Send("APPLY_LAYOUT")
+  elseif cmd == "lock" then
+    ns.db.ui.locked = not ns.db.ui.locked
+    ns.Print(ns.db.ui.locked and "Frames locked." or "Frames unlocked.")
+    ns.Send("APPLY_LAYOUT")
+  elseif cmd == "font" and tonumber(arg) then
+    ns.db.ui.fontScale = math.max(0.8, math.min(1.4, tonumber(arg)))
+    ns.Send("APPLY_LAYOUT")
+  elseif cmd == "guide" and (arg == "on" or arg == "off") then
+    ns.db.guideEnabled = arg == "on"
+    ns.Print(ns.db.guideEnabled and "Guide on." or "Guide off.")
+    ns.Send("GUIDE_ENABLED", ns.db.guideEnabled)
+  elseif cmd == "played" then
+    ns.Send("REQUEST_PLAYED")
   elseif cmd == "mockguide" then
     local variant = (arg == "start" or arg == "train" or arg == "off" or arg == "main") and arg or "main"
     ns.Send("SHOW_MOCK_GUIDE", variant)
@@ -148,5 +170,8 @@ SlashCmdList.LEVELINGNAVIGATOR = function(input)
     ns.Print("/ln - show/hide  |  /ln probe - API diagnostics  |  /ln log [n] - recent events")
     ns.Print("/ln scale 0.6-1.6  |  /ln alpha 0.3-1  |  /ln reset - reset window")
     ns.Print("/ln mockguide [main|start|train|off] - preview the guide card with mock data")
+    ns.Print("/ln lock - lock/unlock frames  |  /ln font 0.8-1.4 - text size")
+    ns.Print("/ln guide on|off - turn the leveling guide on or off")
+    ns.Print("/ln played - record /played time for route measurements")
   end
 end

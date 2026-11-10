@@ -2,6 +2,9 @@
 -- Compact by default (title, progress, target, 2 upcoming); MORE/LESS toggles
 -- expanded mode (detail, why, badges, concurrent rows, 3 upcoming), persisted in
 -- ns.db.ui.cardExpanded.
+-- Combat forces compact. Also drives the native waypoint (ns.Compat.SetWaypoint) for
+-- the primary target when its label is not U and ns.db.ui.waypoint ~= false, and
+-- flashes briefly on Core's STEP_DONE for a step currently on the card.
 -- Render only: no quest or route logic. User actions go to ns.Guide.Confirm/Skip.
 -- MainPanel attaches the card above "Current quests"; with no view it is hidden and
 -- the overlay looks exactly as before.
@@ -20,11 +23,22 @@ local card, onLayout
 local lastView      -- most recent GuideView (may arrive before the card exists)
 local dirty = true  -- view changed since the last layout
 local lastWidth = 0
+local inCombat = false
+local skippedId     -- primary step the user just skipped (no "done" flash for it)
+local wpKey         -- "map:x:y" of the waypoint we set, nil when none
 
--- Compact unless the user expanded the card (ns.db.ui.cardExpanded; nil = false)
+-- Compact unless the user expanded the card (ns.db.ui.cardExpanded; nil = false).
+-- Always compact in combat.
 local function Expanded()
-  return ns.db and ns.db.ui and ns.db.ui.cardExpanded == true or false
+  if inCombat then return false end
+  return (ns.db and ns.db.ui and ns.db.ui.cardExpanded == true) or false
 end
+
+local function WaypointEnabled()
+  return not (ns.db and ns.db.ui and ns.db.ui.waypoint == false)
+end
+
+local Px = W.Px
 
 -- Step types -----------------------------------------------------------------
 
@@ -82,6 +96,12 @@ local function SetChip(chip, stepType)
 end
 
 -- Compact action button. `framed` draws a surface pill (primary action).
+-- Re-fits a button to its label and the font scale (called at layout)
+local function FitButton(b)
+  b:SetHeight(Px(ROW_H))
+  b:SetWidth(math.max(28, (b.text:GetStringWidth() or 0) + 16))
+end
+
 local function ActionButton(parent, label, framed, color, onClick)
   local b = CreateFrame("Button", nil, parent)
   b:SetHeight(ROW_H)
@@ -169,7 +189,6 @@ local function AcquireRow()
   local r = rows[rowCount]
   if not r then
     r = CreateFrame("Frame", nil, card)
-    r:SetHeight(ROW_H)
     r.tag = W.Text(r, { font = T.font.heading, size = T.size.tag, wrap = false })
     r.tag:SetPoint("LEFT", 0, 0)
     r.title = W.Text(r, { size = T.size.small, wrap = false })
@@ -178,6 +197,7 @@ local function AcquireRow()
     r.right:SetPoint("RIGHT", 0, 0)
     rows[rowCount] = r
   end
+  r:SetHeight(Px(ROW_H))
   r:Show()
   return r
 end
@@ -217,7 +237,10 @@ local function Create(parent)
   end)
   card.skipBtn = ActionButton(card, "SKIP", false, T.color.faint, function()
     local step = CurrentStep()
-    if step and ns.Guide and ns.Guide.Skip then ns.Guide.Skip(step.id) end
+    if step and ns.Guide and ns.Guide.Skip then
+      skippedId = step.id
+      ns.Guide.Skip(step.id)
+    end
   end)
 
   card.title = W.Text(card, { font = T.font.heading, size = T.size.step })
@@ -247,6 +270,35 @@ local function Create(parent)
 
   card.divider = W.Divider(card)
 
+  -- Native waypoint toggle at the end of the target line (ns.db.ui.waypoint)
+  card.waypointBtn = ActionButton(card, "WAYPOINT", false, T.color.accent, function()
+    if not (ns.db and ns.db.ui) then return end
+    ns.db.ui.waypoint = not WaypointEnabled()
+    Card.UpdateWaypoint()
+    dirty = true
+    Card.Relayout()
+  end)
+  card.waypointBtn:Hide()
+
+  -- Step-done flash: one alpha animation over the card, no OnUpdate
+  card.flash = card:CreateTexture(nil, "BACKGROUND", nil, 1)
+  card.flash:SetAllPoints()
+  local g = T.color.good
+  card.flash:SetColorTexture(g[1], g[2], g[3], 1)
+  card.flash:SetAlpha(0)
+  if card.flash.CreateAnimationGroup then
+    local ag = card.flash:CreateAnimationGroup()
+    local a = ag and ag:CreateAnimation("Alpha")
+    if a then
+      a:SetFromAlpha(0.22)
+      a:SetToAlpha(0)
+      a:SetDuration(0.7)
+      a:SetSmoothing("OUT")
+      ag:SetScript("OnFinished", function() card.flash:SetAlpha(0) end)
+      card.flashAnim = ag
+    end
+  end
+
   card:SetScript("OnSizeChanged", function() Card.Relayout() end)
 end
 
@@ -269,15 +321,16 @@ local function Layout(width)
   card.segTitle:SetText(((seg.title or route.title or "Guide")):upper())
   Place(card.segTitle, y, 0, width - 120)
   card.toggleBtn.text:SetText(expanded and "LESS" or "MORE")
+  FitButton(card.toggleBtn)
   card.toggleBtn:ClearAllPoints()
   card.toggleBtn:SetPoint("TOPRIGHT", card, "TOPRIGHT", 6, -y + 3)
-  card.toggleBtn:Show()
+  card.toggleBtn:SetShown(not inCombat) -- combat forces compact; no toggle meanwhile
   local prog = route.progress
   card.segCount:ClearAllPoints()
   card.segCount:SetPoint("TOPRIGHT", card.toggleBtn, "TOPLEFT", -2, -3)
   if prog and prog.total and prog.total > 0 then
     card.segCount:SetText(string.format("%d / %d", prog.done or 0, prog.total))
-    y = y + 14
+    y = y + Px(14)
     Place(card.segBar, y, 0, width)
     card.segBar:SetValue(math.min(1, (prog.done or 0) / prog.total))
     card.segBar:Show()
@@ -285,7 +338,7 @@ local function Layout(width)
   else
     card.segCount:SetText("")
     card.segBar:Hide()
-    y = y + 14 + GAP
+    y = y + Px(14) + GAP
   end
 
   -- Primary step
@@ -296,6 +349,7 @@ local function Layout(width)
     Place(card.chip.text, y + 3, 4)
     card.chip.text:Show(); card.chip.bg:Show()
 
+    FitButton(card.skipBtn); FitButton(card.doneBtn)
     card.skipBtn:ClearAllPoints()
     card.skipBtn:SetPoint("TOPRIGHT", card, "TOPRIGHT", 0, -y)
     card.skipBtn:Show()
@@ -306,7 +360,7 @@ local function Layout(width)
     else
       card.doneBtn:Hide()
     end
-    y = y + ROW_H + 6
+    y = y + Px(ROW_H) + 6
 
     card.title:SetText(step.title or "")
     Place(card.title, y, 0, width)
@@ -346,12 +400,27 @@ local function Layout(width)
     end
 
     local tText, tColor = FormatTarget(step.target)
+    local canPin = Card.WaypointEligible(step.target) and ns.Compat ~= nil and ns.Compat.SetWaypoint ~= nil
+    if canPin then
+      local on = WaypointEnabled()
+      card.waypointBtn.color = on and T.color.accent or T.color.faint
+      SetColor(card.waypointBtn.text, card.waypointBtn.color)
+      FitButton(card.waypointBtn)
+      card.waypointBtn:ClearAllPoints()
+      card.waypointBtn:SetPoint("TOPRIGHT", card, "TOPRIGHT", 6, -y + 2)
+      card.waypointBtn:Show()
+    else
+      card.waypointBtn:Hide()
+    end
     if tText then
       card.target:SetText(tText)
       SetColor(card.target, tColor)
-      Place(card.target, y, 0, width)
+      Place(card.target, y, 0, width - (canPin and card.waypointBtn:GetWidth() or 0))
       card.target:Show()
-      y = y + 14
+      y = y + Px(14)
+    elseif canPin then
+      card.target:Hide()
+      y = y + Px(14)
     else
       card.target:Hide()
     end
@@ -361,7 +430,7 @@ local function Layout(width)
       card.badges:SetText(bText)
       Place(card.badges, y + 1, 0, width)
       card.badges:Show()
-      y = y + 13
+      y = y + Px(13)
     else
       card.badges:Hide()
     end
@@ -384,12 +453,12 @@ local function Layout(width)
       r.right:SetText(right or "")
       r.title:SetWidth(width - T.space.tagCol - (right and (r.right:GetStringWidth() or 0) + 8 or 0))
       Place(r, y, 0, width)
-      y = y + ROW_H
+      y = y + Px(ROW_H)
     end
     y = y + GAP
   else
     card.chip.text:Hide(); card.chip.bg:Hide()
-    card.doneBtn:Hide(); card.skipBtn:Hide()
+    card.doneBtn:Hide(); card.skipBtn:Hide(); card.waypointBtn:Hide()
     card.title:SetText("No active step")
     Place(card.title, y, 0, width)
     card.detail:Hide(); card.why:Hide(); card.progBar:Hide(); card.progText:Hide()
@@ -402,7 +471,7 @@ local function Layout(width)
   if nUp > 0 then
     Place(card.nextLabel, y)
     card.nextLabel:Show()
-    y = y + 14
+    y = y + Px(14)
     for i = 1, nUp do
       local s = view.upcoming[i]
       local r = AcquireRow()
@@ -413,7 +482,7 @@ local function Layout(width)
       r.right:SetText("")
       r.title:SetWidth(width - T.space.tagCol)
       Place(r, y, 0, width)
-      y = y + ROW_H
+      y = y + Px(ROW_H)
     end
     y = y + GAP - 2
   else
@@ -491,11 +560,81 @@ function Card.Relayout()
   if onLayout and (not wasShown or math.abs(card:GetHeight() - oldHeight) >= 0.5) then onLayout() end
 end
 
--- Render a GuideView; nil hides the card
-function Card.Render(view)
-  lastView = view
+-- Native waypoint -----------------------------------------------------------
+
+-- Only targets with coordinates and a label other than U get a waypoint
+function Card.WaypointEligible(t)
+  if not (t and t.map and t.x and t.y) or t.label == "U" then return false end
+  local C = ns.Compat
+  if C and C.CanSetWaypoint and not C.CanSetWaypoint(t.map) then return false end
+  return true
+end
+
+-- Sets the waypoint when the primary target changes; clears ours when the guide
+-- ends, the target becomes U/unpinnable, or the user turns waypoints off.
+function Card.UpdateWaypoint()
+  local C = ns.Compat
+  if not (C and C.SetWaypoint) then return end
+  local step = CurrentStep()
+  local t = step and step.target
+  if WaypointEnabled() and Card.WaypointEligible(t) then
+    local key = t.map .. ":" .. t.x .. ":" .. t.y
+    if key ~= wpKey then
+      wpKey = key -- remembered even if the call fails, so it is not retried every update
+      C.SetWaypoint(t.map, t.x, t.y)
+    end
+  elseif wpKey then
+    wpKey = nil
+    if C.ClearWaypoint then C.ClearWaypoint() end
+  end
+end
+
+-- True if `id` is the primary or a concurrent step of `view`
+local function InCurrent(view, id)
+  local cur = view and view.current
+  if not (cur and id ~= nil) then return false end
+  for i = 1, #cur do
+    if cur[i].id == id then return true end
+  end
+  return false
+end
+
+-- Step-done flash, driven by Core's STEP_DONE message (sent before GUIDE_UPDATED,
+-- so lastView is still the view the player was looking at). Only steps shown as
+-- primary/concurrent flash; a step the user just skipped never does.
+local function OnStepDone(event)
+  local id = type(event) == "table" and event.stepId or nil
+  if id == nil or id == skippedId then return end
+  if InCurrent(lastView, id) then Card.Flash() end
+end
+
+function Card.Flash()
+  if not (card and card.flashAnim) then return end
+  card.flashAnim:Stop()
+  card.flashAnim:Play()
+end
+
+-- Combat: force compact (MainPanel handles fade and the quest list)
+function Card.SetCombat(on)
+  on = on and true or false
+  if on == inCombat then return end
+  inCombat = on
   dirty = true
   Card.Relayout()
 end
 
+-- Forces the next Relayout (font scale change)
+function Card.Invalidate() dirty = true end
+
+-- Render a GuideView; nil hides the card
+function Card.Render(view)
+  -- forget the skip once that step has left the current set
+  if skippedId ~= nil and not InCurrent(view, skippedId) then skippedId = nil end
+  lastView = view
+  dirty = true
+  Card.Relayout()
+  Card.UpdateWaypoint()
+end
+
 ns.Listen("GUIDE_UPDATED", Card.Render)
+ns.Listen("STEP_DONE", OnStepDone)

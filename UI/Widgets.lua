@@ -30,10 +30,40 @@ function W.Skin(frame, bg, alpha)
   end
 end
 
+-- Font scale (ns.db.ui.fontScale, clamped 0.8-1.4) ------------------------------
+-- Every font string made by W.Text is registered with its base font and size so a
+-- scale change re-applies all of them once; nothing is allocated per frame.
+W.fontScale = 1
+local fonts = {}
+
+function W.Size(base) return math.floor(base * W.fontScale + 0.5) end
+
+-- Scales a layout length (line heights, row heights) with the font scale
+function W.Px(base) return base * W.fontScale end
+
+function W.SetFontScale(scale)
+  scale = tonumber(scale) or 1
+  if scale < 0.8 then scale = 0.8 elseif scale > 1.4 then scale = 1.4 end
+  if scale == W.fontScale then return false end
+  W.fontScale = scale
+  for i = 1, #fonts do
+    local fs = fonts[i]
+    fs:SetFont(fs.lnFont, W.Size(fs.lnSize), fs.lnFlags)
+  end
+  return true
+end
+
+-- Sets a font on a registered font string at the current scale
+function W.SetFont(fs, font, size, flags)
+  fs.lnFont, fs.lnSize, fs.lnFlags = font, size, flags or ""
+  fs:SetFont(font, W.Size(size), fs.lnFlags)
+end
+
 function W.Text(parent, opts)
   opts = opts or {}
   local fs = parent:CreateFontString(nil, "OVERLAY")
-  fs:SetFont(opts.font or T.font.body, opts.size or T.size.body, opts.flags or "")
+  fonts[#fonts + 1] = fs
+  W.SetFont(fs, opts.font or T.font.body, opts.size or T.size.body, opts.flags)
   local c = opts.color or T.color.text
   fs:SetTextColor(c[1], c[2], c[3], c[4] or 1)
   fs:SetShadowOffset(1, -1)

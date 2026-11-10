@@ -15,7 +15,11 @@ Usage (from the repo root):
 Options: --class WARRIOR, --zone-sizes sizes.json (overrides the QuestieDB bounds),
          --params overrides.json, --no-grind, --max-req-level N, --max-quest-level N
 
-Output never goes into Guides/: the baseline is a measuring stick, not route content.
+    python3 tools/optimizer/baseline.py --write-guides         # regenerate Guides/Baseline_Starts.lua
+
+Only --write-guides writes into Guides/: one start def per starting zone (races sharing a zone share
+a def), every class (class-restricted steps carry when.classes). It is a naive measuring stick, NOT
+an optimized route.
 """
 
 import argparse
@@ -28,7 +32,12 @@ sys.dont_write_bytecode = True  # never write __pycache__ outside tools/.cache
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import model as M  # noqa: E402
 
-SOURCE = f"optimizer@{M.OPTIMIZER_VERSION}"
+SOURCE = f"optimizer@baseline-{M.OPTIMIZER_VERSION}"
+ALL = "ALL"  # cls value: every class; class-restricted quest steps get when.classes
+GUIDES_FILE = os.path.join(M.REPO, "Guides", "Baseline_Starts.lua")
+# Start defs written to Guides/Baseline_Starts.lua: races sharing a starting zone share one def.
+GUIDE_STARTS = ((1,), (3, 7), (4,), (95,), (2, 8), (5,), (6,))
+SKIPPED_STARTS = {96: "Skyborne Horde: no starting zone in the data (Data/Meta.lua startingQuests has no map)"}
 # Default class for the baseline: Warrior is open to every Classic race (Skyborne: unverified).
 # Class-restricted quests are kept only when they include this class. --class none = class-free only.
 DEFAULT_CLASS = "WARRIOR"
@@ -55,19 +64,37 @@ def _order_key(rec, qid):
 # Quest selection
 # --------------------------------------------------------------------------------------------
 
-def select_quests(world, race_id, cls, start_map, max_req_level=None, max_quest_level=None):
-    """Return (included {qid: (raw, rec)}, edges {qid: set(predecessors)}, excluded {qid: reason})."""
-    _, race_bit, faction = M.RACES[race_id]
-    allq = world.quests(faction, cls)
+def class_set(rec):
+    """Classes a quest record allows (classFiles)."""
+    cm = rec.get("CLASSES") or 0
+    if not cm or cm & M.ALL_CLASSES_MASK == M.ALL_CLASSES_MASK:
+        return frozenset(M.CLASSES)
+    return frozenset(c for c, b in M.CLASSES.items() if cm & b)
+
+
+def race_set(rec, races):
+    rm = rec.get("RACES") or 0
+    return frozenset(r for r in races if not rm or rm & M.RACES[r][1])
+
+
+def select_quests(world, race_id, cls, start_map, max_req_level=None, max_quest_level=None,
+                  races=None, prereq_out=None):
+    """Return (included {qid: (raw, rec)}, edges {qid: set(predecessors)}, excluded {qid: reason}).
+
+    races: all raceIDs sharing this start (default [race_id]); a quest is kept if any can take it.
+    cls: a classFile, None (class-free quests only) or ALL (every class).
+    prereq_out: optional dict filled with the prerequisite-only edges (no ordering edges)."""
+    races = list(races or [race_id])
+    faction = M.RACES[race_id][2]
+    allq = world.quests(faction, None if cls == ALL else cls)
     cand, excluded = {}, {}
     for qid, (raw, rec) in allq.items():
         if rec.get("MAP") != start_map:
             continue
-        races = rec.get("RACES") or 0
-        if races and not races & race_bit:
+        if not race_set(rec, races):
             continue  # another race's quest: not counted as an exclusion
         classes = rec.get("CLASSES") or 0
-        if classes and classes & M.ALL_CLASSES_MASK != M.ALL_CLASSES_MASK:
+        if classes and classes & M.ALL_CLASSES_MASK != M.ALL_CLASSES_MASK and cls != ALL:
             if cls is None:
                 excluded[qid] = "class_restricted"
                 continue
@@ -147,7 +174,10 @@ def select_quests(world, race_id, cls, start_map, max_req_level=None, max_quest_
         # Exclusive groups: keep the first quest in level order, drop the rest
         kept = set()
         for qid in sorted(cand, key=lambda q: _order_key(cand[q][1], q)):
-            ex = [e for e in (cand[qid][1].get("EXCLUSIVE") or []) if e in kept]
+            # Exclusive partners for disjoint classes/races (e.g. per-class variants) don't conflict.
+            mine = (class_set(cand[qid][1]), race_set(cand[qid][1], races))
+            ex = [e for e in (cand[qid][1].get("EXCLUSIVE") or []) if e in kept
+                  and class_set(cand[e][1]) & mine[0] and race_set(cand[e][1], races) & mine[1]]
             if ex:
                 excluded[qid] = f"exclusive:{min(ex)}"
                 del cand[qid]
@@ -157,6 +187,8 @@ def select_quests(world, race_id, cls, start_map, max_req_level=None, max_quest_
         if not changed:
             break
 
+    if prereq_out is not None:
+        prereq_out.update({q: set(p) for q, p in edges.items()})
     # Ordering edges that are not prerequisites but are required for both quests to be doable:
     # a breadcrumb before its target; a quest before its nextQuestInChain; a quest before the
     # quest that ends its availability (availableUntilCompleted). disabledByQuest (not doable
@@ -293,8 +325,29 @@ def _work_term(name, model):
     return None, "U"
 
 
+def applicability(cand, prereq, races):
+    """{qid: (classes, races)} a quest applies to: its own masks intersected with those of its
+    prerequisites (a quest after a class-only quest is class-only too)."""
+    memo = {}
+
+    def eff(q, stack):
+        if q in memo:
+            return memo[q]
+        rec = cand[q][1]
+        cs, rs = set(class_set(rec)), set(race_set(rec, races))
+        for p in sorted(prereq.get(q, ())):
+            if p in cand and p not in stack:
+                pc, pr = eff(p, stack | {q})
+                cs &= pc
+                rs &= pr
+        memo[q] = (frozenset(cs), frozenset(rs))
+        return memo[q]
+
+    return {q: eff(q, frozenset()) for q in sorted(cand)}
+
+
 def build_baseline(world, race_id, cls=DEFAULT_CLASS, model=None, sizes=None, grind=True,
-                   max_req_level=DEFAULT_MAX_REQ_LEVEL, max_quest_level=None):
+                   max_req_level=DEFAULT_MAX_REQ_LEVEL, max_quest_level=None, races=None, route_id=None):
     """grind=True (default): when no remaining quest is level-feasible, insert a GRIND step to the
     lowest required level (time U; it also stands in for kill XP earned during objectives, which
     the model does not count). grind=False: stop there and mark the rest level_gated."""
@@ -305,15 +358,24 @@ def build_baseline(world, race_id, cls=DEFAULT_CLASS, model=None, sizes=None, gr
     max_quest_level = max_quest_level or None
     name, _, faction = M.RACES[race_id]
     st = world.start(race_id)
-    head = {"race": race_id, "raceName": name, "faction": faction, "class": cls,
+    head = {"race": race_id, "races": sorted(races or [race_id]), "raceName": name, "faction": faction, "class": cls,
             "area": st["area"], "map": st["map"]}
     if not st["map"]:
         return dict(head, gap=f"{name} {faction} (raceID {race_id}): no starting zone in the data "
                               f"(Data/Meta.lua startingQuests has no map; see docs/DATA_COVERAGE.md)")
 
-    cand, edges, excluded = select_quests(world, race_id, cls, st["map"], max_req_level, max_quest_level)
+    races = list(races or [race_id])
+    prereq = {}
+    cand, edges, excluded = select_quests(world, race_id, cls, st["map"], max_req_level, max_quest_level,
+                                          races, prereq)
+    appl = applicability(cand, prereq, races)
+    for q in sorted(cand):
+        if not appl[q][0] or not appl[q][1]:
+            excluded[q] = "no_applicable_class" if not appl[q][0] else "no_applicable_race"
+            del cand[q]
+    edges = {q: {p for p in ps if p in cand} for q, ps in edges.items() if q in cand}
     order = order_quests(cand, edges, excluded, model, grind)
-    prefix = f"baseline.r{race_id}" + (f".{cls.lower()}" if cls else "")
+    prefix = route_id or (f"baseline.r{race_id}" + (f".{cls.lower()}" if cls and cls != ALL else ""))
 
     steps = []
     pos = None
@@ -373,9 +435,12 @@ def build_baseline(world, race_id, cls=DEFAULT_CLASS, model=None, sizes=None, gr
         else:
             pts, lab = [], "U"
         tgt = M.nearest(pos, pts)
-        classes = rec.get("CLASSES") or 0
-        when = ({"classes": [cls]} if cls and classes and classes & M.ALL_CLASSES_MASK != M.ALL_CLASSES_MASK
-                else None)
+        when = {}
+        q_classes, q_races = appl[qid]
+        if q_classes != frozenset(M.CLASSES):
+            when["classes"] = sorted(q_classes) if cls == ALL else [cls]
+        if set(q_races) != set(races):
+            when["races"] = sorted(q_races)
         first_step = len(steps)
         acc = {"id": f"{prefix}.a{qid}", "type": "ACCEPT", "quest": qid}
         add(acc, tgt,
@@ -388,7 +453,7 @@ def build_baseline(world, race_id, cls=DEFAULT_CLASS, model=None, sizes=None, gr
             terms["location"] = (0.0, lab)
             step = {"id": f"{prefix}.o{qid}_{i}", "type": "OBJECTIVE", "quest": qid, "objective": i}
             if kind == "explore":
-                step["type"], step["note"] = "COMPLETE", "area trigger (explore objective)"
+                step["type"] = "COMPLETE"  # area trigger (explore objective)
                 del step["objective"]
             add(step, tgt, terms)
 
@@ -449,11 +514,14 @@ def build_baseline(world, race_id, cls=DEFAULT_CLASS, model=None, sizes=None, gr
                                                   if v is not None and l != "U")),
                    unknownSteps=unknown_steps, unknownTerms=dict(sorted(unknown_terms.items())),
                    pathMapPct=round(path_pct, 1), unknownLegs=unknown_legs)
-    route = {"id": prefix, "kind": "start", "faction": faction, "races": [race_id],
+    unconditional = [q for q in order if appl[q] == (frozenset(M.CLASSES), frozenset(races))
+                     or (cls not in (None, ALL) and appl[q][1] == frozenset(races))]
+    route = {"id": prefix, "kind": "start", "faction": faction, "races": sorted(races),
              "levels": [1, level], "entry": {"minLevel": 1},
-             "exit": {"completed": list(order)} if order else None,
+             "exit": {"completed": unconditional} if unconditional else None,
              "source": SOURCE, "steps": steps}
-    return {"summary": summary, "route": route, "excluded": dict(sorted(excluded.items())), "order": order}
+    return {"summary": summary, "route": route, "excluded": dict(sorted(excluded.items())), "order": order,
+            "applicability": {q: (sorted(appl[q][0]), sorted(appl[q][1])) for q in order}}
 
 
 # --------------------------------------------------------------------------------------------
@@ -470,6 +538,84 @@ def strip_private(v):
 
 def route_lua(route):
     return "ns.Guides.Register(" + M.BD.to_lua(strip_private(route)) + ")\n"
+
+
+def _lua_kv(d, keys):
+    to_lua = M.BD.to_lua
+    return ", ".join(f"{k} = {to_lua(d[k])}" for k in keys if d.get(k) is not None)
+
+
+STEP_KEYS = ("id", "type", "quest", "objective", "target", "when", "est")
+EST_KEYS = ("seconds", "xp", "src")
+
+
+def render_route(route):
+    """One ns.Guides.Register call, one step per line (stable key order)."""
+    r = strip_private(route)
+    head = _lua_kv(r, ("id", "kind", "faction", "races", "levels", "entry", "exit", "source"))
+    lines = ["ns.Guides.Register({", f"  {head},", "  steps = {"]
+    for st in r["steps"]:
+        st = dict(st)
+        if "est" in st:
+            st["est"] = "{" + _lua_kv(st["est"], EST_KEYS) + "}"
+        parts = []
+        for k in STEP_KEYS:
+            if st.get(k) is None:
+                continue
+            parts.append(f"{k} = {st[k]}" if k == "est" else f"{k} = {M.BD.to_lua(st[k])}")
+        lines.append("    { " + ", ".join(parts) + " },")
+    lines += ["  },", "})"]
+    return "\n".join(lines)
+
+
+def _wrap_comment(prefix, items, width=100):
+    out, line = [], prefix
+    for it in items:
+        if len(line) + len(it) + 1 > width and line != prefix:
+            out.append(line.rstrip())
+            line = "--   "
+        line += it + " "
+    out.append(line.rstrip())
+    return out
+
+
+def render_guides(world, model=None, sizes=None):
+    """Guides/Baseline_Starts.lua text: one start def per starting zone (deterministic)."""
+    commit = (world.export.manifest.get("questiedbCommit") or "unknown")[:10]
+    out = [
+        "-- Generated by tools/optimizer/baseline.py --write-guides. Do not edit by hand.",
+        f"-- {SOURCE}: naive level-ordered baseline, NOT optimized; labels E/U",
+        "-- Each start: every quest of the starting uiMap inside the baseline window (required level <= "
+        f"{DEFAULT_MAX_REQ_LEVEL},",
+        f"-- quest level <= {DEFAULT_MAX_REQ_LEVEL + QUEST_LEVEL_MARGIN}), in simulated level order, one quest at a time: "
+        "ACCEPT -> OBJECTIVE(s) -> TURNIN.",
+        "-- est.src is the weakest label of the step's estimate (E = Classic/placeholder, U = unknown: "
+        "see docs/ROUTE_EFFICIENCY.md).",
+        "-- Levels and GRIND steps assume every class quest's XP (all classes in one list): approximate.",
+        f"-- Quest data: QuestieDB {commit} (GPLv3) via the M3 export.",
+    ]
+    for race, why in sorted(SKIPPED_STARTS.items()):
+        out.append(f"-- Skipped raceID {race}: {why}.")
+    out += ["", "local _, ns = ..."]
+    for group in GUIDE_STARTS:
+        lead = group[0]
+        st = world.start(lead)
+        res = build_baseline(world, lead, ALL, model, sizes, races=group,
+                             route_id=f"baseline.start.{st['map']}")
+        s_ = res["summary"]
+        names = "/".join(M.RACES[r][0] for r in group)
+        out += ["", f"-- {names} (races {', '.join(map(str, group))}), uiMap {st['map']}: "
+                    f"{s_['quests']} quests, {s_['steps']} steps, {s_['grindSteps']} GRIND"]
+        skipped = [f"{q}:{r}" for q, r in sorted(res["excluded"].items())]
+        out += _wrap_comment(f"-- skipped ({len(skipped)}): ", skipped) if skipped else ["-- skipped: none"]
+        out.append(render_route(res["route"]))
+    return "\n".join(out) + "\n"
+
+
+def guide_results(world, model=None, sizes=None):
+    """(group, result) per guide start, same builds as render_guides."""
+    return [(g, build_baseline(world, g[0], ALL, model, sizes, races=g,
+                               route_id=f"baseline.start.{world.start(g[0])['map']}")) for g in GUIDE_STARTS]
 
 
 def fmt_time(s):
@@ -535,11 +681,26 @@ def main(argv=None):
     ap.add_argument("--params", help="JSON TimeModel overrides {name: {value, label, note}}")
     ap.add_argument("--steps", action="store_true", help="print the step list")
     ap.add_argument("--lua", action="store_true", help="print the route in P2 format (stdout only)")
+    ap.add_argument("--write-guides", action="store_true",
+                    help="regenerate Guides/Baseline_Starts.lua (all supported starts, every class)")
     ap.add_argument("--json", action="store_true", help=f"write JSON to {os.path.relpath(M.CACHE_DIR, M.REPO)}/")
     args = ap.parse_args(argv)
     if args.cls == "none":
         args.cls = None
     races = list(START_RACES) if args.all else (args.race or [])
+    if args.write_guides:
+        world = M.World()
+        text = render_guides(world)
+        os.makedirs(os.path.dirname(GUIDES_FILE), exist_ok=True)
+        with open(GUIDES_FILE, "w", encoding="utf-8", newline="\n") as f:
+            f.write(text)
+        print(f"wrote {os.path.relpath(GUIDES_FILE, M.REPO)}")
+        for g, res in guide_results(world):
+            s_ = res["summary"]
+            print(f"  {res['route']['id']:<22} races {','.join(map(str, g)):<5} quests {s_['quests']:>3} "
+                  f"steps {s_['steps']:>3} grind {s_['grindSteps']} skipped {s_['excluded']}")
+        if not races:
+            return 0
     if not races:
         ap.error("give --race <raceID> or --all")
     for r in races:

@@ -183,9 +183,49 @@ local CHECKS = {
       if meta then detail = detail .. ", QuestieDB " .. tostring(meta.questiedbCommit):sub(1, 10) end
       return "pass", detail
     end },
+  { "Quest log capacity", function()
+      if not (C_QuestLog and exists(C_QuestLog.GetMaxNumQuestsCanAccept)) then return "missing", "GetMaxNumQuestsCanAccept not present" end
+      local n = C.GetMaxQuestsCanAccept()
+      if not n then return "partial", "GetMaxNumQuestsCanAccept returned nothing" end
+      local log = C.GetQuestLogState()
+      local count = 0
+      for _ in pairs(log or {}) do count = count + 1 end
+      return "pass", string.format("%d / %d quests", count, n)
+    end },
+  { "C_Secrets", function()
+      if type(C_Secrets) ~= "table" then return "missing", "C_Secrets not present" end
+      local names = {}
+      for k, v in pairs(C_Secrets) do if type(v) == "function" then names[#names + 1] = k end end
+      table.sort(names)
+      return "pass", "C_Secrets present: " .. (#names > 0 and table.concat(names, ", ") or "no functions")
+    end },
+  { "Player name (two-part)", function()
+      if not exists(UnitName) then return "missing", "UnitName not present" end
+      local name, realm = UnitName("player")
+      if name == nil then return "partial", "UnitName returned nothing" end
+      return "pass", string.format("name %s, realm %s", C.SafeString(name), realm == nil and "nil (home realm)" or C.SafeString(realm))
+    end },
+  { "Native waypoint API", function()
+      local need = {
+        { "C_Map.SetUserWaypoint", C_Map and C_Map.SetUserWaypoint },
+        { "C_Map.ClearUserWaypoint", C_Map and C_Map.ClearUserWaypoint },
+        { "C_Map.GetUserWaypoint", C_Map and C_Map.GetUserWaypoint },
+        { "C_Map.HasUserWaypoint", C_Map and C_Map.HasUserWaypoint },
+        { "C_Map.CanSetUserWaypointOnMap", C_Map and C_Map.CanSetUserWaypointOnMap },
+        { "UiMapPoint.CreateFromCoordinates", UiMapPoint and UiMapPoint.CreateFromCoordinates },
+        { "C_SuperTrack.SetSuperTrackedUserWaypoint", C_SuperTrack and C_SuperTrack.SetSuperTrackedUserWaypoint },
+      }
+      local missing = {}
+      for _, n in ipairs(need) do if not exists(n[2]) then missing[#missing + 1] = n[1] end end
+      if #missing == #need then return "missing", "no native waypoint API" end
+      if #missing > 0 then return "partial", "missing: " .. table.concat(missing, ", ") end
+      local mapID = C.GetPlayerPosition()
+      return "pass", "all present; this map " .. (mapID and (C.CanSetWaypoint(mapID) and "allows" or "does not allow") or "unknown") .. " waypoints"
+    end },
   { "Guide engine", function()
       local G, GS = ns.Guides, ns.GuideState
       if not (G and G.Count and GS) then return "missing", "guide modules not loaded" end
+      if ns.db and ns.db.guideEnabled == false then return "pass", "disabled by user" end
       local n = G.Count()
       if n == 0 then return "pass", "inactive (no routes)" end
       local route = GS.route

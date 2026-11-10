@@ -37,8 +37,12 @@ function E.NewMemory()
     facts = { knownNodes = {} }, lastIndex = nil,
     seeded = false, -- first evaluation seeds `done` silently (no STEP_DONE flood on joins)
     seenSegments = {}, -- segments already evaluated; a newly entered one is seeded silently too
+    undone = {},       -- [stepId] = consecutive not-done evaluations while still in `done`
+    guid = nil,        -- player GUID this memory belongs to
   }
 end
+
+E.DONE_HYSTERESIS = 2 -- evaluations a step must be not-done before it leaves memory.done
 
 local function cleanSet(t, valueType)
   if type(t) ~= "table" then return {} end
@@ -52,13 +56,32 @@ end
 
 -- Repairs memory in place; old versions and corrupt fields are discarded, never trusted.
 -- Returns the usable memory table (a new one when `memory` is not a table).
-function E.Sanitize(m)
-  if type(m) ~= "table" then return E.NewMemory() end
+-- With `guid`: memory stamped for a different character keeps nothing but quest-derived
+-- data (segment choice); manual input, facts and the DONE baseline are reset and re-seeded
+-- silently. Unstamped memory is stamped.
+function E.Sanitize(m, guid)
+  if type(m) ~= "table" then
+    m = E.NewMemory()
+    if type(guid) == "string" then m.guid = guid end
+    return m
+  end
   if m.version ~= VERSION then
     for k in pairs(m) do m[k] = nil end
     local fresh = E.NewMemory()
     for k, v in pairs(fresh) do m[k] = v end
+    if type(guid) == "string" then m.guid = guid end
     return m
+  end
+  if type(m.guid) ~= "string" then m.guid = nil end
+  if type(guid) == "string" then
+    if m.guid ~= nil and m.guid ~= guid then
+      m.skips, m.confirms, m.done, m.activeSince, m.undone = {}, {}, {}, {}, {}
+      m.facts = { knownNodes = {} }
+      m.seenSegments = {}
+      m.seeded = false
+      m.lastIndex = nil
+    end
+    m.guid = guid
   end
   if type(m.segment) ~= "string" then m.segment = nil end
   m.autoSwitch = m.autoSwitch == true
@@ -71,6 +94,7 @@ function E.Sanitize(m)
   if type(m.lastIndex) ~= "number" then m.lastIndex = nil end
   m.seeded = m.seeded == true
   m.seenSegments = cleanSet(m.seenSegments, "true")
+  m.undone = cleanSet(m.undone, "number")
   return m
 end
 
@@ -392,7 +416,16 @@ local function evalStep(step, state, memory, route, first, last)
           if memory.confirms[id] then return "DONE", "confirmed" end
           return "ACTIVE", "no_objective_state", true
         end
-        if objs[step.objective].finished then return "DONE" end
+        local o = objs[step.objective]
+        if step.count then
+          if o.fulfilled == nil then
+            if memory.confirms[id] then return "DONE", "confirmed" end
+            return "ACTIVE", "no_objective_state", true
+          end
+          if o.fulfilled >= step.count then return "DONE" end
+          return "ACTIVE"
+        end
+        if o.finished then return "DONE" end
         return "ACTIVE"
       end
       if abandonDone[q] then return "SKIPPED", "abandoned" end
@@ -643,6 +676,7 @@ local function stepProgress(step, state, status)
   local objs = entry and entry.objectives
   if (step.type == "OBJECTIVE" or step.type == "KILL") and type(objs) == "table" and step.objective then
     local o = objs[step.objective]
+    if o and step.count then return { cur = o.fulfilled or 0, max = step.count } end
     if o and o.required then return { cur = o.fulfilled or 0, max = o.required } end
   elseif step.type == "COMPLETE" and type(objs) == "table" and #objs > 0 then
     local n = 0
@@ -713,7 +747,7 @@ local function emptyView(warnings, suggestions)
 end
 
 function E.Evaluate(route, state, memory)
-  memory = E.Sanitize(memory)
+  memory = E.Sanitize(memory, state and state.guid)
   state = state or {}
   local events = {}
   if type(route) ~= "table" or type(route.steps) ~= "table" or type(route.order) ~= "table" then
@@ -1014,6 +1048,18 @@ function E.Evaluate(route, state, memory)
     end
   end
   local w = view.warnings
+  -- Quest log capacity: accepting the current ACCEPT step(s) would exceed logMax
+  local logCount, logMax = state.logCount, state.logMax
+  if type(logCount) == "number" and type(logMax) == "number" then
+    local accepts = 0
+    for k = 1, #view.current do
+      local c = view.current[k]
+      if c.type == "ACCEPT" and c.status == "ACTIVE" then accepts = accepts + 1 end
+    end
+    if accepts > 0 and logCount + 1 > logMax then
+      w[#w + 1] = string.format("Quest log full (%d/%d)", logCount, logMax)
+    end
+  end
   if finishU > 0 then
     w[#w + 1] = finishU .. (finishU == 1 and " quest in this segment has an unknown turn-in location"
                                           or " quests in this segment have unknown turn-in locations")
@@ -1034,7 +1080,7 @@ function E.Evaluate(route, state, memory)
   }
 
   -- Transitions: STEP_DONE events, activation times, last DONE set (window only)
-  local done, since = memory.done, memory.activeSince
+  local done, since, undone = memory.done, memory.activeSince, memory.undone
   local t = state.time
   local seen = memory.seenSegments
   local emitAny = memory.seeded
@@ -1042,6 +1088,7 @@ function E.Evaluate(route, state, memory)
   for i = first, last do
     local id, st = steps[i].id, ST[i]
     if st == "DONE" then
+      undone[id] = nil
       if not done[id] then
         done[id] = true
         local started = since[id]
@@ -1053,7 +1100,11 @@ function E.Evaluate(route, state, memory)
       end
       since[id] = nil
     else
-      done[id] = nil
+      if done[id] then
+        -- leaves `done` only after E.DONE_HYSTERESIS consecutive not-done evaluations
+        local n = (undone[id] or 0) + 1
+        if n >= E.DONE_HYSTERESIS then done[id], undone[id] = nil, nil else undone[id] = n end
+      end
       if st == "ACTIVE" then
         if since[id] == nil and t ~= nil then since[id] = t end
       else

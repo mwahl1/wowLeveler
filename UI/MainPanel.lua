@@ -54,7 +54,7 @@ local function Create()
   header:SetHeight(HEADER_H)
   header:EnableMouse(true)
   header:RegisterForDrag("LeftButton")
-  header:SetScript("OnDragStart", function() frame:StartMoving() end)
+  header:SetScript("OnDragStart", function() if not ns.db.ui.locked then frame:StartMoving() end end)
   header:SetScript("OnDragStop", function()
     frame:StopMovingOrSizing()
     local point, _, relPoint, x, y = frame:GetPoint()
@@ -164,7 +164,7 @@ local function Create()
   grip:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
   grip:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
   grip:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
-  grip:SetScript("OnMouseDown", function() frame:StartSizing("BOTTOMRIGHT") end)
+  grip:SetScript("OnMouseDown", function() if not ns.db.ui.locked then frame:StartSizing("BOTTOMRIGHT") end end)
   grip:SetScript("OnMouseUp", function()
     frame:StopMovingOrSizing()
     ns.db.ui.width, ns.db.ui.height = frame:GetSize()
@@ -205,9 +205,10 @@ end
 local function GuideActive() return ns.GuideCard ~= nil and ns.GuideCard.IsShown() end
 
 -- Without a guide the list is always expanded. With one it is collapsed unless
--- the user expanded it (nil counts as collapsed).
+-- the user expanded it (nil counts as collapsed), and always collapsed in combat.
 function Main.QuestsExpanded()
   if not GuideActive() then return true end
+  if Main.inCombat then return false end
   return ns.db.ui.questsExpanded == true
 end
 
@@ -220,7 +221,7 @@ function Main.UpdateQuestHeader()
     local expanded = Main.QuestsExpanded()
     frame.questLabel:SetText(string.format("CURRENT QUESTS (%d)", #questsCache))
     frame.questCount:SetText((ready > 0 and string.format("%d READY  ·  ", ready) or "") .. (expanded and "HIDE" or "SHOW"))
-    frame.questHeader:Show()
+    frame.questHeader:SetShown(not Main.inCombat)
     frame.scroll:SetShown(expanded)
   else
     frame.questLabel:SetText("CURRENT QUESTS")
@@ -230,16 +231,34 @@ function Main.UpdateQuestHeader()
   end
 end
 
+-- Combat mode: fade to ns.db.ui.combatAlpha (default 0.6), compact card, quest
+-- list collapsed while a guide is active. Restored when combat ends.
+Main.inCombat = false
+local function PanelAlpha()
+  local ui = ns.db.ui
+  if Main.inCombat then return math.min(ui.alpha, tonumber(ui.combatAlpha) or 0.6) end
+  return ui.alpha
+end
+
+function Main.SetCombat(on)
+  Main.inCombat = on and true or false
+  if not frame then return end
+  frame:SetAlpha(PanelAlpha())
+  if ns.GuideCard then ns.GuideCard.SetCombat(Main.inCombat) end
+  Main.UpdateQuestHeader()
+end
+
 function Main.ApplyLayout()
   local ui = ns.db.ui
+  if W.SetFontScale(ui.fontScale) and ns.GuideCard then ns.GuideCard.Invalidate() end
   frame:ClearAllPoints()
   frame:SetPoint(ui.point[1], UIParent, ui.point[2], ui.point[3], ui.point[4])
   frame:SetScale(ui.scale)
-  frame:SetAlpha(ui.alpha)
+  frame:SetAlpha(PanelAlpha())
   frame:SetWidth(ui.width)
   frame:SetHeight(ui.minimized and HEADER_H or ui.height)
   frame.body:SetShown(not ui.minimized)
-  frame.grip:SetShown(not ui.minimized)
+  frame.grip:SetShown(not ui.minimized and not ui.locked)
   frame.mini:SetShown(ui.minimized)
   frame.minBtn.text:SetText(ui.minimized and "+" or "-")
   frame:SetShown(ui.shown)
@@ -303,7 +322,7 @@ function Main.LayoutQuests()
     r:ClearAllPoints()
     r:SetPoint("TOPLEFT", content, "TOPLEFT", opts.indent or 0, -y)
     r:SetWidth(width - (opts.indent or 0))
-    r.title:SetFont(opts.font or T.font.body, opts.size or T.size.body, "")
+    W.SetFont(r.title, opts.font or T.font.body, opts.size or T.size.body)
     local c = opts.color or T.color.text
     r.title:SetTextColor(c[1], c[2], c[3])
     r.title:ClearAllPoints()
@@ -391,7 +410,12 @@ end
 ns.Listen("INIT", function()
   Create()
   Main.ApplyLayout()
+  if InCombatLockdown and InCombatLockdown() then Main.SetCombat(true) end -- /reload in combat
 end)
+if ns.On then
+  ns.On("PLAYER_REGEN_DISABLED", function() Main.SetCombat(true) end)
+  ns.On("PLAYER_REGEN_ENABLED", function() Main.SetCombat(false) end)
+end
 ns.Listen("REFRESH", Main.Refresh)
 ns.Listen("PROBE_DONE", Main.Refresh)
 ns.Listen("APPLY_LAYOUT", function() Main.ApplyLayout(); Main.Refresh() end)
