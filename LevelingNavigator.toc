@@ -1,0 +1,15 @@
+## Interface: 16001
+## Title: Leveling Navigator
+## Notes: Leveling guide for WoW Forever (milestone 1: diagnostics + overlay)
+## Author: Marshal Wahl
+## Version: 0.1.0
+## SavedVariables: LevelingNavigatorDB
+## SavedVariablesPerCharacter: LevelingNavigatorCharDB
+
+Core\Init.lua
+Core\Compat.lua
+Core\Probe.lua
+UI\Theme.lua
+UI\Widgets.lua
+UI\MainPanel.lua
+UI\ProbePanel.lua
