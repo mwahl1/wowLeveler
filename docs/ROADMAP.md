@@ -1,30 +1,51 @@
 # Roadmap & status
 
-Status labels: **verified** (tested in game), **built-untested**, **planned**.
+Product goals: (1) **leveling speed**, i.e. the shortest practical /played time from 1 to 60, and (2) **user experience**, a polished overlay that makes the fastest route effortless.
 
-## Verified facts (sources: Questie/QuestieDB repos, Warcraft Wiki, 2026-11-10)
-- Forever runs on the Mainline (Retail 12.x) client family. Midnight addon restrictions (secret values) apply.
-- Interface number **16001** (from `Questie_Forever.toc`). The `_Forever` TOC suffix is accepted.
-- QuestieDB ships `data/Forever`: Classic quests/NPCs/objects converted to Forever coordinates (build 1.60.1). It does **not** include complete new Forever content.
-- QuestieDB/Questie licensing: the team permits reuse under GPLv3, but warns that historic contributions are formally unclear. If we bundle their data, this addon must be GPLv3.
+Status labels: **planned** → **implemented** (code written) → **tested** (run in game) → **verified** (works as specified in game).
 
-## Data strategy (minimize manual collection)
-1. **Base layer:** QuestieDB Forever data (quests, NPC/object coords, prerequisites, levels), processed offline into our own compact format.
-2. **Live API layer (if the probe confirms it):** Blizzard's own runtime data, i.e. objective waypoints (`C_QuestLog.GetNextWaypoint`), quest POIs on the map, available quest givers (`C_QuestLine.GetAvailableQuestLines`), reward XP. This covers new Forever quests automatically.
-3. **Passive recorder:** logs accepts, turn-ins, XP, deaths and travel during normal play. It fills gaps (new quests, timings) without dedicated data runs.
-4. **Not used:** Wowhead (ToS forbids scraping) and RestedXP guides (proprietary).
+## Current status
+- **Priority:** P0, Foundation and compatibility
+- **Milestone:** M1, diagnostics probe + overlay prototype (commit `35bfd3e`)
+- **Implemented, not tested:** everything in M1
+- **Tested in game:** nothing yet
+- **Blocker:** in-game test pending (developer currently has no game access)
+- **Next task:** install M1 on the Windows PC, run `/reload` + `/ln probe`, report results
 
-## Phases
-| # | Phase | Status |
-|---|---|---|
-| 1 | Probe + polished overlay (char, XP, location, live objectives, API diagnostics, event recorder) | built-untested |
-| 2 | Data pipeline: offline tool turns QuestieDB Forever data into our quest/NPC tables + recorder export | planned |
-| 3 | Guide engine + recovery (step state machine, expected vs actual state) + current-step UI | planned |
-| 4 | Navigation: arrow, map pins, Blizzard waypoint/super-track | planned |
-| 5 | Optional auto accept / turn-in (off by default; never auto-pick among multiple rewards) | planned |
-| 6 | Offline route planner (clustering, prerequisite-aware ordering, hearth/flight/death-skip cost model) + in-game local reordering | planned |
-| 7 | Content: Horde 1-20 → 60, then Alliance, then dungeon variants | planned |
-| 8 | Analytics: XP/hour, time per level, route comparison | planned (recorder already logs raw events) |
+## Confirmed decisions
+- **D1: Client target.** Forever runs on the Mainline (Retail 12.x) client family; Midnight addon restrictions apply. TOC `## Interface: 16001` (from `Questie_Forever.toc`, 2026-11-10).
+- **D2: License.** GPLv3, required to use QuestieDB data.
+- **D3: Quest data via QuestieDB, Option A (final).** Generate data with QuestieDB's **own Lua 5.1 tooling and merge logic**, not a Python re-implementation. Official Lua 5.1 source (lua.org) + the QuestieDB repo, pinned to a recorded commit. External commands are reviewed first; where the agent's execution is restricted, the developer runs them locally. The import must be repeatable for QuestieDB updates.
+- **D4: Offline route optimizer in Python**, a separate component that consumes the generated data. Routes are precomputed; the in-game engine only does lightweight rerouting.
+- **D5: Automation.** Auto accept/turn-in optional, **off by default**, never auto-pick among multiple rewards. No combat or movement automation.
+- **D6: Shared routes.** Faction routes + race-specific starts + class instruction layers. No per-race/class 1-60 guides.
+- **D7: Data sources excluded.** Wowhead scraping (ToS) and RestedXP guide content (proprietary).
 
-## Known issues
-- None recorded yet (nothing tested in game).
+## Data facts (QuestieDB, checked 2026-11-10, commit `aca0da1c4a`)
+- Base: 4,244 Classic quests converted to Forever coordinates, plus NPCs/objects/items.
+- Forever layers: generated delta-base (1,397 new-quest entries), player-session traces (749 new-quest entries, 724 XP values), authored fixes (532 new-quest entries).
+- Support: per-quest XP, areaID→uiMapID mapping, item drop tables.
+- Sample check: Gornek 42.06, 68.33 Durotar; Cutting Teeth (788) 170 XP. Matches expectations.
+- Caveat: part of the generated layer cites Wowhead. We use it under QuestieDB's offered GPLv3 terms, whose own license notes historic-contributor uncertainty.
+
+## Priorities
+| P | Area | Completion criteria | Status |
+|---|---|---|---|
+| P0 | Foundation & compatibility: probe, character detection, SavedVariables, polished overlay | Loads in Forever without Lua errors, detects character, overlay works, settings survive `/reload` | implemented (M1), untested |
+| P1 | Universal quest database: QuestieDB pipeline (D3), all races/classes/factions, verified/observed/estimated/unknown labels, validation reports | Addon can query quests relevant to any character and report missing data without inventing any | research done; pipeline planned |
+| P2 | Quest tracking & guide engine: current action, auto-advance, prerequisites, recovery, resume after reload; shared + race + class layers | A verified starting-zone guide can be followed without manual step advancing | live objective tracking implemented (M1); engine planned |
+| P3 | Navigation & UI refinement: map/minimap pins, arrow + distance, compact/expanded modes, optional auto accept/turn-in | Starting zone followable with overlay + navigation alone | planned |
+| P4 | Speedrun optimization (Python offline + light in-game rerouting): clustering, travel/combat/downtime model, hearth, flights, death skips, grinding, class efficiency | Optimized route shows measurable savings vs recorded baseline, or data gap clearly reported | planned |
+| P5 | Full 1-60 coverage: all starts, faction segments, class layers, mid-level join, dungeon routes after open world | Every supported race/class has a connected 1-60 route; verified vs provisional marked | planned |
+| P6 | Analytics: XP/hour, time per level, segment comparison | Recorded data identifies and improves inefficient segments | event recorder implemented (M1), untested |
+| P7 | Polish & release: bugs, CPU/memory, multi-character tests, docs, repeatable DB update, stable build | Usable by someone outside development | planned |
+
+## Milestones
+| M | Priority | Scope | Status |
+|---|---|---|---|
+| M1 | P0 | Probe (24 API checks), overlay (character, XP, location, live objectives), event recorder, slash commands | implemented, untested |
+| M2 | P1 | Lua 5.1 + QuestieDB toolchain set up locally; export of fully corrected Forever data | planned (prep can run while P0 test is pending) |
+| M3 | P1 | Our compact `Data/` tables + validation report (Valley of Trials first) | planned |
+
+## Known bugs
+- None recorded (nothing tested in game yet).
