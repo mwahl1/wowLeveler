@@ -1,6 +1,7 @@
 -- Guide adapter: the only guide module that touches the WoW API (through ns.Compat).
 -- Builds CharacterState (spec 3.1), runs ns.GuideEngine, persists memory in
--- LevelingNavigatorCharDB.guide, sends GUIDE_UPDATED and records STEP_DONE events.
+-- LevelingNavigatorCharDB.guide, sends GUIDE_UPDATED and records STEP_DONE events in
+-- LevelingNavigatorCharDB.stepLog.
 --
 -- Inert without route files: if no guide is registered (ns.Guides.Count() == 0) nothing
 -- is compiled, no events are registered, and GUIDE_UPDATED is never sent, so the P0
@@ -14,6 +15,7 @@ local GS = {
   problems = nil,    -- compile problems
   memory = nil,      -- = LevelingNavigatorCharDB.guide
   view = nil,        -- last GuideView
+  lastError = nil,   -- last compile/evaluate error (shown by the probe)
   routeQuests = {},  -- [questID] = true
   wantSpells = {},   -- spell IDs routes ask about (TRAIN steps, spellKnown conditions)
   wantItems = {},    -- item IDs routes ask about (BUY steps, item conditions)
@@ -25,43 +27,70 @@ ns.GuideState = GS
 local Guide = ns.Guide or {}
 ns.Guide = Guide
 
-local MAX_EVENTS = 400 -- same cap as the probe's recorder
-local POLL_SECONDS = 0.5 -- 2 Hz, only while the current step has a location
+local MAX_STEP_LOG = 400
+local POLL_SECONDS = 0.5 -- 2 Hz, only while the current step has a location on the player's map
+
+-- Clock: one source for the whole session (GetTime if it works at activation, else time())
+
+local clock
+local function now()
+  if clock == nil then
+    if C.GetTime() ~= nil then clock = "GetTime" else clock = "time" end
+  end
+  if clock == "GetTime" then return C.GetTime() end
+  if type(time) == "function" then return time() end
+  return nil
+end
 
 -- Completed quests ---------------------------------------------------------------------
--- Rebuilt from GetAllCompletedQuestIDs when dirty (login, turn-in, quest removed). Without
--- that API, a lazy per-quest lookup; without either, nil (engine treats state as unknown).
+-- Rebuilt from GetAllCompletedQuestIDs when dirty (login, turn-in, quest removed). Turn-ins
+-- seen via QUEST_TURNED_IN stay in `pendingTurnIns` and are merged into every rebuild until
+-- the server list contains them. Without that API: a lazy per-quest lookup whose unreadable
+-- answers go into state.completedUnknown. Without either: nil (completion unknown).
 
-local completedSet
+local completedSet, completedUnknown
 local completedDirty = true
+local pendingTurnIns = {}
 
 local function lazyCompleted()
-  return setmetatable({}, { __index = function(t, questID)
+  local unknown = {}
+  local set = setmetatable({}, { __index = function(t, questID)
+    if type(questID) ~= "number" then return nil end
     local done = C.IsQuestFlaggedCompleted(questID)
-    if done == nil then return nil end
+    if done == nil then
+      unknown[questID] = true
+      return nil
+    end
+    unknown[questID] = nil
     rawset(t, questID, done)
     return done or nil
   end })
+  return set, unknown
 end
 
 local function getCompleted()
   if completedDirty or completedSet == nil then
     completedDirty = false
+    completedUnknown = nil
     local ids = C.GetAllCompletedQuestIDs()
     if ids then
       local set = {}
       for i = 1, #ids do
         local id = ids[i]
-        if type(id) == "number" then set[id] = true end
+        if type(id) == "number" and not C.IsSecret(id) then set[id] = true end
+      end
+      for id in pairs(pendingTurnIns) do
+        if set[id] then pendingTurnIns[id] = nil else set[id] = true end
       end
       completedSet = set
     elseif C.HasQuestFlaggedCompleted() then
-      completedSet = lazyCompleted()
+      completedSet, completedUnknown = lazyCompleted()
+      for id in pairs(pendingTurnIns) do rawset(completedSet, id, true) end
     else
       completedSet = nil
     end
   end
-  return completedSet
+  return completedSet, completedUnknown
 end
 
 -- CharacterState ------------------------------------------------------------------------
@@ -74,21 +103,28 @@ local function settings()
   }
 end
 
+local function readable(v)
+  if v == nil or C.IsSecret(v) then return nil end
+  return v
+end
+
 function GS.BuildState()
   local ch = C.GetCharacter()
   local map, x, y = C.GetPlayerPosition()
   local dead, ghost = C.GetDeathState()
+  local completed, unknown = getCompleted()
   local state = {
-    time = C.GetTime() or (type(time) == "function" and time()) or nil,
-    faction = ch.faction,
+    time = now(),
+    faction = C.GetFaction(),
     raceID = C.GetRaceID(),
     classFile = C.GetClassFile(),
-    level = not C.IsSecret(ch.level) and ch.level or nil,
-    xp = not C.IsSecret(ch.xp) and ch.xp or nil,
-    xpMax = not C.IsSecret(ch.xpMax) and ch.xpMax or nil,
-    restedXP = not C.IsSecret(ch.rested) and ch.rested or nil,
+    level = readable(ch.level),
+    xp = readable(ch.xp),
+    xpMax = readable(ch.xpMax),
+    restedXP = readable(ch.rested),
     map = map, x = x, y = y,
-    completed = getCompleted(),
+    completed = completed,
+    completedUnknown = unknown,
     log = C.GetQuestLogState(),
     bindLocation = C.GetBindLocation(),
     onTaxi = C.IsOnTaxi(),
@@ -119,8 +155,9 @@ end
 -- Evaluation ----------------------------------------------------------------------------
 
 local function record(ev)
-  local log = ns.char and ns.char.events
-  if type(log) ~= "table" then return end
+  if not ns.char then return end
+  if type(ns.char.stepLog) ~= "table" then ns.char.stepLog = {} end
+  local log = ns.char.stepLog
   log[#log + 1] = {
     t = type(time) == "function" and time() or ev.t,
     e = "STEP_DONE",
@@ -131,20 +168,28 @@ local function record(ev)
     lv = ev.level,
     xp = ev.xp,
   }
-  while #log > MAX_EVENTS do table.remove(log, 1) end
+  while #log > MAX_STEP_LOG do table.remove(log, 1) end
 end
 
 local ticker
 local lastPos = {}
 
-local function hasLocation(view)
+-- Poll only while the current step's target has coordinates on the player's current map
+local function wantsPolling(view)
   local cur = view and view.current and view.current[1]
   local t = cur and cur.target
-  return t ~= nil and t.x ~= nil and t.y ~= nil
+  return t ~= nil and t.x ~= nil and t.y ~= nil and t.map ~= nil and t.map == lastPos.map
+end
+
+local function stopPolling()
+  if ticker then
+    C.Call(ticker.Cancel, ticker)
+    ticker = nil
+  end
 end
 
 local function updatePolling()
-  local want = GS.active and hasLocation(GS.view)
+  local want = GS.active and wantsPolling(GS.view)
   if want and not ticker and C_Timer and C_Timer.NewTicker then
     ticker = C.Call(C_Timer.NewTicker, POLL_SECONDS, function()
       local map, x, y = C.GetPlayerPosition()
@@ -153,23 +198,26 @@ local function updatePolling()
         GS.Evaluate()
       end
     end)
-  elseif not want and ticker then
-    C.Call(ticker.Cancel, ticker)
-    ticker = nil
+  elseif not want then
+    stopPolling()
   end
+end
+
+local function fail(err)
+  GS.lastError = tostring(err)
+  stopPolling()
+  if geterrorhandler then geterrorhandler()(err) end
 end
 
 function GS.Evaluate()
   if not (GS.active and GS.route) then return end
   local started = debugprofilestop and C.Call(debugprofilestop)
-  local state = GS.BuildState()
+  local okState, state = pcall(GS.BuildState)
+  if not okState then return fail(state) end
   lastPos.map, lastPos.x, lastPos.y = state.map, state.x, state.y
   GS.memory.autoSwitch = state.settings.autoSwitch
   local ok, view, events, memory = pcall(ns.GuideEngine.Evaluate, GS.route, state, GS.memory)
-  if not ok then
-    if geterrorhandler then geterrorhandler()(view) end
-    return
-  end
+  if not ok then return fail(view) end
   if memory and memory ~= GS.memory then
     GS.memory = memory
     if ns.char then ns.char.guide = memory end
@@ -215,8 +263,8 @@ local REFRESH_EVENTS = {
 }
 
 local function onQuestTurnedIn(_, questID)
-  if type(questID) == "number" and not C.IsSecret(questID) and type(completedSet) == "table" then
-    rawset(completedSet, questID, true)
+  if type(questID) == "number" and not C.IsSecret(questID) then
+    pendingTurnIns[questID] = true
   end
   completedDirty = true
 end
@@ -226,7 +274,7 @@ function GS.Activate()
   if not (ns.Guides and ns.GuideEngine and ns.Guides.Count) then return false end
   if ns.Guides.Count() == 0 then return false end -- no route files: stay inert
 
-  local character = { faction = C.Call(UnitFactionGroup, "player"), raceID = C.GetRaceID(), classFile = C.GetClassFile() }
+  local character = { faction = C.GetFaction(), raceID = C.GetRaceID(), classFile = C.GetClassFile() }
   local route, problems = ns.Guides.Compile(character)
   GS.route, GS.problems = route, problems
   if not route or #route.steps == 0 then return false end
@@ -250,7 +298,10 @@ end
 
 ns.Listen("DATA_LOADED", function()
   local ok, err = pcall(GS.Activate)
-  if not ok and geterrorhandler then geterrorhandler()(err) end
+  if not ok then
+    GS.lastError = tostring(err)
+    if geterrorhandler then geterrorhandler()(err) end
+  end
 end)
 
 -- Glue for the UI (spec 7.2) ---------------------------------------------------------------
@@ -282,9 +333,8 @@ function Guide.ChooseSuggestion(index)
   if not s then return end
   if s.kind == "segment" then
     ns.GuideEngine.ApplySuggestion(GS.memory, s)
-  elseif s.kind == "deathskip" and s.step then
-    -- Accepting a death skip is the player's action; nothing to change in memory
   end
+  -- deathskip: performing it is the player's action; nothing changes in memory
   GS.Evaluate()
 end
 

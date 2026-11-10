@@ -399,6 +399,8 @@ Scope: evaluation window = active segment (from `ns.GuideSelector.Choose`) plus 
 14. Death-skip suggestion only when a DEATHSKIP step is current and `est.saves` exists.
 Extra API: `Unskip`, `ApplySuggestion(memory, s)`, `ResolveTarget`, `QuestState`, `Yards`; `Evaluate` also returns the (possibly replaced) memory as a third value.
 
+**Adapter/state additions (2026-11-10, after QA review):** `state.completed = nil` (no completion API) → quests not in the log are UNKNOWN `needs_state:completed`, never "not completed"; `state.completedUnknown = {[questID]=true}` marks per-quest lookups that errored or were secret (treated as unknown). `memory.seenSegments` records evaluated segments; a segment evaluated for the first time is seeded without STEP_DONE events (no flood on segment jumps). STEP_DONE entries are stored in `LevelingNavigatorCharDB.stepLog` (cap 400), separate from the probe's event log. One clock per session (GetTime, else time()).
+
 **Test harness** (`tools/run_tests.lua`, owned by QA): discovers `tests/*_test.lua`; provides `T.addon(faction, class)` → namespace with `Core/Data.lua`, `Data/*.lua` and `Guide/*.lua` loaded (cached per faction/class), `T.state{...}` → CharacterState with defaults, `T.inject(ns, questID, fields)` → adds a synthetic quest record using schema field names, and assertions `T.eq`, `T.ok`, `T.contains`. Exit code 0 only if all tests pass.
 
 ## 9. Route efficiency: measurement before content

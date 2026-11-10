@@ -54,23 +54,44 @@ EVAL.classes = function(v, s)
   return matches(v, s.classFile)
 end
 
-EVAL.completed = function(v, s)
+-- Quest completion: true / false / nil (unreadable: no history, or the per-quest lookup
+-- failed, recorded by the adapter in state.completedUnknown)
+local function isDone(s, id)
   local done = s.completed
   if not done then return nil end
-  if type(v) ~= "table" then return done[v] == true end
+  if done[id] then return true end
+  local unk = s.completedUnknown
+  if unk and unk[id] then return nil end
+  return false
+end
+
+EVAL.completed = function(v, s)
+  if not s.completed then return nil end
+  if type(v) ~= "table" then return isDone(s, v) end
+  local unknown = false
   for i = 1, #v do
-    if not done[v[i]] then return false end
+    local d = isDone(s, v[i])
+    if d == false then return false end
+    if d == nil then unknown = true end
   end
+  if unknown then return nil end
   return true
 end
 
 EVAL.notCompleted = function(v, s)
-  local done = s.completed
-  if not done then return nil end
-  if type(v) ~= "table" then return not done[v] end
-  for i = 1, #v do
-    if done[v[i]] then return false end
+  if not s.completed then return nil end
+  if type(v) ~= "table" then
+    local d = isDone(s, v)
+    if d == nil then return nil end
+    return not d
   end
+  local unknown = false
+  for i = 1, #v do
+    local d = isDone(s, v[i])
+    if d == true then return false end
+    if d == nil then unknown = true end
+  end
+  if unknown then return nil end
   return true
 end
 

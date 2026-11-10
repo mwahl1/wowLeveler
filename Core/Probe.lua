@@ -187,9 +187,12 @@ local CHECKS = {
       local G, GS = ns.Guides, ns.GuideState
       if not (G and G.Count and GS) then return "missing", "guide modules not loaded" end
       local n = G.Count()
-      if n == 0 then return "partial", "no route files registered (guide inactive)" end
+      if n == 0 then return "pass", "inactive (no routes)" end
       local route = GS.route
-      if not route then return "partial", n .. " route definitions, not compiled yet" end
+      if not route then
+        if GS.lastError then return "error", "compile failed: " .. GS.lastError end
+        return "partial", n .. " route definitions, not compiled yet"
+      end
       local errors, warnings = 0, 0
       for _, p in ipairs(GS.problems or {}) do
         if p.severity == "error" then errors = errors + 1 else warnings = warnings + 1 end
@@ -202,6 +205,7 @@ local CHECKS = {
       else
         detail = detail .. ", inactive"
       end
+      if GS.lastError then return "error", detail .. " | last error: " .. GS.lastError end
       if errors > 0 or not GS.active then return "partial", detail end
       return "pass", detail
     end },

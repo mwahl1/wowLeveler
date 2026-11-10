@@ -26,17 +26,30 @@ local function field(q, Q, key)
   return nil
 end
 
+-- Completion state that could not be read for some quests (state.completedUnknown, filled by
+-- the adapter's per-quest lookup). Set per Check call; sawUnk records that one was consulted.
+local UNK, sawUnk = nil, false
+
+local function unknownDone(id)
+  if UNK and UNK[id] then sawUnk = true; return true end
+  return false
+end
+
 -- v is a quest ID or a list of quest IDs; returns the first one that is completed (or active
--- when `log` is given), else nil.
+-- when `log` is given), else nil. Unreadable completion marks sawUnk (only when completion
+-- is consulted; log-only checks pass EMPTY).
 local function firstHit(v, completed, log)
   if v == nil then return nil end
+  local checkUnk = completed ~= EMPTY
   if type(v) == "number" then
     if completed[v] or (log and log[v]) then return v end
+    if checkUnk then unknownDone(v) end
     return nil
   end
   for i = 1, #v do
     local id = v[i]
     if completed[id] or (log and log[id]) then return id end
+    if checkUnk then unknownDone(id) end
   end
   return nil
 end
@@ -49,11 +62,12 @@ end
 -- PRE_ANY (preQuestSingle): any one positive entry completed.
 -- Returns nil when satisfied, else status, reason.
 local function checkPreAny(pre, completed, GetQuest)
-  local negative, missing, unmet
+  local negative, missing, unmet, unreadable
   for i = 1, #pre do
     local id = pre[i]
     if id > 0 then
       if completed[id] then return nil end
+      if unknownDone(id) then unreadable = true end
       if not missing and not GetQuest(id) then missing = id end
       unmet = appendID(unmet, id)
     elseif not negative then
@@ -61,6 +75,7 @@ local function checkPreAny(pre, completed, GetQuest)
     end
   end
   if negative then return "UNKNOWN", "negative_pre_any:" .. tostring(negative) end
+  if unreadable then return "UNKNOWN", "needs_state:completed" end
   if missing then return "UNKNOWN", "missing_prereq:" .. tostring(missing) end
   return "UNAVAILABLE", "prereq:" .. (unmet or "")
 end
@@ -68,23 +83,30 @@ end
 -- PRE_ALL (preQuestGroup): every entry satisfied. Positive X: X completed or any quest in X's
 -- own EXCLUSIVE list completed. Negative -X: X completed (no exclusive fallback).
 local function checkPreAll(pre, completed, GetQuest, Q)
-  local missing, unmet
+  local missing, unmet, unreadable
   for i = 1, #pre do
     local id = pre[i]
     local qid = id < 0 and -id or id
     if not completed[qid] then
       local rec = GetQuest(qid)
       local ok = false
+      local before = sawUnk
+      sawUnk = false
+      local unk = unknownDone(qid)
       if id > 0 and rec then
         ok = firstHit(field(rec, Q, "EXCLUSIVE"), completed) ~= nil
       end
+      unk = unk or sawUnk
+      sawUnk = before or sawUnk
       if not ok then
-        if rec then unmet = appendID(unmet, qid)
+        if unk then unreadable = true
+        elseif rec then unmet = appendID(unmet, qid)
         elseif not missing then missing = qid end
       end
     end
   end
   if unmet then return "UNAVAILABLE", "prereq:" .. unmet end
+  if unreadable then return "UNKNOWN", "needs_state:completed" end
   if missing then return "UNKNOWN", "missing_prereq:" .. tostring(missing) end
   return nil
 end
@@ -96,11 +118,16 @@ end
 
 function A.Check(questID, state)
   state = state or EMPTY
-  local completed = state.completed or EMPTY
   local log = state.log or EMPTY
+  local completed = state.completed
+  UNK, sawUnk = state.completedUnknown, false
 
-  if completed[questID] then return "COMPLETED" end
+  if completed and completed[questID] then return "COMPLETED" end
   if log[questID] then return "ACTIVE" end
+  -- Completion history unreadable (API missing, or this quest's lookup failed): only a
+  -- definite race/class mismatch can still be reported; everything else is unknown
+  local completionUnknown = completed == nil or unknownDone(questID)
+  completed = completed or EMPTY
 
   local D = ns.Data
   local S = ns.DataSchema
@@ -123,6 +150,7 @@ function A.Check(questID, state)
     if state.classFile == nil then unknownReason = unknownReason or "needs_state:class"
     elseif not D.ClassAllowed(classes, state.classFile) then return "UNAVAILABLE", "class" end
   end
+  if completionUnknown then return "UNKNOWN", "needs_state:completed" end
 
   -- Prerequisites: group only when single is absent (Questie)
   local preAny = field(q, Q, "PRE_ANY")
@@ -151,9 +179,17 @@ function A.Check(questID, state)
   hit = firstHit(field(q, Q, "AVAILABLE_UNTIL"), completed)
   if hit then return "UNAVAILABLE", "available_until:" .. tostring(hit) end
   local with = field(q, Q, "AVAILABLE_WITH")
-  if with and not firstHit(with, completed, log) then
-    return "UNAVAILABLE", "available_with:" .. tostring(type(with) == "table" and with[1] or with)
+  if with then
+    local before = sawUnk
+    sawUnk = false
+    local found = firstHit(with, completed, log)
+    local unk = sawUnk
+    sawUnk = before or sawUnk
+    if not found and not unk then
+      return "UNAVAILABLE", "available_with:" .. tostring(type(with) == "table" and with[1] or with)
+    end
   end
+  if sawUnk then unknownReason = unknownReason or "needs_state:completed" end
 
   -- Profession skill: SKILL = {skillID, rank}; REQ_RANKS = list of {skillID, rank}, any
   -- pair satisfied (OR). Negative rank values have unverified semantics -> UNKNOWN.
@@ -280,6 +316,7 @@ local SIMPLE = {
   ["needs_state:rep"] = "Depends on your reputation (not yet known)",
   ["needs_state:spell"] = "Depends on your known spells (not yet known)",
   ["needs_state:level"] = "Depends on your level (not yet known)",
+  ["needs_state:completed"] = "Depends on your completed quests (not readable here)",
 }
 
 function A.Explain(questID, state)

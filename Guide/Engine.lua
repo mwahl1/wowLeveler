@@ -36,6 +36,7 @@ function E.NewMemory()
     skips = {}, confirms = {}, done = {}, activeSince = {},
     facts = { knownNodes = {} }, lastIndex = nil,
     seeded = false, -- first evaluation seeds `done` silently (no STEP_DONE flood on joins)
+    seenSegments = {}, -- segments already evaluated; a newly entered one is seeded silently too
   }
 end
 
@@ -69,6 +70,7 @@ function E.Sanitize(m)
   if type(m.facts.knownNodes) ~= "table" then m.facts.knownNodes = {} end
   if type(m.lastIndex) ~= "number" then m.lastIndex = nil end
   m.seeded = m.seeded == true
+  m.seenSegments = cleanSet(m.seenSegments, "true")
   return m
 end
 
@@ -402,6 +404,9 @@ local function evalStep(step, state, memory, route, first, last)
     if q == nil then return "UNKNOWN", "no_quest" end
     if state.completed and state.completed[q] then return "UNAVAILABLE", "turned_in" end
     if state.log and state.log[q] then return "ACTIVE" end
+    if state.completed == nil or (state.completedUnknown and state.completedUnknown[q]) then
+      return "UNKNOWN", "needs_state:completed"
+    end
     if abandonDone[q] then return "DONE" end
     return "WAITING", "not_accepted"
   end
@@ -759,7 +764,8 @@ function E.Evaluate(route, state, memory)
     local s = steps[i]
     if s.type == "ABANDON" and s.quest and not memory.skips[s.id] then
       local q = s.quest
-      if not (state.log and state.log[q]) and not (state.completed and state.completed[q])
+      if state.completed and not (state.log and state.log[q]) and not state.completed[q]
+          and not (state.completedUnknown and state.completedUnknown[q])
           and anyAccepted(memory, route, q, first, last) then
         abandonDone[q] = true
       end
@@ -1030,7 +1036,8 @@ function E.Evaluate(route, state, memory)
   -- Transitions: STEP_DONE events, activation times, last DONE set (window only)
   local done, since = memory.done, memory.activeSince
   local t = state.time
-  local emit = memory.seeded
+  local seen = memory.seenSegments
+  local emitAny = memory.seeded
   memory.seeded = true
   for i = first, last do
     local id, st = steps[i].id, ST[i]
@@ -1038,7 +1045,7 @@ function E.Evaluate(route, state, memory)
       if not done[id] then
         done[id] = true
         local started = since[id]
-        if emit then events[#events + 1] = {
+        if emitAny and seen[steps[i].segment] then events[#events + 1] = {
           kind = "STEP_DONE", stepId = id, segment = steps[i].segment, t = t,
           level = state.level, xp = state.xp, map = state.map, x = state.x, y = state.y,
           seconds = (started and t) and (t - started) or nil,
@@ -1054,6 +1061,9 @@ function E.Evaluate(route, state, memory)
       end
     end
   end
+
+  seen[segId] = true
+  if nextSeg then seen[route.order[oi + 1]] = true end
 
   return view, events, memory
 end

@@ -43,8 +43,17 @@ function C.GetCharacter()
     faction = C.Call(UnitFactionGroup, "player"),
     xp = xp,
     xpMax = xpMax,
-    rested = C.Call(GetXPExhaustion) or 0,
+    rested = C.GetRestedXP(),
   }
+end
+
+-- Rested XP: 0 when the client reports none (GetXPExhaustion returns nil), nil when the
+-- API is missing, errors or returns a secret value
+function C.GetRestedXP()
+  if type(GetXPExhaustion) ~= "function" then return nil end
+  local ok, v = pcall(GetXPExhaustion)
+  if not ok or C.IsSecret(v) then return nil end
+  return v or 0
 end
 
 function C.GetClassColor(classFile)
@@ -126,6 +135,10 @@ function C.GetTime()
   return plain(C.Call(GetTime))
 end
 
+function C.GetFaction()
+  return plain(C.Call(UnitFactionGroup, "player"))
+end
+
 -- raceID is UnitRace's third return
 function C.GetRaceID()
   local _, _, raceID = C.Call(UnitRace, "player")
@@ -173,7 +186,9 @@ function C.GetQuestLogState()
   local hasObjectives = type(C_QuestLog.GetQuestObjectives) == "function"
   for i = 1, n do
     local info = C.Call(C_QuestLog.GetInfo, i)
-    local id = type(info) == "table" and not info.isHeader and plain(info.questID)
+    -- A secret isHeader reads as unknown: the entry is used only if its questID is readable
+    local id = type(info) == "table" and plain(info.isHeader) ~= true and plain(info.questID)
+    if type(id) ~= "number" then id = nil end
     if id then
       local entry = {}
       if hasComplete then
