@@ -58,6 +58,16 @@ QUEST_FIELDS = [
     "NAME", "REQ_LEVEL", "LEVEL", "RACES", "CLASSES", "START", "FINISH", "OBJ",
     "PRE_ALL", "PRE_ANY", "EXCLUSIVE", "NEXT", "BREADCRUMB_FOR", "MAP", "SORT", "XP",
     "LABELS", "FLAGS", "PARENT", "MAX_LEVEL", "SKILL", "SOURCE_ITEM", "TRIGGER",
+    # M3.1 availability fields (docs/P2_GUIDE_ENGINE_SPEC.md 6.7 / 8a); append only
+    "BREADCRUMBS", "DISABLED_BY", "AVAILABLE_UNTIL", "AVAILABLE_WITH", "MIN_REP", "MAX_REP",
+    "REQ_SPELL", "REQ_SPEC", "REQ_RANKS",
+]
+# M3.1 field name -> QuestieDB field name (used for the coverage report)
+AVAILABILITY_FIELDS = [
+    ("BREADCRUMBS", "breadcrumbs"), ("DISABLED_BY", "disabledByQuest"),
+    ("AVAILABLE_UNTIL", "availableUntilCompleted"), ("AVAILABLE_WITH", "availableStartingWith"),
+    ("MIN_REP", "requiredMinRep"), ("MAX_REP", "requiredMaxRep"), ("REQ_SPELL", "requiredSpell"),
+    ("REQ_SPEC", "requiredSpecialization"), ("REQ_RANKS", "requiredRanks"),
 ]
 NPC_FIELDS = ["NAME", "MIN_LEVEL", "MAX_LEVEL", "RANK", "SPAWNS", "FRIENDLY", "LABEL"]
 OBJECT_FIELDS = ["NAME", "SPAWNS", "LABEL"]
@@ -292,6 +302,13 @@ def nonempty(v):
     return v if v else None
 
 
+def rep_pair(v):
+    """QuestieDB {factionID, value} -> [factionID, value], or None when empty/absent."""
+    if v and len(v) >= 2 and v[0]:
+        return [v[0], v[1]]
+    return None
+
+
 def build_objectives(objs, refs):
     """QuestieDB objectives -> compact list of {kind, id[, extra]}; collects referenced IDs."""
     if not objs:
@@ -435,6 +452,15 @@ def build_quest(qid, q, export, refs):
         "SKILL": nonempty(q.get("requiredSkill")),
         "SOURCE_ITEM": q.get("sourceItemId") or None,
         "TRIGGER": trigger,
+        "BREADCRUMBS": nonempty(q.get("breadcrumbs")),
+        "DISABLED_BY": q.get("disabledByQuest") or None,
+        "AVAILABLE_UNTIL": q.get("availableUntilCompleted") or None,
+        "AVAILABLE_WITH": q.get("availableStartingWith") or None,
+        "MIN_REP": rep_pair(q.get("requiredMinRep")),
+        "MAX_REP": rep_pair(q.get("requiredMaxRep")),
+        "REQ_SPELL": q.get("requiredSpell") or None,  # sign kept: negative = must NOT know
+        "REQ_SPEC": q.get("requiredSpecialization") or None,
+        "REQ_RANKS": nonempty(q.get("requiredRanks")),
     }
     return record
 
@@ -661,6 +687,13 @@ def build(export, zone_names):
                     issues.append(("negative-prereq", fac, qid, f"prerequisite {pre}: Questie convention, not interpreted yet"))
                 elif pre not in quests and pre not in export.quests:
                     issues.append(("missing-prereq", fac, qid, f"prerequisite {pre} not in QuestieDB"))
+            for ref in get("BREADCRUMBS") or []:
+                if ref not in quests and ref not in export.quests:
+                    issues.append(("missing-breadcrumb", fac, qid, f"breadcrumb {ref} not in QuestieDB"))
+            for name in ("DISABLED_BY", "AVAILABLE_UNTIL", "AVAILABLE_WITH"):
+                ref = get(name)
+                if ref and ref not in quests and ref not in export.quests:
+                    issues.append(("missing-availability-quest", fac, qid, f"{name} {ref} not in QuestieDB"))
             if not get("NAME"):
                 issues.append(("missing-name", fac, qid, "quest has no name"))
             if get("REQ_LEVEL") is None:
@@ -867,6 +900,14 @@ def write_reports(report_md, gaps_csv, export, sides, per_faction, starts, issue
     w("| Zone | Incomplete quests |\n|---|---|")
     for zone, n in zone_gap.most_common(15):
         w(f"| {zone} | {n} |")
+    w("")
+    w("## Availability fields\n")
+    w("Quests (available to at least one faction) using each M3.1 availability field "
+      "(spec section 6.7). Empty values in QuestieDB are stored as absent.\n")
+    w("| Field | QuestieDB field | Quests |\n|---|---|---|")
+    for name, qdb_name in AVAILABILITY_FIELDS:
+        n = sum(1 for rec in allq.values() if field(rec, name) is not None)
+        w(f"| `{name}` | `{qdb_name}` | {n} |")
     w("")
     w("## Starting zones by race\n")
     w("Derived from the data (race-specific level-1 quests → zone → that zone's level-1 quests); nothing hand-entered.\n")

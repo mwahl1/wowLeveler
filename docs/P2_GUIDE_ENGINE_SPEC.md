@@ -285,7 +285,11 @@ view = {
 }
 ```
 
-The engine emits `GUIDE_UPDATED` with the view; the UI only renders. Manual actions (skip, confirm, choose suggestion) go back via `ns.Guide.Skip(stepId)` etc.
+The engine emits `GUIDE_UPDATED` with the view; the UI only renders. Manual actions go back via `ns.Guide.Skip(stepId)`, `ns.Guide.Confirm(stepId)` and `ns.Guide.ChooseSuggestion(index)` (index into `view.suggestions`).
+
+Additions (2026-11-10): `target.name` (optional display name of the NPC/object/place, e.g. "Gornek"). The engine fills it from M3 when known.
+
+**Layout decision:** while a guide is active the card defaults to **compact mode** (primary step title, progress, target line, at most 2 upcoming rows; detail, "why" and concurrent rows hidden) with an expand toggle persisted in `LevelingNavigatorDB.ui.cardExpanded`. The quest list collapses to a one-line header ("Current quests (n)") while a guide is active, expandable by click. The P0 layout is unchanged when no guide is active.
 
 ### 7.3 Persistence (`LevelingNavigatorCharDB.guide`)
 
@@ -317,6 +321,17 @@ local status, reason = ns.Availability.Check(questID, state)
 --         "missing_prereq:2955", "needs_state:skill", "needs_state:rep", "needs_state:spell",
 --         "max_level", "no_data"
 ```
+**Availability decisions (2026-11-10, after first implementation + QA review):**
+- UNKNOWN is deferred: remaining checks still run, a definite UNAVAILABLE wins, otherwise the first UNKNOWN reason is returned (before the level check).
+- PRE_ANY: any completed positive entry satisfies it, even if the list also has a negative entry (matches Questie). Only when nothing is completed and a negative entry exists → UNKNOWN `negative_pre_any:<id>`.
+- PRE_ALL with mixed entries: any unmet entry that exists in data → UNAVAILABLE `prereq:<ids>`; `missing_prereq` only when all unmet entries are missing from data.
+- Missing state is UNKNOWN, never UNAVAILABLE: no `raceID` with a race mask → `needs_state:race`; no `classFile` with a class mask → `needs_state:class`; no `level` → `needs_state:level`.
+- When state is supplied and the requirement fails: UNAVAILABLE `skill` / `rep` / `spell` / `spec`.
+- Reputation (`state.reputations = {[factionID] = value}`): MIN_REP passes if value ≥ min; MAX_REP passes if value < max; a faction absent from a supplied table → UNAVAILABLE `rep` (Questie treats an unknown faction as not doable).
+- REQ_SPEC is a **profession specialization** (Questie `QuestieProfessions.HasSpecialization`), not a spell: needs `state.specializations = {[specID] = true}`; absent → UNKNOWN `needs_state:spec`.
+- REQ_RANKS with negative rank values (only quest 9233 today): semantics not yet verified → UNKNOWN `unverified:negative_ranks`. Positive ranks are evaluated against `state.skills` (any listed pair satisfied = OR logic).
+- MAX_LEVEL: `level > MAX_LEVEL` → UNAVAILABLE `max_level` (extra rule beyond IsDoable; kept).
+
 Reads data through `ns.Data.GetQuest` and `ns.DataSchema`; reads `state` per section 3.1 (`completed`, `log`, `raceID`, `classFile`, `level`, optional `skills`, `reputations`, `knownSpells`). Order of checks mirrors Questie's `IsDoable`; level is checked last and only distinguishes `LEVEL_TOO_LOW` (`level < REQ_LEVEL`) from `AVAILABLE`.
 
 **Test harness** (`tools/run_tests.lua`, owned by QA): discovers `tests/*_test.lua`; provides `T.addon(faction, class)` → namespace with `Core/Data.lua`, `Data/*.lua` and `Guide/*.lua` loaded (cached per faction/class), `T.state{...}` → CharacterState with defaults, `T.inject(ns, questID, fields)` → adds a synthetic quest record using schema field names, and assertions `T.eq`, `T.ok`, `T.contains`. Exit code 0 only if all tests pass.

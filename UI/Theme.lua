@@ -11,12 +11,15 @@ ns.Theme = {
     heading = 10,
     body = 13,
     small = 11,
+    step = 15,   -- guide card: primary step title
+    tag = 9,     -- guide card: step-type tags and badges
   },
   space = {
     pad = 12,    -- panel inner padding
     gap = 8,     -- between sections
     row = 4,     -- between rows
     header = 32, -- title bar height
+    tagCol = 66, -- guide card: width of the step-type column in compact rows
   },
   color = {
     bg       = { 0.055, 0.062, 0.078 },
@@ -33,6 +36,18 @@ ns.Theme = {
     xp       = { 0.58, 0.40, 0.92 },
     rested   = { 0.30, 0.56, 0.96 },
     track    = { 1, 1, 1, 0.07 },
+    chip     = 0.16, -- alpha of tinted tag backgrounds
+  },
+  -- Step-type tag colors (guide card); derived from the palette above
+  step = {
+    accept    = { 0.95, 0.71, 0.25 }, -- accent
+    turnin    = { 0.36, 0.80, 0.47 }, -- good
+    objective = { 0.92, 0.50, 0.42 }, -- kill / collect
+    travel    = { 0.45, 0.66, 0.96 }, -- go to, fly, boat, hearth
+    grind     = { 0.66, 0.50, 0.94 }, -- xp
+    train     = { 0.40, 0.80, 0.82 }, -- trainer, vendor, flight path
+    other     = { 0.58, 0.61, 0.67 }, -- muted
+    deathskip = { 0.70, 0.72, 0.78 },
   },
 }
 

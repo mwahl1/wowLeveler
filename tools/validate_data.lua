@@ -91,6 +91,47 @@ local function checkFaction(ns, faction, class)
       fail(tag .. " quest " .. id .. " loaded but no " .. faction .. " race may take it")
     end
   end
+  -- M3.1 availability fields: types only (number / list of numbers / {id, value} pair)
+  local avail = { BREADCRUMBS = 0, DISABLED_BY = 0, AVAILABLE_UNTIL = 0, AVAILABLE_WITH = 0,
+                  MIN_REP = 0, MAX_REP = 0, REQ_SPELL = 0, REQ_SPEC = 0, REQ_RANKS = 0 }
+  for name in pairs(avail) do
+    if type(Q[name]) ~= "number" then fail("schema has no quest field " .. name) end
+  end
+  local function isInt(v) return type(v) == "number" and v % 1 == 0 end
+  local function isPair(v) return type(v) == "table" and #v == 2 and isInt(v[1]) and isInt(v[2]) end
+  local function checkAvail(id, q)
+    local function bad(name) fail(tag .. " quest " .. id .. " bad " .. name .. " " .. tostring(q[Q[name]])) end
+    for _, name in ipairs({ "DISABLED_BY", "AVAILABLE_UNTIL", "AVAILABLE_WITH", "REQ_SPEC" }) do
+      local v = q[Q[name]]
+      if v ~= nil then avail[name] = avail[name] + 1; if not isInt(v) or v <= 0 then bad(name) end end
+    end
+    local spell = q[Q.REQ_SPELL]
+    if spell ~= nil then avail.REQ_SPELL = avail.REQ_SPELL + 1; if not isInt(spell) or spell == 0 then bad("REQ_SPELL") end end
+    local bc = q[Q.BREADCRUMBS]
+    if bc ~= nil then
+      avail.BREADCRUMBS = avail.BREADCRUMBS + 1
+      if type(bc) ~= "table" or #bc == 0 then bad("BREADCRUMBS")
+      else for _, v in ipairs(bc) do if not isInt(v) or v <= 0 then bad("BREADCRUMBS") break end end end
+    end
+    for _, name in ipairs({ "MIN_REP", "MAX_REP" }) do
+      local v = q[Q[name]]
+      if v ~= nil then avail[name] = avail[name] + 1; if not isPair(v) or v[1] <= 0 then bad(name) end end
+    end
+    local ranks = q[Q.REQ_RANKS]
+    if ranks ~= nil then
+      avail.REQ_RANKS = avail.REQ_RANKS + 1
+      if type(ranks) ~= "table" or #ranks == 0 then bad("REQ_RANKS")
+      else for _, v in ipairs(ranks) do if not isPair(v) then bad("REQ_RANKS") break end end end
+    end
+  end
+  for id, q in pairs(D.quests) do checkAvail(id, q) end
+  local parts = {}
+  for _, name in ipairs({ "BREADCRUMBS", "DISABLED_BY", "AVAILABLE_UNTIL", "AVAILABLE_WITH", "MIN_REP",
+                          "MAX_REP", "REQ_SPELL", "REQ_SPEC", "REQ_RANKS" }) do
+    parts[#parts + 1] = name .. " " .. avail[name]
+  end
+  print(tag .. " availability fields: " .. table.concat(parts, ", "))
+
   if missingRefs > 0 then warn(tag .. ": " .. missingRefs .. " quest giver/turn-in references not in the database (see DATA_COVERAGE.md integrity section)") end
 
   for id, n in pairs(D.npcs) do

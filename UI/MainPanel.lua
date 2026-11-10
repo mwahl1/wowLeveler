@@ -106,8 +106,16 @@ local function Create()
   div:SetPoint("TOPLEFT", frame.zone, "BOTTOMLEFT", 0, -GAP)
   div:SetPoint("RIGHT", body, "RIGHT", -PAD, 0)
 
+  frame.div = div
+
+  -- Optional guide card between the location divider and the quest list.
+  -- Hidden (and the layout unchanged) while no guide view is active.
+  if ns.GuideCard then
+    frame.guideCard = ns.GuideCard.Attach(body, div, function() Main.AnchorQuests() end)
+  end
+
   frame.questLabel = W.Label(body, "Current quests")
-  frame.questLabel:SetPoint("TOPLEFT", div, "BOTTOMLEFT", 0, -GAP)
+  Main.AnchorQuests() -- below the divider, or below the card if a view already arrived
   frame.questCount = W.Text(body, { font = T.font.heading, size = T.size.heading, color = T.color.faint, justify = "RIGHT", wrap = false })
   frame.questCount:SetPoint("RIGHT", body, "RIGHT", -PAD, 0)
   frame.questCount:SetPoint("TOP", frame.questLabel, "TOP")
@@ -149,7 +157,11 @@ local function Create()
   end)
   frame.grip = grip
 
-  frame:SetScript("OnSizeChanged", function() if not ns.db.ui.minimized then Main.LayoutQuests() end end)
+  frame:SetScript("OnSizeChanged", function()
+    if ns.db.ui.minimized then return end
+    if ns.GuideCard then ns.GuideCard.Relayout() end
+    Main.LayoutQuests()
+  end)
 
   -- Position text is the only thing polled, and only while visible
   local elapsed = 0
@@ -162,6 +174,15 @@ local function Create()
 end
 
 -- Rendering ------------------------------------------------------------------
+
+-- "Current quests" sits below the guide card when it is shown, else below the
+-- location divider (the original P0 layout). The scroll list follows the label.
+function Main.AnchorQuests()
+  if not frame or not frame.questLabel then return end
+  local below = (ns.GuideCard and ns.GuideCard.IsShown()) and frame.guideCard or frame.div
+  frame.questLabel:ClearAllPoints()
+  frame.questLabel:SetPoint("TOPLEFT", below, "BOTTOMLEFT", 0, -GAP)
+end
 
 function Main.ApplyLayout()
   local ui = ns.db.ui
@@ -315,6 +336,7 @@ function Main.Refresh()
   Main.UpdateCharacter()
   if ns.db.ui.minimized then return end
   Main.UpdateLocation()
+  if ns.GuideCard then ns.GuideCard.Relayout() end
   questsCache = C.GetQuests()
   local ready = 0
   for _, q in ipairs(questsCache) do if q.complete then ready = ready + 1 end end

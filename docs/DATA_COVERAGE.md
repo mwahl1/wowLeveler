@@ -62,6 +62,22 @@ Zones with the most incomplete new Forever quests:
 | Orgrimmar | 13 |
 | Stranglethorn Vale | 12 |
 
+## Availability fields
+
+Quests (available to at least one faction) using each M3.1 availability field (spec section 6.7). Empty values in QuestieDB are stored as absent.
+
+| Field | QuestieDB field | Quests |
+|---|---|---|
+| `BREADCRUMBS` | `breadcrumbs` | 162 |
+| `DISABLED_BY` | `disabledByQuest` | 18 |
+| `AVAILABLE_UNTIL` | `availableUntilCompleted` | 24 |
+| `AVAILABLE_WITH` | `availableStartingWith` | 2 |
+| `MIN_REP` | `requiredMinRep` | 280 |
+| `MAX_REP` | `requiredMaxRep` | 41 |
+| `REQ_SPELL` | `requiredSpell` | 80 |
+| `REQ_SPEC` | `requiredSpecialization` | 22 |
+| `REQ_RANKS` | `requiredRanks` | 1 |
+
 ## Starting zones by race
 
 Derived from the data (race-specific level-1 quests → zone → that zone's level-1 quests); nothing hand-entered.
@@ -127,9 +143,9 @@ Spawn coordinates dropped because their area has no in-game map ID: 42 points ac
 
 | File | Size |
 |---|---|
-| `Data/Schema.lua` | 1 KB |
+| `Data/Schema.lua` | 2 KB |
 | `Data/Meta.lua` | 1 KB |
-| `Data/Neutral.lua` | 888 KB |
-| `Data/Horde.lua` | 393 KB |
-| `Data/Alliance.lua` | 474 KB |
+| `Data/Neutral.lua` | 901 KB |
+| `Data/Horde.lua` | 398 KB |
+| `Data/Alliance.lua` | 480 KB |
 
