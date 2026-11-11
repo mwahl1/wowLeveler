@@ -752,7 +752,7 @@ add("Horde", "quests", [[return {
 [4521]={"Wild Guardians",52,56,8589934770,nil,{{10306}},{{10306}},{{1,7451},{1,7450}},nil,nil,nil,4741,nil,1448,nil,5800,"EEEE",0},
 [4542]={"Message to Freewind Post",23,25,8589934770,nil,{{10079}},{{10537}},nil,nil,nil,nil,4841,4841,1441,nil,510,"EEEE",4,nil,nil,nil,11886},
 [4561]={"Testing for Impurities - Un'Goro Crater",48,52,8589934770,nil,{nil,{175265}},{nil,{175265}},{{3,12235}},nil,nil,nil,nil,nil,1458,nil,nil,"EEEU",2,4294},
-[4641]={"Your Place In The World",1,1,8589934770,nil,{{10176}},{{3143}},nil,nil,nil,nil,788,788,1411,nil,40,"EEEE",4},
+[4641]={"Your Place In The World",1,1,8589934770,nil,{{10176}},{{3143}},nil,nil,nil,nil,788,788,1411,nil,40,"EEEE",260},
 [4642]={"Melding of Influences",48,55,8589934770,nil,{{10136}},{{10136}},{{3,12291}},{4293,4294},nil,nil,nil,nil,1458,nil,7050,"EEEE",0,nil,nil,nil,12288},
 [4661]={"Testing for Corruption - Felwood",48,52,8589934770,nil,{nil,{174848}},{nil,{174848}},{{3,12230}},nil,nil,nil,nil,nil,1458,nil,nil,"EEEU",2,4293},
 [4721]={"Wild Guardians",52,59,8589934770,nil,{{10306}},{{10306}},{{1,7454}},nil,{4741},nil,nil,nil,1448,nil,6400,"EEEE",0},

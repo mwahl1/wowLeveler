@@ -822,16 +822,14 @@ ns.Guides.Register({
   },
 })
 
--- Orc/Troll (races 2, 8), uiMap 1411: 53 quests, 159 steps, 0 GRIND
--- skipped (10): 787:questie_blacklist 813:repeatable 926:repeatable 5843:questie_blacklist
---   7664:questie_blacklist 7665:questie_blacklist 96873:needs_state:skill 96874:needs_state:skill
---   96875:needs_state:skill 96989:above_baseline_window:req_level
+-- Orc/Troll (races 2, 8), uiMap 1411: 52 quests, 157 steps, 0 GRIND
+-- skipped (11): 787:questie_blacklist 813:repeatable 926:repeatable 4641:questie_blacklist
+--   5843:questie_blacklist 7664:questie_blacklist 7665:questie_blacklist 96873:needs_state:skill
+--   96874:needs_state:skill 96875:needs_state:skill 96989:above_baseline_window:req_level
 ns.Guides.Register({
-  id = "baseline.start.1411", kind = "start", faction = "Horde", races = {2,8}, levels = {1,10}, entry = {minLevel=1}, exit = {completed={4641,788,97279,789,4402,5441,6394,790,804,2161,96821,96825,830,831,784,96822,791,823,818,825,99123,786,817,96876,815,808,97225,97223,812,834,826,837,835,97281,97282,99048,99049,816,99051,99052,806,828,827,829,832,96877,840,842,809,924}}, source = "optimizer@baseline-0.1.0",
+  id = "baseline.start.1411", kind = "start", faction = "Horde", races = {2,8}, levels = {1,10}, entry = {minLevel=1}, exit = {completed={788,97279,789,4402,5441,6394,790,804,2161,96821,96825,830,831,784,96822,791,823,818,825,99123,786,817,96876,815,808,97225,97223,812,834,826,837,835,97281,97282,99048,99049,816,99051,99052,806,828,827,829,832,96877,840,842,809,924}}, source = "optimizer@baseline-0.1.0",
   steps = {
-    { id = "baseline.start.1411.a4641", type = "ACCEPT", quest = 4641, est = {src = "U"} },
-    { id = "baseline.start.1411.t4641", type = "TURNIN", quest = 4641, est = {seconds = 17, xp = 40, src = "E"} },
-    { id = "baseline.start.1411.a788", type = "ACCEPT", quest = 788, est = {seconds = 5, src = "E"} },
+    { id = "baseline.start.1411.a788", type = "ACCEPT", quest = 788, est = {src = "U"} },
     { id = "baseline.start.1411.o788_1", type = "OBJECTIVE", quest = 788, objective = 1, est = {src = "U"} },
     { id = "baseline.start.1411.t788", type = "TURNIN", quest = 788, est = {seconds = 27, xp = 170, src = "E"} },
     { id = "baseline.start.1411.a97279", type = "ACCEPT", quest = 97279, est = {seconds = 5, src = "E"} },

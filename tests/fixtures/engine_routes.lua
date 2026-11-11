@@ -41,10 +41,24 @@ local function concat(...)
   return out
 end
 
+-- 4641 is BLACKLISTED in the data since the first in-game test showed WoW Forever does not
+-- offer it (tools/data/forever_overrides.json). These engine tests use it as their example of
+-- a Classic breadcrumb quest (mechanics, not Forever content), so the fixture clears the flag
+-- in the test namespace. Never do this outside tests.
+local function keepBreadcrumbExample(ns)
+  local F = ns.DataSchema.QUEST_FLAGS
+  local Q = ns.DataSchema.Q
+  local q = ns.Data.GetQuest(4641)
+  if not (F and F.BLACKLISTED and q and type(q[Q.FLAGS]) == "number") then return end
+  if math.floor(q[Q.FLAGS] / F.BLACKLISTED) % 2 == 1 then q[Q.FLAGS] = q[Q.FLAGS] - F.BLACKLISTED end
+end
+E.keepBreadcrumbExample = keepBreadcrumbExample
+
 -- Valley of Trials, linear: 4641, 788, 790, 804, 789, 4402.
 -- opts.optional4641 makes the 4641 steps optional.
 function E.vot(ns, opts)
   opts = opts or {}
+  keepBreadcrumbExample(ns)
   return {
     id = E.VOT, kind = "start", faction = "Horde", races = { 2, 8 }, levels = { 1, 6 },
     exit = { completed = { 788, 790, 804, 789, 4402 } }, next = { E.DUROTAR }, source = "hand",

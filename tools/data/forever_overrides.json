@@ -1,4 +1,16 @@
 {
-  "README": "Hand-maintained Forever overrides for Questie's quest blacklist (docs/P2_GUIDE_ENGINE_SPEC.md 8a). Add an entry ONLY when a blacklisted quest has been confirmed obtainable in WoW Forever in game. Every field is required and the build fails otherwise: {questID, action: \"unblacklist\", evidence: {date, character, observation, source}, addedBy}. Never add entries automatically.",
-  "overrides": []
+  "README": "Hand-maintained Forever overrides for Questie's quest blacklist (docs/P2_GUIDE_ENGINE_SPEC.md 8a). Add an entry ONLY with in-game evidence from WoW Forever. action \"unblacklist\": Questie hides the quest but it is obtainable in Forever. action \"blacklist\": Questie lists the quest but Forever does not offer it. Every field is required and the build fails otherwise: {questID, action, evidence: {date, character, observation, source}, addedBy}. Never add entries automatically.",
+  "overrides": [
+    {
+      "questID": 4641,
+      "action": "blacklist",
+      "evidence": {
+        "date": "2026-11-10",
+        "character": "Orc Mage 'Lvl' (realm Please), fresh level 1 in the Valley of Trials",
+        "observation": "\"Your Place In The World\" (Kaltunk) is not offered. The first quests offered were 788 Cutting Teeth (Gornek) and 97279 Wayward Weapons; the addon's event log shows 788 accepted first.",
+        "source": "Marshal, first in-game test, confirmed in chat; SavedVariables event log QUEST_ACCEPTED 788 then 97279"
+      },
+      "addedBy": "Claude, on Marshal's in-game confirmation"
+    }
+  ]
 }

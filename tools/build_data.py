@@ -348,6 +348,9 @@ def load_questie_blacklist(questie_dir):
 
 
 OVERRIDE_EVIDENCE_FIELDS = ("date", "character", "observation", "source")
+# unblacklist: Questie hides it, but it is obtainable in Forever (seen in game)
+# blacklist:   Questie lists it, but it is not offered in Forever (seen in game)
+OVERRIDE_ACTIONS = ("unblacklist", "blacklist")
 
 
 def load_overrides(path):
@@ -366,8 +369,8 @@ def load_overrides(path):
             continue
         if not isinstance(e.get("questID"), int) or e["questID"] <= 0:
             problems.append(f"{where}: questID must be a positive integer")
-        if e.get("action") != "unblacklist":
-            problems.append(f"{where}: action must be \"unblacklist\"")
+        if e.get("action") not in OVERRIDE_ACTIONS:
+            problems.append(f"{where}: action must be \"unblacklist\" or \"blacklist\"")
         if not isinstance(e.get("addedBy"), str) or not e["addedBy"].strip():
             problems.append(f"{where}: addedBy is required")
         ev = e.get("evidence")
@@ -388,8 +391,15 @@ def apply_blacklist(bl, overrides):
     blacklisted, hidden = set(bl["blacklisted"]), set(bl["hiddenOnMap"])
     applied, unused = [], []
     for o in overrides:
-        if o["questID"] in blacklisted:
-            blacklisted.discard(o["questID"])
+        q = o["questID"]
+        if o.get("action", "unblacklist") == "blacklist":
+            if q in blacklisted:
+                unused.append(o)  # Questie already hides it
+            else:
+                blacklisted.add(q)
+                applied.append(o)
+        elif q in blacklisted:
+            blacklisted.discard(q)
             applied.append(o)
         else:
             unused.append(o)
@@ -408,7 +418,8 @@ def write_blacklist_json(path, bl, blacklisted, hidden, applied):
         "entries": bl["entries"],
         "blacklisted": sorted(blacklisted),
         "hiddenOnMap": sorted(hidden),
-        "overridden": sorted(o["questID"] for o in applied),
+        "overridden": sorted(o["questID"] for o in applied if o.get("action", "unblacklist") == "unblacklist"),
+        "foreverAbsent": sorted(o["questID"] for o in applied if o.get("action") == "blacklist"),
     }
     with open(path, "w", encoding="utf-8") as f:
         json.dump(out, f, indent=1)

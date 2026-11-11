@@ -25,12 +25,19 @@ return function(T)
     T.eq(flag(ns, "HIDDEN_ON_MAP"), 512, "HIDDEN_ON_MAP")
   end)
 
-  T.test("data: 787 BLACKLISTED for Horde, 4641 not; records are kept", function()
+  T.test("data: 787 BLACKLISTED for Horde, 788 not; records are kept", function()
     local ns = T.addon("Horde", "WARRIOR")
     local B = flag(ns, "BLACKLISTED")
     T.ok(ns.Data.GetQuest(787) ~= nil, "787 record kept")
     T.ok(hasFlag(flagsOf(ns, 787), B), "787 flagged BLACKLISTED")
-    T.ok(not hasFlag(flagsOf(ns, 4641), B), "4641 not blacklisted")
+    T.ok(not hasFlag(flagsOf(ns, 788), B), "788 not blacklisted")
+  end)
+
+  T.test("data: Forever override 4641 (not offered in game, 2026-11-10) is BLACKLISTED, record kept", function()
+    local ns = T.addon("Horde", "WARRIOR")
+    local B = flag(ns, "BLACKLISTED")
+    T.ok(ns.Data.GetQuest(4641) ~= nil, "4641 record kept")
+    T.ok(hasFlag(flagsOf(ns, 4641), B), "4641 flagged BLACKLISTED by tools/data/forever_overrides.json")
   end)
 
   T.test("data: some quests are BLACKLISTED / HIDDEN_ON_MAP in each faction", function()
@@ -100,7 +107,7 @@ return function(T)
     for _, q in ipairs({ 787, 5843 }) do
       T.ok(hasFlag(flagsOf(ns, q), B), "premise: " .. q .. " is BLACKLISTED")
     end
-    T.ok(not hasFlag(flagsOf(ns, 4641), B), "premise: 4641 is not")
+    T.ok(not hasFlag(flagsOf(ns, 788), B), "premise: 788 is not")
     local function warningOf(view)
       for _, w in ipairs(view.warnings) do
         local n, noun = w:match("^(%d+) (quests?) skipped: not in WoW Forever")
@@ -114,12 +121,12 @@ return function(T)
     ns.Guides.Register({ id = "bl.mixed", kind = "segment", faction = "Horde", levels = { 1, 60 }, steps = {
       { id = "m.a787", type = "ACCEPT", quest = 787 }, { id = "m.t787", type = "TURNIN", quest = 787 },
       { id = "m.a5843", type = "ACCEPT", quest = 5843 }, { id = "m.t5843", type = "TURNIN", quest = 5843 },
-      { id = "m.a4641", type = "ACCEPT", quest = 4641 }, { id = "m.t4641", type = "TURNIN", quest = 4641 },
+      { id = "m.a788", type = "ACCEPT", quest = 788 }, { id = "m.t788", type = "TURNIN", quest = 788 },
     } })
     local route = ns.Guides.Compile({ faction = "Horde", raceID = 2, classFile = "WARRIOR" })
     local mem = ns.GuideEngine.NewMemory()
     local view = ns.GuideEngine.Evaluate(route, T.state{ faction = "Horde", raceID = 2, level = 1 }, mem)
-    T.eq(view.current[1] and view.current[1].id, "m.a4641", "normal quest is current")
+    T.eq(view.current[1] and view.current[1].id, "m.a788", "normal quest is current")
     for _, list in ipairs({ view.current, view.upcoming }) do
       for _, s in ipairs(list) do
         T.ok(s.quest == nil or (s.quest.id ~= 787 and s.quest.id ~= 5843), "blacklisted step listed: " .. tostring(s.id))
@@ -131,7 +138,7 @@ return function(T)
     -- no blacklisted quest in the window -> no such warning
     ns.Guides.Reset()
     ns.Guides.Register({ id = "bl.clean", kind = "segment", faction = "Horde", levels = { 1, 60 }, steps = {
-      { id = "c.a4641", type = "ACCEPT", quest = 4641 }, { id = "c.t4641", type = "TURNIN", quest = 4641 } } })
+      { id = "c.a788", type = "ACCEPT", quest = 788 }, { id = "c.t788", type = "TURNIN", quest = 788 } } })
     route = ns.Guides.Compile({ faction = "Horde", raceID = 2, classFile = "WARRIOR" })
     view = ns.GuideEngine.Evaluate(route, T.state{ faction = "Horde", raceID = 2, level = 1 }, ns.GuideEngine.NewMemory())
     T.eq(warningOf(view), nil, "no blacklist warning without blacklisted quests")
