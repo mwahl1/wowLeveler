@@ -13,7 +13,7 @@ local STATUS = {
 }
 
 local function Create()
-  frame = CreateFrame("Frame", "LevelingNavigatorProbeFrame", UIParent)
+  frame = W.Panel(UIParent, "LevelingNavigatorProbeFrame")
   frame:SetSize(460, 520)
   frame:SetPoint("CENTER")
   frame:SetFrameStrata("DIALOG")
@@ -23,14 +23,15 @@ local function Create()
   frame:RegisterForDrag("LeftButton")
   frame:SetScript("OnDragStart", frame.StartMoving)
   frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
-  W.Skin(frame)
   frame:Hide()
   tinsert(UISpecialFrames, "LevelingNavigatorProbeFrame") -- Escape closes it
 
   local header = CreateFrame("Frame", nil, frame)
-  header:SetPoint("TOPLEFT"); header:SetPoint("TOPRIGHT")
+  header:SetPoint("TOPLEFT", 4, -4); header:SetPoint("TOPRIGHT", -4, -4)
   header:SetHeight(T.space.header)
-  W.Skin(header, T.color.surface)
+  header.bg = header:CreateTexture(nil, "BACKGROUND")
+  header.bg:SetAllPoints()
+  header.bg:SetColorTexture(1, 1, 1, 0.04)
 
   local title = W.Text(header, { font = T.font.heading, size = T.size.title, color = T.color.accent, wrap = false })
   title:SetPoint("LEFT", T.space.pad, 0)

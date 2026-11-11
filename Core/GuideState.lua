@@ -378,7 +378,9 @@ end
 
 local REFRESH_EVENTS = {
   "PLAYER_DEAD", "PLAYER_ALIVE", "PLAYER_UNGHOST", "PLAYER_CONTROL_LOST", "PLAYER_CONTROL_GAINED",
-  "HEARTHSTONE_BOUND", "BAG_UPDATE_DELAYED", "LEARNED_SPELL_IN_TAB", "SPELLS_CHANGED", "TAXIMAP_OPENED",
+  -- LEARNED_SPELL_IN_TAB removed: unknown to the Forever client (in-game probe 2026-11-10);
+  -- SPELLS_CHANGED covers newly learned spells.
+  "HEARTHSTONE_BOUND", "BAG_UPDATE_DELAYED", "SPELLS_CHANGED", "TAXIMAP_OPENED",
 }
 local LOG_EVENTS = { "QUEST_LOG_UPDATE", "QUEST_ACCEPTED", "QUEST_WATCH_UPDATE", "UNIT_QUEST_LOG_CHANGED" }
 
@@ -464,6 +466,12 @@ function GS.Activate(atLogin)
   else
     GS.memory = ns.GuideEngine.Sanitize(nil, guid)
   end
+  -- One-time: forget skips made with the old card's SKIP button. The first in-game test
+  -- skipped every step to see the route, which left the guide saying nothing at all.
+  if ns.char and not ns.char.oldSkipsCleared then
+    GS.memory.skips = {}
+    ns.char.oldSkipsCleared = true
+  end
   collectWants(route)
   GS.active = true
   logDirty, completedDirty = true, true
@@ -528,6 +536,18 @@ function Guide.Unskip(stepId)
   if not GS.active then return end
   ns.GuideEngine.Unskip(GS.memory, stepId)
   GS.Evaluate()
+end
+
+-- `/ln unskip`: forgets every manual skip for this character. Returns how many were cleared.
+function Guide.ClearSkips()
+  if not (GS.active and GS.memory) then return 0 end
+  local n = 0
+  for id in pairs(GS.memory.skips or {}) do
+    ns.GuideEngine.Unskip(GS.memory, id)
+    n = n + 1
+  end
+  GS.Evaluate()
+  return n
 end
 
 function Guide.Confirm(stepId)

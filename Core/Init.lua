@@ -7,8 +7,8 @@ ns.TITLE = "Leveling Navigator"
 local DEFAULTS = {
   ui = {
     point = { "RIGHT", "RIGHT", -40, 60 },
-    width = 330,
-    height = 420,
+    width = 300,
+    height = 460,
     scale = 1,
     alpha = 0.94,
     minimized = false,
@@ -21,9 +21,22 @@ local DEFAULTS = {
     fontScale = 1,
   },
   guideEnabled = true, -- /ln guide on|off
-  autoAccept = false, -- not implemented yet; reserved, off by default
+  autoAccept = false, -- Core/AutoQuest.lua; off by default, settings window
   autoTurnIn = false,
+  autoRouteOnly = true, -- auto accept only quests on the route while the guide is active
 }
+
+-- One-time fixes to existing settings, keyed by ns.db.settingsVersion
+local SETTINGS_VERSION = 2
+local function Migrate(db)
+  local v = tonumber(db.settingsVersion) or 1
+  if v < 2 then
+    -- The card's old WAYPOINT label looked like a one-shot action, so clicking it turned
+    -- waypoints off by accident (first in-game test, 2026-11-10). Restore the default once.
+    db.ui.waypoint = true
+  end
+  db.settingsVersion = SETTINGS_VERSION
+end
 
 local CHAR_DEFAULTS = {
   loads = 0,
@@ -107,6 +120,7 @@ end
 ns.On("ADDON_LOADED", function(_, name)
   if name ~= ADDON then return end
   LevelingNavigatorDB = ApplyDefaults(LevelingNavigatorDB or {}, DEFAULTS)
+  Migrate(LevelingNavigatorDB)
   LevelingNavigatorCharDB = ApplyDefaults(LevelingNavigatorCharDB or {}, CHAR_DEFAULTS)
   ns.db = LevelingNavigatorDB
   ns.char = LevelingNavigatorCharDB
@@ -159,6 +173,14 @@ SlashCmdList.LEVELINGNAVIGATOR = function(input)
     ns.db.guideEnabled = arg == "on"
     ns.Print(ns.db.guideEnabled and "Guide on." or "Guide off.")
     ns.Send("GUIDE_ENABLED", ns.db.guideEnabled)
+  elseif cmd == "settings" or cmd == "options" or cmd == "config" then
+    ns.Send("SHOW_SETTINGS")
+  elseif cmd == "skip" then
+    local title = ns.GuideWindow and ns.GuideWindow.SkipCurrent()
+    ns.Print(title and ("Skipped: " .. title .. "  (/ln unskip to undo all skips)") or "No active step to skip.")
+  elseif cmd == "unskip" then
+    local n = ns.Guide and ns.Guide.ClearSkips and ns.Guide.ClearSkips() or 0
+    ns.Print(string.format("Cleared %d skipped step(s).", n))
   elseif cmd == "played" then
     ns.Send("REQUEST_PLAYED")
   elseif cmd == "mockguide" then
@@ -167,7 +189,8 @@ SlashCmdList.LEVELINGNAVIGATOR = function(input)
   elseif cmd == "log" then
     ns.Probe.PrintLog(tonumber(arg) or 10)
   else
-    ns.Print("/ln - show/hide  |  /ln probe - API diagnostics  |  /ln log [n] - recent events")
+    ns.Print("/ln - show/hide  |  /ln settings - options  |  /ln probe - API diagnostics  |  /ln log [n] - recent events")
+    ns.Print("/ln skip - skip the current step (missing or bugged quest)  |  /ln unskip - undo all skips")
     ns.Print("/ln scale 0.6-1.6  |  /ln alpha 0.3-1  |  /ln reset - reset window")
     ns.Print("/ln mockguide [main|start|train|off] - preview the guide card with mock data")
     ns.Print("/ln lock - lock/unlock frames  |  /ln font 0.8-1.4 - text size")

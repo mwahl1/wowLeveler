@@ -84,6 +84,46 @@ return function(T)
 
   -- Normal progression --------------------------------------------------------------------
 
+  -- Segment list view (UI step list) ---------------------------------------------------
+
+  T.test("list view: whole segment in route order with statuses, primaryId, NPC and subject names", function()
+    local ns, route = setup(F.registerHorde)
+    local G = ns.GuideEngine
+    local mem = G.NewMemory()
+    local view = G.Evaluate(route, orc{ level = 2, time = 100, completed = done(4641), log = { [788] = active(4, 10) } }, mem)
+
+    T.ok(type(view.list) == "table" and #view.list > 0, "list present")
+    T.eq(view.primaryId, view.current[1].id, "primaryId is the current step")
+    local byId, lastIndex = {}, 0
+    for _, r in ipairs(view.list) do
+      T.ok(r.index > lastIndex, "rows in route order")
+      lastIndex = r.index
+      T.ok(r.status ~= "NA" and r.status ~= "UNAVAILABLE", "hidden statuses are left out")
+      byId[r.id] = r
+    end
+    T.eq(byId["vot.t4641"].status, "DONE", "turned-in step is DONE")
+    T.eq(byId["vot.o788_1"].progress, { cur = 4, max = 10 }, "objective row carries live progress")
+
+    -- accept/turn-in rows name the NPC; objective rows name what to kill
+    local a788 = byId["vot.a788"]
+    T.eq(a788.npc, "Gornek", "788 starts at Gornek")
+    T.eq(byId["vot.t4641"].npc, "Gornek", "4641 ends at Gornek")
+    local o = byId["vot.o788_1"].subject
+    T.ok(o and o.kind == "npc" and o.verb == "Kill" and o.name == "Mottled Boar", "objective subject: Kill Mottled Boar")
+    T.eq(view.current[1].subject and view.current[1].subject.name, "Mottled Boar", "current step view carries the subject too")
+  end)
+
+  T.test("list view: rows are fresh tables (UI may not mutate the cache) and empty views have a list", function()
+    local ns, route = setup(F.registerHorde)
+    local G = ns.GuideEngine
+    local v1 = G.Evaluate(route, orc{ level = 1, time = 1 }, G.NewMemory())
+    local v2 = G.Evaluate(route, orc{ level = 1, time = 2 }, G.NewMemory())
+    T.ok(v1.list[1] ~= v2.list[1], "a new row table per evaluation")
+    T.eq(v1.list[1].title, v2.list[1].title, "same static content")
+    local empty = G.Evaluate(nil, orc{}, G.NewMemory())
+    T.eq(empty.list, {}, "empty view has an empty list")
+  end)
+
   T.test("normal progression: accept -> objective -> turn in, auto-advancing, STEP_DONE once per transition", function()
     local ns, route = setup(F.registerHorde)
     local G = ns.GuideEngine

@@ -30,6 +30,38 @@ function W.Skin(frame, bg, alpha)
   end
 end
 
+-- Blizzard tooltip-style panel: dark translucent fill, thin silver border. Falls back to
+-- the flat skin when this client has no backdrop support.
+local TOOLTIP_BACKDROP = {
+  bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+  edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+  tile = true, tileSize = 16, edgeSize = 14,
+  insets = { left = 3, right = 3, top = 3, bottom = 3 },
+}
+
+function W.Panel(parent, name)
+  local ok, f = pcall(CreateFrame, "Frame", name, parent, "BackdropTemplate")
+  if not ok or not f then f = CreateFrame("Frame", name, parent) end
+  if f.SetBackdrop and pcall(f.SetBackdrop, f, TOOLTIP_BACKDROP) then
+    local bg, edge = T.color.panelBg, T.color.panelEdge
+    f:SetBackdropColor(bg[1], bg[2], bg[3], bg[4])
+    f:SetBackdropBorderColor(edge[1], edge[2], edge[3], edge[4])
+  else
+    W.Skin(f, T.color.bg, 0.9)
+  end
+  return f
+end
+
+-- Small square icon button (Blizzard texture), highlight on hover
+function W.IconButton(parent, texture, size, onClick)
+  local b = CreateFrame("Button", nil, parent)
+  b:SetSize(size, size)
+  b:SetNormalTexture(texture)
+  b:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
+  b:SetScript("OnClick", onClick)
+  return b
+end
+
 -- Font scale (ns.db.ui.fontScale, clamped 0.8-1.4) ------------------------------
 -- Every font string made by W.Text is registered with its base font and size so a
 -- scale change re-applies all of them once; nothing is allocated per frame.
@@ -67,7 +99,7 @@ function W.Text(parent, opts)
   local c = opts.color or T.color.text
   fs:SetTextColor(c[1], c[2], c[3], c[4] or 1)
   fs:SetShadowOffset(1, -1)
-  fs:SetShadowColor(0, 0, 0, 0.75)
+  fs:SetShadowColor(0, 0, 0, 1)
   fs:SetJustifyH(opts.justify or "LEFT")
   fs:SetWordWrap(opts.wrap ~= false)
   return fs

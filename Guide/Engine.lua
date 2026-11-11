@@ -290,6 +290,76 @@ local function resolveTarget(step, state)
 end
 E.ResolveTarget = resolveTarget
 
+-- Map pins: every known spawn point for a step ----------------------------------------------
+-- Returns an array of { map, x, y (0-100), kind = "npc"|"object", id, name, role } where role is
+-- "giver" (ACCEPT), "finisher" (TURNIN), "kill" (creature objective), "loot" (item: its drop
+-- sources), "use" (object objective). mapFilter keeps one uiMap; max caps the count (default 80).
+local function addEntityPoints(out, kind, id, role, mapFilter, max)
+  if id == nil or #out >= max then return end
+  local rec = entityRecord(kind, id)
+  local F = rec and entityFields(kind)
+  local spawns = F and rec[F.SPAWNS]
+  if type(spawns) ~= "table" then return end
+  local name = rec[F.NAME]
+  for i = 1, #spawns - 2, 3 do
+    local m = spawns[i]
+    if mapFilter == nil or m == mapFilter then
+      out[#out + 1] = { map = m, x = spawns[i + 1], y = spawns[i + 2], kind = kind, id = id,
+                        name = type(name) == "string" and name or nil, role = role }
+      if #out >= max then return end
+    end
+  end
+end
+
+local function addObjectivePoints(out, o, mapFilter, max)
+  local S = schema()
+  if type(o) ~= "table" or not (S and S.OBJ_KIND) then return end
+  local K = S.OBJ_KIND
+  if o[1] == K.NPC then addEntityPoints(out, "npc", o[2], "kill", mapFilter, max)
+  elseif o[1] == K.OBJECT then addEntityPoints(out, "object", o[2], "use", mapFilter, max)
+  elseif o[1] == K.KILLCREDIT and type(o[2]) == "table" then
+    for i = 1, #o[2] do addEntityPoints(out, "npc", o[2][i], "kill", mapFilter, max) end
+  elseif o[1] == K.ITEM then
+    local it = ns.Data.GetItem(o[2])
+    if it and S.ITEM then
+      for _, id in ipairs(it[S.ITEM.NPC_DROPS] or {}) do addEntityPoints(out, "npc", id, "loot", mapFilter, max) end
+      for _, id in ipairs(it[S.ITEM.OBJECT_DROPS] or {}) do addEntityPoints(out, "object", id, "loot", mapFilter, max) end
+    end
+  end
+end
+
+function E.TargetPoints(questID, stepType, objective, mapFilter, max)
+  max = max or 80
+  local out = {}
+  local S = schema()
+  local rec = questID and ns.Data and ns.Data.GetQuest(questID)
+  if not (rec and S) then return out end
+  local Q = S.Q
+  if stepType == "ACCEPT" then
+    local st = rec[Q.START]
+    if type(st) == "table" then
+      for _, id in ipairs(st[1] or {}) do addEntityPoints(out, "npc", id, "giver", mapFilter, max) end
+      for _, id in ipairs(st[2] or {}) do addEntityPoints(out, "object", id, "giver", mapFilter, max) end
+    end
+  elseif stepType == "TURNIN" then
+    local fin = rec[Q.FINISH]
+    if type(fin) == "table" then
+      for _, id in ipairs(fin[1] or {}) do addEntityPoints(out, "npc", id, "finisher", mapFilter, max) end
+      for _, id in ipairs(fin[2] or {}) do addEntityPoints(out, "object", id, "finisher", mapFilter, max) end
+    end
+  else
+    local objs = rec[Q.OBJ]
+    if type(objs) == "table" then
+      if objective then
+        addObjectivePoints(out, objs[objective], mapFilter, max)
+      else
+        for i = 1, #objs do addObjectivePoints(out, objs[i], mapFilter, max) end
+      end
+    end
+  end
+  return out
+end
+
 -- Per-quest state (5.1) -----------------------------------------------------------------
 
 local qState, qReason = {}, {}
@@ -619,25 +689,55 @@ end
 
 local OBJ_VERB = { [1] = "Kill", [2] = "Use", [3] = "Collect", [5] = "Kill" }
 
-local function objectiveTitle(step)
+-- What an OBJECTIVE/KILL step is about: { verb = "Kill", kind = "npc"|"object"|"item", name = ... }
+local OBJ_KIND_NAME = { [1] = "npc", [2] = "object", [3] = "item", [5] = "npc" }
+local function objectiveSubject(step)
   local objs = questField(step.quest, "OBJ")
   local o = type(objs) == "table" and step.objective and objs[step.objective]
-  if type(o) == "table" then
-    local S = schema()
-    local K = S.OBJ_KIND
-    local name
-    if o[1] == K.NPC then
-      local r = ns.Data.GetNPC(o[2]); name = r and r[S.NPC.NAME]
-    elseif o[1] == K.OBJECT then
-      local r = ns.Data.GetObject(o[2]); name = r and r[S.OBJ.NAME]
-    elseif o[1] == K.ITEM then
-      local r = ns.Data.GetItem(o[2]); name = r and r[S.ITEM.NAME]
-    elseif o[1] == K.KILLCREDIT and type(o[2]) == "table" then
-      local r = ns.Data.GetNPC(o[2][1]); name = r and r[S.NPC.NAME]
-    end
-    if type(name) == "string" then return (OBJ_VERB[o[1]] or "Complete") .. " " .. name end
+  if type(o) ~= "table" then return nil end
+  local S = schema()
+  local K = S.OBJ_KIND
+  local name
+  if o[1] == K.NPC then
+    local r = ns.Data.GetNPC(o[2]); name = r and r[S.NPC.NAME]
+  elseif o[1] == K.OBJECT then
+    local r = ns.Data.GetObject(o[2]); name = r and r[S.OBJ.NAME]
+  elseif o[1] == K.ITEM then
+    local r = ns.Data.GetItem(o[2]); name = r and r[S.ITEM.NAME]
+  elseif o[1] == K.KILLCREDIT and type(o[2]) == "table" then
+    local r = ns.Data.GetNPC(o[2][1]); name = r and r[S.NPC.NAME]
   end
+  if type(name) ~= "string" then return nil end
+  return { verb = OBJ_VERB[o[1]] or "Complete", kind = OBJ_KIND_NAME[o[1]] or "npc", name = name }
+end
+
+local function objectiveTitle(step)
+  local s = objectiveSubject(step)
+  if s then return s.verb .. " " .. s.name end
   return questName(step.quest) .. ": objective " .. tostring(step.objective or "")
+end
+
+-- Name of the NPC (or object) an ACCEPT / TURNIN step talks to: the first listed starter or
+-- finisher. Static per quest (no distance), so the UI can group steps by NPC.
+local function firstEntityName(lists)
+  if type(lists) ~= "table" then return nil, nil end
+  for k, kind in ipairs({ "npc", "object" }) do
+    local ids = lists[k]
+    if type(ids) == "table" and ids[1] ~= nil then
+      local rec = entityRecord(kind, ids[1])
+      local F = rec and entityFields(kind)
+      local name = F and rec[F.NAME]
+      if type(name) == "string" then return name, kind end
+    end
+  end
+  return nil, nil
+end
+
+local function stepNpc(step)
+  if step.type ~= "ACCEPT" and step.type ~= "TURNIN" then return nil, nil end
+  local t = step.target
+  if type(t) == "table" and type(t.name) == "string" then return t.name, "npc" end
+  return firstEntityName(questField(step.quest, step.type == "ACCEPT" and "START" or "FINISH"))
 end
 
 local function stepTitle(step)
@@ -722,6 +822,7 @@ local function stepView(route, i, state, memory, extraWhy)
   end
 
   local entry = q and state.log and state.log[q]
+  local npc, npcKind = stepNpc(step)
   return {
     id = step.id, type = step.type, status = status, reason = reason,
     segment = step.segment, index = i,
@@ -731,6 +832,35 @@ local function stepView(route, i, state, memory, extraWhy)
     progress = stepProgress(step, state, status),
     badges = badges, why = why, manualConfirm = manual,
     est = step.est,
+    npc = npc, npcKind = npcKind,
+    subject = (step.type == "OBJECTIVE" or step.type == "KILL") and objectiveSubject(step) or nil,
+    objective = step.objective,
+  }
+end
+
+-- Full segment list (7.2 list view): static parts cached per step table, status and
+-- progress refreshed every evaluation.
+local listCache = setmetatable({}, { __mode = "k" })
+local LIST_HIDDEN = { NA = true, UNAVAILABLE = true }
+
+local function listRow(step, i, state, status)
+  local c = listCache[step]
+  if not c then
+    local q = step.quest
+    local npc, npcKind = stepNpc(step)
+    c = {
+      id = step.id, index = i, type = step.type, title = stepTitle(step),
+      quest = q and { id = q, name = questName(q) } or nil,
+      npc = npc, npcKind = npcKind,
+      subject = (step.type == "OBJECTIVE" or step.type == "KILL") and objectiveSubject(step) or nil,
+      optional = step.optional or nil, objective = step.objective,
+    }
+    listCache[step] = c
+  end
+  return {
+    id = c.id, index = i, type = c.type, title = c.title, quest = c.quest,
+    npc = c.npc, npcKind = c.npcKind, subject = c.subject, optional = c.optional, objective = c.objective,
+    status = status, progress = stepProgress(step, state, status),
   }
 end
 
@@ -745,7 +875,7 @@ end
 
 local function emptyView(warnings, suggestions)
   return { route = nil, current = {}, upcoming = {}, backlog = {}, suggestions = suggestions or {},
-           warnings = warnings or {} }
+           warnings = warnings or {}, list = {} }
 end
 
 function E.Evaluate(route, state, memory)
@@ -1093,6 +1223,17 @@ function E.Evaluate(route, state, memory)
     segment = { id = segId, title = def.title or def.id, levels = def.levels },
     progress = { done = doneN, total = totalN },
   }
+
+  -- Whole segment in route order for the step list; primaryId marks the current step
+  local list = {}
+  for i = first, segLast do
+    local st = ST[i]
+    if st and not LIST_HIDDEN[st] then list[#list + 1] = listRow(steps[i], i, state, st) end
+  end
+  view.list = list
+  view.primaryId = primary and steps[primary].id or nil
+  -- player position, for directions in the coach text
+  if state.map and state.x and state.y then view.player = { map = state.map, x = state.x, y = state.y } end
 
   -- Transitions: STEP_DONE events, activation times, last DONE set (window only)
   local done, since, undone = memory.done, memory.activeSince, memory.undone

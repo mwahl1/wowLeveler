@@ -358,3 +358,26 @@ end
 function C.HasOurWaypoint()
   return ours() ~= nil
 end
+
+-- Game settings (CVars) -------------------------------------------------------------
+-- Used by the settings panel to show and change Blizzard options such as auto loot.
+
+-- true / false, or nil when the CVar can't be read
+function C.GetCVarBool(name)
+  if C_CVar and type(C_CVar.GetCVarBool) == "function" then
+    local v = C.Call(C_CVar.GetCVarBool, name)
+    if type(v) == "boolean" then return v end
+  end
+  local raw = C.Call(GetCVar, name)
+  if raw == nil then return nil end
+  return raw == "1"
+end
+
+-- Returns true when the CVar now has the requested value. Refuses in combat lockdown.
+function C.SetCVarBool(name, on)
+  if InCombatLockdown and C.Call(InCombatLockdown) then return false end
+  local value = on and "1" or "0"
+  local setter = (C_CVar and type(C_CVar.SetCVar) == "function") and C_CVar.SetCVar or SetCVar
+  if type(setter) ~= "function" or not pcall(setter, name, value) then return false end
+  return C.GetCVarBool(name) == (on and true or false)
+end

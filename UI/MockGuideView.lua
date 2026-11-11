@@ -98,10 +98,38 @@ Mock.train = {
   warnings = {},
 }
 
+-- The guide window draws from view.list (whole segment); mocks only list current and
+-- upcoming steps, so build a list from those plus two finished steps for the done styling.
+local function WithList(view)
+  if view.list then return view end
+  local list = {
+    { id = "mock-done-1", type = "ACCEPT", status = "DONE", npc = "Kaltunk",
+      quest = { name = "Your Place In The World" } },
+    { id = "mock-done-2", type = "TURNIN", status = "DONE", npc = "Gornek",
+      quest = { name = "Your Place In The World" } },
+  }
+  local function add(s, status)
+    local row = {}
+    for k, v in pairs(s) do row[k] = v end
+    row.status = status
+    if (s.type == "ACCEPT" or s.type == "TURNIN") and s.target and s.target.name then row.npc = s.target.name end
+    if (s.type == "KILL" or s.type == "OBJECTIVE") and not row.subject and s.title then
+      local verb, name = s.title:match("^(%a+) (.+)$")
+      if verb then row.subject = { verb = verb, kind = verb == "Collect" and "item" or "npc", name = name } end
+    end
+    list[#list + 1] = row
+  end
+  for _, s in ipairs(view.current or {}) do add(s, "ACTIVE") end
+  for _, s in ipairs(view.upcoming or {}) do add(s, "WAITING") end
+  view.list = list
+  view.primaryId = view.current and view.current[1] and view.current[1].id
+  return view
+end
+
 ns.Listen("SHOW_MOCK_GUIDE", function(variant)
   if variant == "off" then
     ns.Send("GUIDE_UPDATED", nil)
     return
   end
-  ns.Send("GUIDE_UPDATED", Mock[variant or "main"] or Mock.main)
+  ns.Send("GUIDE_UPDATED", WithList(Mock[variant or "main"] or Mock.main))
 end)
