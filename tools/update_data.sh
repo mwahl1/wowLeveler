@@ -7,6 +7,9 @@ set -eu
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
 TOOLS="${WOW_TOOLS:-$HOME/wow-tools}"
 LUA="$TOOLS/lua-5.1.5/src/lua"
+# python3 on Windows is often only the Microsoft Store placeholder; fall back to python
+PY="${PYTHON:-python3}"
+"$PY" -c "import sys" >/dev/null 2>&1 || PY=python
 QDB="$TOOLS/QuestieDB"
 QUESTIE="$TOOLS/Questie"
 EXPORT="$REPO/tools/.cache/forever"
@@ -28,7 +31,7 @@ echo "== Exporting with QuestieDB's loader"
 (cd "$QDB" && "$LUA" "$REPO/tools/questiedb_export.lua" "$EXPORT")
 
 echo "== Building Data/*.lua"
-(cd "$REPO" && python3 tools/build_data.py --export "$EXPORT" --questiedb "$QDB" --questie "$QUESTIE")
+(cd "$REPO" && "$PY" tools/build_data.py --export "$EXPORT" --questiedb "$QDB" --questie "$QUESTIE")
 
 echo "== Validating with Lua 5.1"
 (cd "$REPO" && "$LUA" tools/validate_data.lua)

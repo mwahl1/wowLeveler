@@ -93,7 +93,12 @@ end
 
 -- Entities -----------------------------------------------------------------------
 
-os.execute('mkdir -p "' .. outDir .. '"')
+local WINDOWS = package.config:sub(1, 1) == "\\"
+if WINDOWS then
+  os.execute('mkdir "' .. outDir:gsub("/", "\\") .. '" 2>nul') -- cmd creates intermediate dirs
+else
+  os.execute('mkdir -p "' .. outDir .. '"')
+end
 
 local started = os.clock()
 local loaded, stats = flavorLoader.load(flavor, nil, true)
@@ -300,7 +305,7 @@ writeJSON(outDir .. "/support.json", {
 -- Provenance -----------------------------------------------------------------------
 
 local commit = "unknown"
-local pipe = io.popen("git rev-parse HEAD 2>/dev/null")
+local pipe = io.popen(WINDOWS and "git rev-parse HEAD 2>nul" or "git rev-parse HEAD 2>/dev/null")
 if pipe then commit = (pipe:read("*l") or commit); pipe:close() end
 
 summary.questiedbCommit = commit

@@ -23,6 +23,48 @@ end
 local SKIP = {}
 local FailMT = { __tostring = function(f) return f.msg end }
 
+-- File listing (macOS/Linux shell or Windows cmd) ---------------------------------------
+-- Recursive, sorted, forward-slash paths relative to the current directory.
+local WINDOWS = package.config:sub(1, 1) == "\\"
+T.WINDOWS = WINDOWS
+
+local function readLines(cmd)
+  local lines = {}
+  local p = io.popen(cmd)
+  if p then
+    for line in p:lines() do
+      line = line:gsub("\r$", "")
+      if line ~= "" then lines[#lines + 1] = line end
+    end
+    p:close()
+  end
+  return lines
+end
+
+local cwdPrefix
+function T.listFiles(dir, suffix)
+  local out = {}
+  if WINDOWS then
+    if not cwdPrefix then
+      cwdPrefix = ((readLines("cd")[1] or ""):gsub("\\", "/")) .. "/"
+    end
+    for _, line in ipairs(readLines('dir /b /s /a-d "' .. dir:gsub("/", "\\") .. '" 2>nul')) do
+      local path = line:gsub("\\", "/")
+      if path:sub(1, #cwdPrefix):lower() == cwdPrefix:lower() then path = path:sub(#cwdPrefix + 1) end
+      out[#out + 1] = path
+    end
+  else
+    out = readLines("find '" .. dir .. "' -type f 2>/dev/null")
+    for i, path in ipairs(out) do out[i] = path:gsub("^%./", "") end
+  end
+  local filtered = {}
+  for _, path in ipairs(out) do
+    if not suffix or path:sub(-#suffix) == suffix then filtered[#filtered + 1] = path end
+  end
+  table.sort(filtered)
+  return filtered
+end
+
 -- TOC parsing ----------------------------------------------------------------------
 -- Core/Data.lua first, then Data\ and Guide\ entries in TOC order. UI\ and the other
 -- Core\ files need the WoW client and are not loaded offline.
@@ -261,11 +303,10 @@ function T.test(name, fn)
   tests[#tests + 1] = { file = currentFile, name = name, fn = fn }
 end
 
-local p = io.popen("ls tests/*_test.lua 2>/dev/null")
 local testFiles = {}
-for line in p:lines() do testFiles[#testFiles + 1] = line end
-p:close()
-table.sort(testFiles)
+for _, path in ipairs(T.listFiles("tests", "_test.lua")) do
+  if path:match("^tests/[^/]+_test%.lua$") then testFiles[#testFiles + 1] = path end -- top level only
+end
 
 local started = os.clock()
 print("Leveling Navigator offline tests (" .. _VERSION .. ")" .. (FILTER and ("  filter: " .. FILTER) or ""))
@@ -313,4 +354,5 @@ end
 for _, w in ipairs(harnessWarnings) do print("WARN  harness: " .. w) end
 print(string.format("%d passed, %d failed, %d skipped, %d file load errors  (%.1f s)",
   passed, failed, skipped, loadErrors, os.clock() - started))
-os.exit((failed == 0 and loadErrors == 0) and 0 or 1)
+-- Finding no tests is a broken run (wrong directory, listing failed), never a pass
+os.exit((failed == 0 and loadErrors == 0 and #testFiles > 0) and 0 or 1)

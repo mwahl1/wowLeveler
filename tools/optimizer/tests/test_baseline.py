@@ -320,6 +320,8 @@ class GuideFileTests(unittest.TestCase):
 
     def test_compiles_in_lua(self):
         luac = os.path.expanduser("~/wow-tools/lua-5.1.5/src/luac")
+        if os.name == "nt":
+            luac += ".exe"
         if not os.path.exists(luac):
             self.skipTest("luac 5.1 not installed")
         out = subprocess.run([luac, "-p", B.GUIDES_FILE], capture_output=True, text=True, timeout=60)

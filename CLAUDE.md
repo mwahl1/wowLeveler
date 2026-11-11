@@ -38,6 +38,14 @@ Rules:
 tools/update_data.sh --no-pull                          # rebuild Data/ (export runs QuestieDB code)
 python3 tools/build_data.py                             # rebuild Data/ from the existing export only
 ```
+Windows (Git Bash; Lua 5.1.5 built from the verified lua.org tarball with `python -m ziglang cc`):
+```
+~/wow-tools/lua-5.1.5/src/lua.exe tools/run_tests.lua
+~/wow-tools/lua-5.1.5/src/lua.exe tools/validate_data.lua
+python -B -m unittest discover -s tools/optimizer/tests   # needs tools/.cache/forever: run update_data.sh once
+sh tools/update_data.sh --no-pull                          # Questie must be checked out at the pinned commit
+```
+The addon folder in the game (`_forever_\Interface\AddOns\LevelingNavigator`) is a junction to the repo: edits are live after `/reload`.
 
 ## Status vocabulary
 planned → implemented → offline-tested → **verified in game**. Only the user can supply in-game results. Never claim in-game verification without them.

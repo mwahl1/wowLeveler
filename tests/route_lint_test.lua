@@ -9,14 +9,8 @@ local RACES = { Horde = { 2, 5, 6, 8, 96 }, Alliance = { 1, 3, 4, 7, 95 } }
 local BANNED = { [787] = "The New Horde (Questie blacklist)", [5805] = "Welcome!", [5841] = "Welcome!",
   [5842] = "Welcome!", [5843] = "Welcome!", [5844] = "Welcome!", [5847] = "Welcome!" }
 
-local function routeFiles()
-  local files = {}
-  local p = io.popen("find Guides -name '*.lua' 2>/dev/null | sort")
-  if p then
-    for line in p:lines() do files[#files + 1] = line end
-    p:close()
-  end
-  return files
+local function routeFiles(T)
+  return T.listFiles("Guides", ".lua") -- portable listing from tools/run_tests.lua
 end
 
 local function contains(list, v)
@@ -26,7 +20,7 @@ local function contains(list, v)
 end
 
 return function(T)
-  local files = routeFiles()
+  local files = routeFiles(T)
   local fresh = {} -- faction -> namespace (one fresh load per faction for the whole linter)
 
   local function nsFor(faction)
